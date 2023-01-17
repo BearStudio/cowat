@@ -18,7 +18,7 @@ const Stops: NextPage = () => {
         <div className="bg-red-400">
           <ul>
             {stops.data?.map((stop) => (
-              <li key={stop.id}>{stop.name}</li>
+              <li key={stop.id}>{stop.id}</li>
             ))}
           </ul>
         </div>

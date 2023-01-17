@@ -13,38 +13,93 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
+model Location {
+    id          String   @id @default(cuid())
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+    isDeleted   Boolean
+    createdById String?
+    createdBy   User?    @relation(fields: [createdById], references: [id])
+    name        String
+    address     String
+    stops       Stop[]
+}
+
 model Stop {
-    id        String         @id @default(cuid())
-    userId    String
-    name      String
-    location  String
-    createdAt DateTime       @default(now())
-    updatedAt DateTime       @updatedAt
-    isDeleted Boolean
-    createdBy User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-    rides     StopsOnRides[]
+    id                          String                        @id @default(cuid())
+    createdAt                   DateTime                      @default(now())
+    updatedAt                   DateTime                      @updatedAt
+    isDeleted                   Boolean
+    createdById                 String?
+    createdBy                   User?                         @relation(fields: [createdById], references: [id])
+    locationId                  String?
+    location                    Location?                     @relation(fields: [locationId], references: [id])
+    time                        String?
+    stopsOnCommuteTemplates     StopsOnCommuteTemplates[]
+    stopsOnCommutes             StopsOnCommutes[]
+    passengersOnStopsOnCommutes PassengersOnStopsOnCommutes[]
 }
 
-model Ride {
-    id        String         @id @default(cuid())
-    userId    String
-    createdAt DateTime       @default(now())
-    updatedAt DateTime       @updatedAt
-    isDeleted Boolean
-    createdBy User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-    rides     StopsOnRides[]
+model CommuteTemplate {
+    id                      String                    @id @default(cuid())
+    createdAt               DateTime                  @default(now())
+    updatedAt               DateTime                  @updatedAt
+    isDeleted               Boolean
+    createdById             String?
+    createdBy               User?                     @relation(fields: [createdById], references: [id])
+    stopsOnCommuteTemplates StopsOnCommuteTemplates[]
 }
 
-model StopsOnRides {
-    stop      Stop     @relation(fields: [stopId], references: [id])
+model StopsOnCommuteTemplates {
+    stop              Stop            @relation(fields: [stopId], references: [id])
+    stopId            String
+    commuteTemplate   CommuteTemplate @relation(fields: [commuteTemplateId], references: [id])
+    commuteTemplateId String
+
+    @@id([stopId, commuteTemplateId])
+}
+
+model Commute {
+    id                          String                        @id @default(cuid())
+    createdAt                   DateTime                      @default(now())
+    updatedAt                   DateTime                      @updatedAt
+    isDeleted                   Boolean
+    createdById                 String?
+    createdBy                   User?                         @relation(fields: [createdById], references: [id])
+    date                        DateTime
+    seats                       Int
+    // "ON_TIME | DELAYED"
+    status                      String                        @default("UNKNOWN")
+    // If the driver is late, number of minutes of delay
+    delay                       Int?
+    stopsOnCommutes             StopsOnCommutes[]
+    passengersOnStopsOnCommutes PassengersOnStopsOnCommutes[]
+}
+
+model StopsOnCommutes {
+    stop      Stop    @relation(fields: [stopId], references: [id])
     stopId    String
-    ride      Ride     @relation(fields: [rideId], references: [id])
-    rideId    String
-    createdAt DateTime @default(now())
-    userId    String
-    createdBy User     @relation(fields: [userId], references: [id])
+    commute   Commute @relation(fields: [commuteId], references: [id])
+    commuteId String
 
-    @@id([stopId, rideId])
+    @@id([stopId, commuteId])
+}
+
+model PassengersOnStopsOnCommutes {
+    user          User    @relation(fields: [userId], references: [id])
+    userId        String
+    commute       Commute @relation(fields: [commuteId], references: [id])
+    commuteId     String
+    stop          Stop    @relation(fields: [stopId], references: [id])
+    stopId        String
+    // REQUESTED / ACCEPTED / REFUSED
+    requestStatus String  @default("REQUESTED")
+    // UNKNOWN / ON_TIME / AWAITING / DELAYED 
+    stopStatus    String  @default("UNKNOWN")
+    // Passenger is late, number of minutes of delay.
+    delay         Int?
+
+    @@id([userId, commuteId, stopId])
 }
 
 // Necessary for Next auth
@@ -75,16 +130,19 @@ model Session {
 }
 
 model User {
-    id            String         @id @default(cuid())
-    name          String?
-    email         String?        @unique
-    emailVerified DateTime?
-    image         String?
-    accounts      Account[]
-    sessions      Session[]
-    Stop          Stop[]
-    Ride          Ride[]
-    StopsOnRides  StopsOnRides[]
+    id                          String                        @id @default(cuid())
+    name                        String?
+    email                       String?                       @unique
+    emailVerified               DateTime?
+    image                       String?
+    phone                       String?
+    accounts                    Account[]
+    sessions                    Session[]
+    stops                       Stop[]
+    locations                   Location[]
+    commuteTemplates            CommuteTemplate[]
+    commutes                    Commute[]
+    passengersOnStopsOnCommutes PassengersOnStopsOnCommutes[]
 }
 
 model VerificationToken {
