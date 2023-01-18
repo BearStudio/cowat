@@ -2,7 +2,10 @@ import { signIn, signOut, useSession } from "next-auth/react";
 
 import Link from "next/link";
 
-const navigation = [{ name: "Stops", href: "/stops" }];
+const navigation = [
+  { name: "Stops", href: "/stops" },
+  { name: "Commutes", href: "/commutes" },
+];
 
 export function TopBar() {
   const { data: sessionData } = useSession();
