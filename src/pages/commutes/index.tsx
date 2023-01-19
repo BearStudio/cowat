@@ -21,10 +21,8 @@ const CommutesIndex: NextPage = () => {
                 {commute.id} - {commute.seats} - {commute.status}
               </p>
               <div>
-                {commute.stopsOnCommutes.map((stop) => (
-                  <div key={stop.stop.location?.id}>
-                    {stop.stop.location?.address}
-                  </div>
+                {commute.stops.map((stop) => (
+                  <div key={stop.location?.id}>{stop.location?.address}</div>
                 ))}
               </div>
             </Fragment>

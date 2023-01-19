@@ -29,44 +29,31 @@ model Location {
 }
 
 model Stop {
-    id                          String                        @id @default(cuid())
-    createdAt                   DateTime                      @default(now())
-    updatedAt                   DateTime                      @updatedAt
-    isDeleted                   Boolean                       @default(false)
-    createdById                 String?
-    createdBy                   User?                         @relation(fields: [createdById], references: [id])
-    locationId                  String?
-    location                    Location?                     @relation(fields: [locationId], references: [id])
-    time                        String?
-    stopsOnCommuteTemplates     StopsOnCommuteTemplates[]
-    stopsOnCommutes             StopsOnCommutes[]
-    passengersOnStopsOnCommutes PassengersOnStopsOnCommutes[]
+    id                String           @id @default(cuid())
+    locationId        String?
+    location          Location?        @relation(fields: [locationId], references: [id])
+    time              String?
+    commute           Commute?         @relation(fields: [commuteId], references: [id])
+    commuteId         String?
+    passengers        User[]
+    commuteTemplate   CommuteTemplate? @relation(fields: [commuteTemplateId], references: [id])
+    commuteTemplateId String?
 
-    @@index([createdById])
     @@index([locationId])
+    @@index([commuteId])
+    @@index([commuteTemplateId])
 }
 
 model CommuteTemplate {
-    id                      String                    @id @default(cuid())
-    createdAt               DateTime                  @default(now())
-    updatedAt               DateTime                  @updatedAt
-    isDeleted               Boolean                   @default(false)
-    createdById             String?
-    createdBy               User?                     @relation(fields: [createdById], references: [id])
-    stopsOnCommuteTemplates StopsOnCommuteTemplates[]
+    id          String   @id @default(cuid())
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+    isDeleted   Boolean  @default(false)
+    createdById String?
+    createdBy   User?    @relation(fields: [createdById], references: [id])
+    stops       Stop[]
 
     @@index([createdById])
-}
-
-model StopsOnCommuteTemplates {
-    stop              Stop            @relation(fields: [stopId], references: [id])
-    stopId            String
-    commuteTemplate   CommuteTemplate @relation(fields: [commuteTemplateId], references: [id])
-    commuteTemplateId String
-
-    @@id([stopId, commuteTemplateId])
-    @@index([stopId])
-    @@index([commuteTemplateId])
 }
 
 enum CommuteStatus {
@@ -76,33 +63,21 @@ enum CommuteStatus {
 }
 
 model Commute {
-    id                          String                        @id @default(cuid())
-    createdAt                   DateTime                      @default(now())
-    updatedAt                   DateTime                      @updatedAt
-    isDeleted                   Boolean?                      @default(false)
-    createdBy                   User?                         @relation(fields: [createdById], references: [id])
-    createdById                 String
-    date                        DateTime
-    seats                       Int
+    id          String        @id @default(cuid())
+    createdAt   DateTime      @default(now())
+    updatedAt   DateTime      @updatedAt
+    isDeleted   Boolean?      @default(false)
+    createdBy   User?         @relation(fields: [createdById], references: [id])
+    createdById String
+    date        DateTime
+    seats       Int
     // "ON_TIME | DELAYED"
-    status                      CommuteStatus                 @default(UNKNOWN)
+    status      CommuteStatus @default(UNKNOWN)
     // If the driver is late, number of minutes of delay
-    delay                       Int?
-    stopsOnCommutes             StopsOnCommutes[]
-    passengersOnStopsOnCommutes PassengersOnStopsOnCommutes[]
+    delay       Int?
+    stops       Stop[]
 
     @@index([createdById])
-}
-
-model StopsOnCommutes {
-    stop      Stop    @relation(fields: [stopId], references: [id])
-    stopId    String
-    commute   Commute @relation(fields: [commuteId], references: [id])
-    commuteId String
-
-    @@id([stopId, commuteId])
-    @@index([stopId])
-    @@index([commuteId])
 }
 
 enum RequestStatus {
@@ -116,24 +91,6 @@ enum StopStatus {
     ON_TIME
     AWAITING
     DELAYED
-}
-
-model PassengersOnStopsOnCommutes {
-    user          User          @relation(fields: [userId], references: [id])
-    userId        String
-    commute       Commute       @relation(fields: [commuteId], references: [id])
-    commuteId     String
-    stop          Stop          @relation(fields: [stopId], references: [id])
-    stopId        String
-    requestStatus RequestStatus @default(REQUESTED)
-    stopStatus    StopStatus    @default(UNKNOWN)
-    // Passenger is late, number of minutes of delay.
-    delay         Int?
-
-    @@id([userId, commuteId, stopId])
-    @@index([userId])
-    @@index([commuteId])
-    @@index([stopId])
 }
 
 // Necessary for Next auth
@@ -167,19 +124,18 @@ model Session {
 }
 
 model User {
-    id                          String                        @id @default(cuid())
-    name                        String?
-    email                       String?                       @unique
-    emailVerified               DateTime?
-    image                       String?
-    phone                       String?
-    accounts                    Account[]
-    sessions                    Session[]
-    stops                       Stop[]
-    locations                   Location[]
-    commuteTemplates            CommuteTemplate[]
-    commutes                    Commute[]
-    passengersOnStopsOnCommutes PassengersOnStopsOnCommutes[]
+    id               String            @id @default(cuid())
+    name             String?
+    email            String?           @unique
+    emailVerified    DateTime?
+    image            String?
+    phone            String?
+    accounts         Account[]
+    sessions         Session[]
+    passengerOnStops Stop[]
+    locations        Location[]
+    commuteTemplates CommuteTemplate[]
+    commutes         Commute[]
 }
 
 model VerificationToken {

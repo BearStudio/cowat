@@ -15,30 +15,22 @@ export const commuteRouter = createTRPCRouter({
           seats: input.seats,
           date: input.date,
           createdById: ctx.session.user.id,
-          stopsOnCommutes: {
+          stops: {
             create: [
               {
-                stop: {
+                location: {
                   create: {
-                    location: {
-                      create: {
-                        name: "Darnétal",
-                        address: "4 Impasse du Belvédère 76160 Darnétal",
-                      },
-                    },
+                    name: "Darnétal",
+                    address: "4 Impasse du Belvédère 76160 Darnétal",
                   },
                 },
               },
               {
-                stop: {
+                location: {
                   create: {
-                    location: {
-                      create: {
-                        name: "Saint André",
-                        address:
-                          "1900 Route de Cailly 76690 Saint André sur Cailly",
-                      },
-                    },
+                    name: "Saint André",
+                    address:
+                      "1900 Route de Cailly 76690 Saint André sur Cailly",
                   },
                 },
               },
@@ -55,18 +47,10 @@ export const commuteRouter = createTRPCRouter({
         createdById: ctx.session.user.id,
       },
       include: {
-        stopsOnCommutes: {
-          select: {
-            stop: {
-              select: {
-                location: true,
-              },
-            },
-          },
-        },
-        passengersOnStopsOnCommutes: {
-          select: {
-            user: true,
+        stops: {
+          include: {
+            location: true,
+            passengers: true,
           },
         },
       },
