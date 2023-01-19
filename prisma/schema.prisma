@@ -42,7 +42,8 @@ model Stop {
     stopsOnCommutes             StopsOnCommutes[]
     passengersOnStopsOnCommutes PassengersOnStopsOnCommutes[]
 
-    @@index([createdById, locationId])
+    @@index([createdById])
+    @@index([locationId])
 }
 
 model CommuteTemplate {
@@ -64,7 +65,8 @@ model StopsOnCommuteTemplates {
     commuteTemplateId String
 
     @@id([stopId, commuteTemplateId])
-    @@index([stopId, commuteTemplateId])
+    @@index([stopId])
+    @@index([commuteTemplateId])
 }
 
 enum CommuteStatus {
@@ -99,7 +101,8 @@ model StopsOnCommutes {
     commuteId String
 
     @@id([stopId, commuteId])
-    @@index([stopId, commuteId])
+    @@index([stopId])
+    @@index([commuteId])
 }
 
 enum RequestStatus {
@@ -128,7 +131,9 @@ model PassengersOnStopsOnCommutes {
     delay         Int?
 
     @@id([userId, commuteId, stopId])
-    @@index([userId, commuteId, stopId])
+    @@index([userId])
+    @@index([commuteId])
+    @@index([stopId])
 }
 
 // Necessary for Next auth
