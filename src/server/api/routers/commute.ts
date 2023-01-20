@@ -1,5 +1,6 @@
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { z } from "zod";
+import { slack } from "@/server/slack";
 
 export const commuteRouter = createTRPCRouter({
   createCommute: protectedProcedure
@@ -37,7 +38,42 @@ export const commuteRouter = createTRPCRouter({
             ],
           },
         },
+        include: {
+          createdBy: {
+            select: {
+              slackUserId: true,
+              email: true,
+            },
+          },
+        },
       });
+
+      const createdBy = commute.createdBy?.slackUserId
+        ? `<@${commute.createdBy?.slackUserId}>`
+        : commute.createdBy?.email;
+
+      await slack.send({
+        blocks: [
+          {
+            type: "section",
+            text: {
+              type: "mrkdwn",
+              text: `A new commute has been created by ${createdBy} @here`,
+            },
+            accessory: {
+              type: "button",
+              text: {
+                type: "plain_text",
+                text: "Check",
+                emoji: true,
+              },
+              value: "click_me_123",
+              url: "http://localhost:3000/commutes",
+              action_id: "button-action",
+            },
+          },
+        ],
+      } as any);
 
       return commute;
     }),

@@ -136,6 +136,7 @@ model User {
     locations        Location[]
     commuteTemplates CommuteTemplate[]
     commutes         Commute[]
+    slackUserId      String?
 }
 
 model VerificationToken {
