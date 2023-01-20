@@ -1,5 +1,6 @@
 import { TopBar } from "@/components/TopBar";
 import { api } from "@/utils/api";
+import { Button, Heading } from "@chakra-ui/react";
 import type { NextPage } from "next";
 import Link from "next/link";
 import { Fragment } from "react";
@@ -10,10 +11,11 @@ const CommutesIndex: NextPage = () => {
   return (
     <div>
       <TopBar />
-      <h1>Commutes</h1>
-      <Link href="/commutes/new" className="text-brand-800 underline">
-        new commute
-      </Link>
+      <Heading>Commute</Heading>
+      <Button as={Link} href="/commutes/new" colorScheme="brand">
+        New Commute
+      </Button>
+
       {myCommutes.isLoading && <div>Loader</div>}
       {!myCommutes.isLoading && (
         <ul>

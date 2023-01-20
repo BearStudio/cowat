@@ -1,35 +1,105 @@
-import type { InputProps } from "@/components/Input";
-import { Input } from "@/components/Input";
-import { useField } from "@formiz/core";
-import type { UseFieldProps } from "@formiz/core/dist/types/field.types";
-import type { FC, PropsWithChildren } from "react";
+import React, { useEffect, useState } from "react";
 
-export const FieldInput: FC<
-  PropsWithChildren<InputProps & UseFieldProps & { label?: string }>
-> = (props) => {
-  const { setValue, value, otherProps } = useField(props);
-  const { name } = otherProps;
+import type { InputProps } from "@chakra-ui/react";
+import {
+  IconButton,
+  Input,
+  InputGroup,
+  InputLeftElement,
+  InputRightElement,
+  Spinner,
+} from "@chakra-ui/react";
+import type { FieldProps } from "@formiz/core";
+import { useField } from "@formiz/core";
+import { RiEyeCloseLine, RiEyeLine } from "react-icons/ri";
+
+import type { FormGroupProps } from "@/components/FormGroup";
+import { FormGroup } from "@/components/FormGroup";
+
+export type FieldInputProps = FieldProps &
+  Omit<FormGroupProps, "placeholder"> &
+  Pick<InputProps, "type" | "placeholder"> & {
+    size?: "sm" | "md" | "lg";
+    autoFocus?: boolean;
+  };
+
+export const FieldInput = (props: FieldInputProps) => {
+  const {
+    errorMessage,
+    id,
+    isValid,
+    isPristine,
+    isSubmitted,
+    isValidating,
+    resetKey,
+    setValue,
+    value,
+    otherProps,
+  } = useField(props);
+  const {
+    children,
+    label,
+    type,
+    placeholder,
+    helper,
+    size = "md",
+    autoFocus,
+    ...rest
+  } = otherProps as Omit<FieldInputProps, keyof FieldProps>;
+  const { required } = props;
+  const [isTouched, setIsTouched] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const showError = !isValid && ((isTouched && !isPristine) || isSubmitted);
+
+  useEffect(() => {
+    setIsTouched(false);
+  }, [resetKey]);
+
+  const formGroupProps = {
+    errorMessage,
+    helper,
+    id,
+    isRequired: !!required,
+    label,
+    showError,
+    ...rest,
+  };
 
   return (
-    <div>
-      {props.label && (
-        <label
-          htmlFor={name}
-          className="block text-sm font-medium text-gray-700"
-        >
-          {props.label}
-        </label>
-      )}
-      <div className="mt-1">
+    <FormGroup {...formGroupProps}>
+      <InputGroup size={size}>
         <Input
-          placeholder="3"
+          type={showPassword ? "text" : type || "text"}
+          id={id}
           value={value ?? ""}
           onChange={(e) => setValue(e.target.value)}
-          id={name}
-          name={name}
-          {...otherProps}
+          onFocus={() => setIsTouched(false)}
+          onBlur={() => setIsTouched(true)}
+          placeholder={placeholder ? String(placeholder) : ""}
+          autoFocus={autoFocus}
         />
-      </div>
-    </div>
+
+        {type === "password" && (
+          <InputLeftElement>
+            <IconButton
+              onClick={() => setShowPassword((x) => !x)}
+              aria-label={showPassword ? "Hide password" : "Show password"}
+              display="flex"
+              size="xs"
+              fontSize="lg"
+              icon={showPassword ? <RiEyeLine /> : <RiEyeCloseLine />}
+              variant="unstyled"
+            />
+          </InputLeftElement>
+        )}
+
+        {(isTouched || isSubmitted) && isValidating && (
+          <InputRightElement>
+            <Spinner size="sm" flex="none" />
+          </InputRightElement>
+        )}
+      </InputGroup>
+      {children}
+    </FormGroup>
   );
 };

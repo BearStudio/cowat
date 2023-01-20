@@ -73,6 +73,7 @@ export const commuteRouter = createTRPCRouter({
             },
           },
         ],
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any);
 
       return commute;
