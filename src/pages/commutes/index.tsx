@@ -1,3 +1,4 @@
+import { TopBar } from "@/components/TopBar";
 import { api } from "@/utils/api";
 import type { NextPage } from "next";
 import Link from "next/link";
@@ -8,6 +9,7 @@ const CommutesIndex: NextPage = () => {
 
   return (
     <div>
+      <TopBar />
       <h1>Commutes</h1>
       <Link href="/commutes/new" className="text-brand-800 underline">
         new commute
