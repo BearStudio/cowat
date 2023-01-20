@@ -1,6 +1,7 @@
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { z } from "zod";
 import { slack } from "@/server/slack";
+import { TRPCError } from "@trpc/server";
 
 export const commuteRouter = createTRPCRouter({
   createCommute: protectedProcedure
@@ -95,4 +96,25 @@ export const commuteRouter = createTRPCRouter({
 
     return commutes;
   }),
+  commute: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      })
+    )
+    .query(async ({ input, ctx }) => {
+      const commute = ctx.prisma.commute.findFirstOrThrow({
+        where: {
+          id: input.id,
+        },
+      });
+
+      if (!commute) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+        });
+      }
+
+      return commute;
+    }),
 });
