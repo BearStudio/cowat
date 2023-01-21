@@ -42,6 +42,9 @@ export const locationRouter = createTRPCRouter({
           not: ctx.session.user.id,
         },
       },
+      include: {
+        createdBy: true,
+      },
     });
 
     return locations;
