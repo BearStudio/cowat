@@ -11,7 +11,7 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 
 const navigation = [
-  { name: "Stops", href: "/stops" },
+  { name: "Locations", href: "/locations" },
   { name: "Commutes", href: "/commutes" },
 ];
 
@@ -20,12 +20,10 @@ export function TopBar() {
 
   return (
     <Box as="section" pb={{ base: "12", md: "24" }}>
-      <Box as="nav" bg="brand.600" color="white">
+      <Box as="nav" bg="blackAlpha.900" color="white">
         <Container py={{ base: "3", lg: "4" }}>
           <Flex justify="space-between">
             <HStack spacing="4">
-              {/* <Logo /> */}
-
               <ButtonGroup
                 variant="link"
                 colorScheme="white"
@@ -45,7 +43,7 @@ export function TopBar() {
               </ButtonGroup>
             </HStack>
             <Button
-              colorScheme="brand"
+              colorScheme="whiteAlpha"
               onClick={sessionData ? () => void signOut() : () => void signIn()}
             >
               {sessionData ? sessionData.user?.name : "Sign in"}
