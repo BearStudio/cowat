@@ -45,6 +45,7 @@ model Stop {
 }
 
 enum RequestStatus {
+    CANCELED
     REQUESTED
     ACCEPTED
     REFUSED
