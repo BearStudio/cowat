@@ -22,14 +22,6 @@ export const commuteRouter = createTRPCRouter({
               {
                 location: {
                   create: {
-                    name: "Darnétal",
-                    address: "4 Impasse du Belvédère 76160 Darnétal",
-                  },
-                },
-              },
-              {
-                location: {
-                  create: {
                     name: "Saint André",
                     address:
                       "1900 Route de Cailly 76690 Saint André sur Cailly",
@@ -106,6 +98,18 @@ export const commuteRouter = createTRPCRouter({
       const commute = ctx.prisma.commute.findFirstOrThrow({
         where: {
           id: input.id,
+        },
+        include: {
+          stops: {
+            include: {
+              location: true,
+              passengers: {
+                include: {
+                  user: true,
+                },
+              },
+            },
+          },
         },
       });
 

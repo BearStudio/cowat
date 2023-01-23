@@ -25,6 +25,16 @@ const CommutesIndex: NextPage = () => {
           <Box>
             <Text>Nombre de places disponible: {commute.data?.seats}</Text>
           </Box>
+          {commute.data?.stops?.map((stop) => (
+            <Box key={stop.id}>
+              {stop.location?.name} - {stop.location?.address}
+              <br />
+              Passengers:{" "}
+              {stop.passengers
+                .map((passenger) => passenger.user.email)
+                .join(", ")}
+            </Box>
+          ))}
         </Stack>
       )}
     </LayoutAuthenticated>

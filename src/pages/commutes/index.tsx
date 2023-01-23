@@ -1,7 +1,7 @@
 import { Icon } from "@/components/Icon";
 import { LayoutAuthenticated } from "@/layout/LayoutAuthenticated";
 import { api } from "@/utils/api";
-import { Button, Flex, Heading, Stack } from "@chakra-ui/react";
+import { Box, Button, Flex, Heading, Stack } from "@chakra-ui/react";
 import type { NextPage } from "next";
 import NextLink from "next/link";
 import { FiPlus } from "react-icons/fi";
@@ -25,7 +25,7 @@ const CommutesIndex: NextPage = () => {
       {myCommutes.isLoading && <div>Loader</div>}
       {!myCommutes.isLoading &&
         myCommutes.data?.map((commute) => (
-          <Stack key={commute.id}>
+          <Flex direction="column" align="start" key={commute.id}>
             <Button
               as={NextLink}
               href={`/commutes/${commute.id}`}
@@ -34,12 +34,12 @@ const CommutesIndex: NextPage = () => {
               {commute.id} - {commute.seats} - {commute.status}
             </Button>
 
-            <div>
+            <Box>
               {commute.stops.map((stop) => (
                 <div key={stop.location?.id}>{stop.location?.address}</div>
               ))}
-            </div>
-          </Stack>
+            </Box>
+          </Flex>
         ))}
     </LayoutAuthenticated>
   );

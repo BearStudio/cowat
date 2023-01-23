@@ -29,19 +29,47 @@ model Location {
 }
 
 model Stop {
-    id                String           @id @default(cuid())
+    id                String              @id @default(cuid())
     locationId        String?
-    location          Location?        @relation(fields: [locationId], references: [id])
+    location          Location?           @relation(fields: [locationId], references: [id])
     time              String?
-    commute           Commute?         @relation(fields: [commuteId], references: [id])
+    commute           Commute?            @relation(fields: [commuteId], references: [id])
     commuteId         String?
-    passengers        User[]
-    commuteTemplate   CommuteTemplate? @relation(fields: [commuteTemplateId], references: [id])
+    commuteTemplate   CommuteTemplate?    @relation(fields: [commuteTemplateId], references: [id])
     commuteTemplateId String?
+    passengers        PassengersOnStops[]
 
     @@index([locationId])
     @@index([commuteId])
     @@index([commuteTemplateId])
+}
+
+enum RequestStatus {
+    REQUESTED
+    ACCEPTED
+    REFUSED
+}
+
+enum StopStatus {
+    UNKNOWN
+    ON_TIME
+    AWAITING
+    DELAYED
+}
+
+model PassengersOnStops {
+    user          User          @relation(fields: [userId], references: [id])
+    userId        String
+    stop          Stop          @relation(fields: [stopId], references: [id])
+    stopId        String
+    requestStatus RequestStatus @default(REQUESTED)
+    stopStatus    StopStatus    @default(UNKNOWN)
+    // Passenger is late, number of minutes of delay.
+    delay         Int?
+
+    @@id([userId, stopId])
+    @@index([userId])
+    @@index([stopId])
 }
 
 model CommuteTemplate {
@@ -80,19 +108,6 @@ model Commute {
     @@index([createdById])
 }
 
-enum RequestStatus {
-    REQUESTED
-    ACCEPTED
-    REFUSED
-}
-
-enum StopStatus {
-    UNKNOWN
-    ON_TIME
-    AWAITING
-    DELAYED
-}
-
 // Necessary for Next auth
 model Account {
     id                String  @id @default(cuid())
@@ -129,20 +144,20 @@ enum UserRole {
 }
 
 model User {
-    id               String            @id @default(cuid())
+    id               String              @id @default(cuid())
     name             String?
-    email            String?           @unique
+    email            String?             @unique
     emailVerified    DateTime?
     image            String?
     phone            String?
     accounts         Account[]
     sessions         Session[]
-    passengerOnStops Stop[]
     locations        Location[]
     commuteTemplates CommuteTemplate[]
     commutes         Commute[]
     slackUserId      String?
-    role             UserRole?         @default(USER)
+    role             UserRole?           @default(USER)
+    passengerOn      PassengersOnStops[]
 }
 
 model VerificationToken {
