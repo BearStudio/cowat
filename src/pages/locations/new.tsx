@@ -1,9 +1,10 @@
 import { FieldInput } from "@/components/FieldInput";
 import { FieldTextarea } from "@/components/FieldTextarea";
-import { TopBar } from "@/components/TopBar";
+import { LayoutAuthenticated } from "@/layout/LayoutAuthenticated";
+
 import type { RouterInputs } from "@/utils/api";
 import { api } from "@/utils/api";
-import { Button, Container, Flex, Heading, Stack } from "@chakra-ui/react";
+import { Button, Flex, Heading, Stack } from "@chakra-ui/react";
 import { Formiz } from "@formiz/core";
 import type { NextPage } from "next";
 import Head from "next/head";
@@ -25,34 +26,32 @@ const Locations: NextPage = () => {
   };
 
   return (
-    <>
+    <LayoutAuthenticated>
       <Head>
         <title>Cowat - Locations</title>
       </Head>
-      <TopBar />
-      <Container as="main">
-        <Stack spacing="4">
-          <Flex justify="space-between">
-            <Heading size="lg">Create Location</Heading>
-          </Flex>
-          <Formiz autoForm onValidSubmit={handleOnValidSubmit}>
-            <Stack>
-              <FieldInput
-                label="Name"
-                name="name"
-                required="Please provide a name"
-              />
-              <FieldTextarea
-                label="Address"
-                name="address"
-                required="Please provide an address"
-              />
-              <Button type="submit">Save</Button>
-            </Stack>
-          </Formiz>
-        </Stack>
-      </Container>
-    </>
+
+      <Stack spacing="4" as="main">
+        <Flex justify="space-between">
+          <Heading size="lg">Create Location</Heading>
+        </Flex>
+        <Formiz autoForm onValidSubmit={handleOnValidSubmit}>
+          <Stack>
+            <FieldInput
+              label="Name"
+              name="name"
+              required="Please provide a name"
+            />
+            <FieldTextarea
+              label="Address"
+              name="address"
+              required="Please provide an address"
+            />
+            <Button type="submit">Save</Button>
+          </Stack>
+        </Formiz>
+      </Stack>
+    </LayoutAuthenticated>
   );
 };
 

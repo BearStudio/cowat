@@ -123,6 +123,11 @@ model Session {
     @@index([userId])
 }
 
+enum UserRole {
+    USER
+    ADMIN
+}
+
 model User {
     id               String            @id @default(cuid())
     name             String?
@@ -137,6 +142,7 @@ model User {
     commuteTemplates CommuteTemplate[]
     commutes         Commute[]
     slackUserId      String?
+    role             UserRole?         @default(USER)
 }
 
 model VerificationToken {

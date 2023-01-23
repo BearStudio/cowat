@@ -1,4 +1,4 @@
-import { TopBar } from "@/components/TopBar";
+import { LayoutAuthenticated } from "@/layout/LayoutAuthenticated";
 import { api } from "@/utils/api";
 import { Box, CircularProgress, Heading, Stack, Text } from "@chakra-ui/react";
 import type { NextPage } from "next";
@@ -17,8 +17,7 @@ const CommutesIndex: NextPage = () => {
   );
 
   return (
-    <>
-      <TopBar />
+    <LayoutAuthenticated>
       <Heading>Commute Details</Heading>
       {commute.isLoading && <CircularProgress isIndeterminate />}
       {!commute?.isLoading && (
@@ -28,7 +27,7 @@ const CommutesIndex: NextPage = () => {
           </Box>
         </Stack>
       )}
-    </>
+    </LayoutAuthenticated>
   );
 };
 
