@@ -2,6 +2,7 @@ import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { z } from "zod";
 import { slack } from "@/server/slack";
 import { TRPCError } from "@trpc/server";
+import dayjs from "dayjs";
 
 export const commuteRouter = createTRPCRouter({
   createCommute: protectedProcedure
@@ -102,6 +103,9 @@ export const commuteRouter = createTRPCRouter({
       where: {
         createdById: {
           not: ctx.session.user.id,
+        },
+        date: {
+          gte: dayjs().subtract(1, "day").toDate(),
         },
       },
       include: {
