@@ -92,7 +92,7 @@ export const PageTopBar = ({
         pb={isScrolled ? 2 : 4}
         boxShadow={isScrolled ? "layout" : undefined}
         transition="0.2s"
-        bg="white"
+        bg="gray.50"
         _dark={{ bg: "gray.800" }}
         {...rest}
       >

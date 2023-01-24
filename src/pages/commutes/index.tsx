@@ -76,7 +76,7 @@ const CommutesIndex: NextPage = () => {
               <EmptyState>No community commutes at the moment</EmptyState>
             )}
             {communityCommutes.data?.map((commute) => (
-              <Card key={commute.id}>
+              <Card key={commute.id} boxShadow="card">
                 <CardHeader>
                   <Flex gap="4">
                     <Flex flex="1" gap="4" alignItems="center" flexWrap="wrap">

@@ -5,9 +5,10 @@
   "scripts": {
     "build": "next build",
     "dev": "next dev",
-    "postinstall": "prisma generate",
+    "postinstall": "prisma generate && yarn theme:generate-typing",
     "lint": "next lint",
     "start": "next start",
+    "theme:generate-typing": "chakra-cli tokens ./src/theme/theme.ts",
     "db:push": "prisma db push",
     "db:ui": "prisma studio"
   },
@@ -37,6 +38,9 @@
     "zod": "^3.20.2"
   },
   "devDependencies": {
+    "@babel/core": "7.20.12",
+    "@chakra-ui/cli": "2.3.0",
+    "@chakra-ui/styled-system": "2.5.1",
     "@types/node": "^18.11.18",
     "@types/prettier": "^2.7.2",
     "@types/react": "^18.0.26",
