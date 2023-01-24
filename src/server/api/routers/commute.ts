@@ -22,6 +22,14 @@ export const commuteRouter = createTRPCRouter({
               {
                 location: {
                   create: {
+                    name: "Rouen",
+                    address: "Mairie de Rouen",
+                  },
+                },
+              },
+              {
+                location: {
+                  create: {
                     name: "Saint André",
                     address:
                       "1900 Route de Cailly 76690 Saint André sur Cailly",
@@ -77,6 +85,7 @@ export const commuteRouter = createTRPCRouter({
         createdById: ctx.session.user.id,
       },
       include: {
+        createdBy: true,
         stops: {
           include: {
             location: true,
