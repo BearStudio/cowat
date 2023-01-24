@@ -66,8 +66,7 @@ export const stopRouter = createTRPCRouter({
         !isValidRequestStatusTransition(
           passengerOnStop.requestStatus,
           input.requestStatus
-        ) ||
-        passengerOnStop.stop.commute?.createdBy?.id !== ctx.session.user.id
+        )
       ) {
         throw new TRPCError({
           code: "BAD_REQUEST",
