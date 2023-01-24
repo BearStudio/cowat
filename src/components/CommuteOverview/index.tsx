@@ -15,7 +15,7 @@ import {
   StackDivider,
   Text,
 } from "@chakra-ui/react";
-import type { Prisma, RequestStatus } from "@prisma/client";
+import type { Prisma } from "@prisma/client";
 import dayjs from "dayjs";
 import { useSession } from "next-auth/react";
 
@@ -79,8 +79,8 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
             </Text>
             <Text fontSize="sm">
               {props.createdBy?.name ?? props.createdBy?.email}
-              {props.id}
             </Text>
+            <Text fontSize="xs">{props.id}</Text>
           </Stack>
         </HStack>
       </CardHeader>

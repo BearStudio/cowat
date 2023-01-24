@@ -4,25 +4,15 @@ import { Icon } from "@/components/Icon";
 import { LayoutAuthenticated } from "@/layout/LayoutAuthenticated";
 import { api } from "@/utils/api";
 import {
-  Avatar,
-  Box,
   Button,
-  Card,
-  CardBody,
-  CardFooter,
-  CardHeader,
   CircularProgress,
   Flex,
   Heading,
-  HStack,
   Stack,
-  Text,
 } from "@chakra-ui/react";
-import dayjs from "dayjs";
 import type { NextPage } from "next";
 import NextLink from "next/link";
-import { FaCar } from "react-icons/fa";
-import { FiNavigation, FiPlus } from "react-icons/fi";
+import { FiPlus } from "react-icons/fi";
 
 const CommutesIndex: NextPage = () => {
   const myCommutes = api.commute.myCommute.useQuery();
