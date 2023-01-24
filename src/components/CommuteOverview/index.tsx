@@ -6,6 +6,7 @@ import {
   AccordionItem,
   AccordionPanel,
   Avatar,
+  Badge,
   Button,
   Card,
   CardBody,
@@ -64,6 +65,8 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
     );
   };
 
+  const isInThePast = dayjs(props.date).isBefore(dayjs().subtract(1, "day"));
+
   return (
     <Card boxShadow="card">
       <CardHeader pb={0}>
@@ -74,9 +77,12 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
             src={props.createdBy?.image ?? ""}
           />
           <Stack spacing={0}>
-            <Text fontSize="sm" fontWeight="bold">
-              {dayjs(props.date).format("dddd DD MMMM YYYY")}
-            </Text>
+            <HStack>
+              <Text fontSize="sm" fontWeight="bold">
+                {dayjs(props.date).format("dddd DD MMMM YYYY")}
+              </Text>
+              {isInThePast && <Badge fontSize="x-small">Past commute</Badge>}
+            </HStack>
             <Text fontSize="sm">
               {props.createdBy?.name ?? props.createdBy?.email}
             </Text>
