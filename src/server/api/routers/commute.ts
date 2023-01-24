@@ -43,15 +43,19 @@ export const commuteRouter = createTRPCRouter({
         include: {
           createdBy: {
             select: {
-              slackUserId: true,
+              accounts: true,
               email: true,
             },
           },
         },
       });
 
-      const createdBy = commute.createdBy?.slackUserId
-        ? `<@${commute.createdBy?.slackUserId}>`
+      const slackUserId = commute.createdBy?.accounts.find(
+        (account) => account.provider === "slack"
+      )?.providerAccountId;
+
+      const createdBy = slackUserId
+        ? `<@${slackUserId}>`
         : commute.createdBy?.email;
 
       await slack.send({

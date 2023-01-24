@@ -1,9 +1,7 @@
-import { Icon } from "@/components/Icon";
-import { Button, Center } from "@chakra-ui/react";
+import { Button, Center, Stack } from "@chakra-ui/react";
 import type { InferGetServerSidePropsType } from "next";
 import { getProviders, signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import { FaDiscord } from "react-icons/fa";
 
 export default function SignIn({
   providers,
@@ -17,17 +15,19 @@ export default function SignIn({
 
   return (
     <>
-      {Object.values(providers ?? {}).map((provider) => (
-        <Center h="100vh" key={provider.name}>
-          <Button
-            colorScheme="brand"
-            onClick={() => signIn(provider.id)}
-            leftIcon={<Icon icon={FaDiscord} />}
-          >
-            Sign in with {provider.name}
-          </Button>
-        </Center>
-      ))}
+      <Center h="100vh">
+        <Stack spacing="8">
+          {Object.values(providers ?? {}).map((provider) => (
+            <Button
+              key={provider.name}
+              colorScheme="brand"
+              onClick={() => signIn(provider.id)}
+            >
+              Sign in with {provider.name}
+            </Button>
+          ))}
+        </Stack>
+      </Center>
     </>
   );
 }

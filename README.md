@@ -2,6 +2,19 @@
 
 This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
 
+## Usage with Slack
+
+> :warning: You should be a collaborator of the application to get the Slack id and secret. Ask @yoannfleurydev for access if
+> you haven't one yet.
+
+1. Install ngrok `brew install --cask ngrok`
+2. Run `ngrok http 3000` or any other port on which you start your frontend
+3. Update the [**Redirect URLs**](https://api.slack.com/apps/A04L6MV7BUH/oauth?) with the URL that ngrok gives you
+4. Make sure to update `.env` file with the new values `NEXTAUTH_URL` value given by ngrok
+5. Make sure you use the application on the ngrok URL so that Slack where you
+   came from.
+6. I think that's it, enjoy Slack signin.
+
 ## What's next? How do I make an app with this?
 
 We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
