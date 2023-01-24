@@ -112,19 +112,22 @@ model Commute {
 
 // Necessary for Next auth
 model Account {
-    id                String  @id @default(cuid())
+    id                String   @id @default(cuid())
     userId            String
     type              String
     provider          String
     providerAccountId String
-    refresh_token     String? @db.Text
-    access_token      String? @db.Text
+    refresh_token     String?  @db.Text
+    access_token      String?  @db.Text
     expires_at        Int?
     token_type        String?
     scope             String?
-    id_token          String? @db.Text
+    id_token          String?  @db.Text
     session_state     String?
-    user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+    user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    // Useful for Slack authentication
+    ok                Boolean?
+    state             String?
 
     @@unique([provider, providerAccountId])
     @@index([userId])
@@ -157,7 +160,6 @@ model User {
     locations        Location[]
     commuteTemplates CommuteTemplate[]
     commutes         Commute[]
-    slackUserId      String?
     role             UserRole?           @default(USER)
     passengerOn      PassengersOnStops[]
 }
