@@ -31,12 +31,7 @@ export const AppTopBar = () => {
         >
           <Link href="/">Cowat</Link>
         </Heading>
-        <ButtonGroup
-          variant="link"
-          colorScheme="white"
-          spacing="4"
-          display={{ base: "none", md: "block" }}
-        >
+        <ButtonGroup variant="link" colorScheme="white" spacing="4">
           {navigation.map((link) => (
             <Button
               as={Link}

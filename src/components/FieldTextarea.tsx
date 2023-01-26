@@ -8,7 +8,7 @@ import { useField } from "@formiz/core";
 import type { FormGroupProps } from "@/components/FormGroup";
 import { FormGroup } from "@/components/FormGroup";
 
-export type FieldTextareaProps = FieldProps &
+export type FieldTextareaProps = FieldProps<string> &
   FormGroupProps & {
     textareaProps?: Omit<
       TextareaProps,
@@ -37,7 +37,7 @@ export const FieldTextarea = (props: FieldTextareaProps) => {
   } = useField(props);
 
   const { helper, label, placeholder, textareaProps, autoFocus, ...rest } =
-    otherProps as Omit<FieldTextareaProps, keyof FieldProps>;
+    otherProps;
 
   const { required } = props;
   const [isTouched, setIsTouched] = useState(false);

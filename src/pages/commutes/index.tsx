@@ -3,13 +3,7 @@ import { EmptyState } from "@/components/EmptyState";
 import { Icon } from "@/components/Icon";
 import { LayoutAuthenticated } from "@/layout/LayoutAuthenticated";
 import { api } from "@/utils/api";
-import {
-  Button,
-  CircularProgress,
-  Flex,
-  Heading,
-  Stack,
-} from "@chakra-ui/react";
+import { Button, Flex, Heading, Skeleton, Stack } from "@chakra-ui/react";
 import type { NextPage } from "next";
 import NextLink from "next/link";
 import { FiPlus } from "react-icons/fi";
@@ -21,7 +15,7 @@ const CommutesIndex: NextPage = () => {
   return (
     <LayoutAuthenticated>
       <Stack spacing="16">
-        {myCommutes.isLoading && <CircularProgress />}
+        {myCommutes.isLoading && <Skeleton height="8.5rem" />}
         {!myCommutes.isLoading && (
           <Stack spacing="4">
             <Flex justify="space-between">
@@ -43,7 +37,7 @@ const CommutesIndex: NextPage = () => {
           </Stack>
         )}
 
-        {communityCommutes.isLoading && <CircularProgress />}
+        {communityCommutes.isLoading && <Skeleton height="8.5rem" />}
         {!communityCommutes.isLoading && (
           <Stack spacing="4">
             <Flex justify="space-between">
