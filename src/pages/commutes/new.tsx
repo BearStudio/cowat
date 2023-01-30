@@ -87,7 +87,7 @@ const New: NextPage = () => {
             <Icon icon={FiPlus} /> Add Stop 📍
           </AddPlaceholder>
           <FieldInput
-            label="📆 Date and Time"
+            label="📆 Departure"
             name="date"
             type="datetime-local"
             formatValue={(value) => new Date(value ?? "")}

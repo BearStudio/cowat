@@ -44,7 +44,11 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
   });
 
   const passengerStop = props.stops.find((stop) =>
-    stop.passengers.some((passenger) => passenger.userId === session?.user?.id)
+    stop.passengers.some(
+      (passenger) =>
+        passenger.userId === session?.user?.id &&
+        passenger.requestStatus !== "CANCELED"
+    )
   );
 
   const isPassenger = !!session?.user?.id && !!passengerStop;
@@ -60,7 +64,9 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
     return (
       isPassenger &&
       stop.passengers.some(
-        (passenger) => passenger.userId === session?.user?.id
+        (passenger) =>
+          passenger.userId === session?.user?.id &&
+          passenger.requestStatus !== "CANCELED"
       )
     );
   };

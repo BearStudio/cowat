@@ -12,6 +12,39 @@ export const stopRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
+      const passengerOnStop = await ctx.prisma.passengersOnStops.findUnique({
+        where: {
+          userId_stopId: { stopId: input.stopId, userId: ctx.session.user.id },
+        },
+        include: {
+          stop: {
+            include: {
+              commute: {
+                select: {
+                  createdBy: true,
+                },
+              },
+            },
+          },
+        },
+      });
+
+      if (passengerOnStop) {
+        const stop = await ctx.prisma.passengersOnStops.update({
+          where: {
+            userId_stopId: {
+              stopId: input.stopId,
+              userId: ctx.session.user.id,
+            },
+          },
+          data: {
+            requestStatus: "REQUESTED",
+          },
+        });
+
+        return stop;
+      }
+
       const stop = await ctx.prisma.passengersOnStops.create({
         data: {
           user: {
