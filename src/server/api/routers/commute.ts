@@ -3,6 +3,7 @@ import { z } from "zod";
 import { slack } from "@/server/slack";
 import { TRPCError } from "@trpc/server";
 import dayjs from "dayjs";
+import { env } from "@/env/server.mjs";
 
 export const commuteRouter = createTRPCRouter({
   createCommute: protectedProcedure
@@ -10,6 +11,12 @@ export const commuteRouter = createTRPCRouter({
       z.object({
         seats: z.number().min(1),
         date: z.date(),
+        stops: z.array(
+          z.object({
+            location: z.string(),
+            time: z.string()?.nullable(),
+          })
+        ),
       })
     )
     .mutation(async ({ input, ctx }) => {
@@ -19,25 +26,10 @@ export const commuteRouter = createTRPCRouter({
           date: input.date,
           createdById: ctx.session.user.id,
           stops: {
-            create: [
-              {
-                location: {
-                  create: {
-                    name: "Rouen",
-                    address: "Mairie de Rouen",
-                  },
-                },
-              },
-              {
-                location: {
-                  create: {
-                    name: "Saint André",
-                    address:
-                      "1900 Route de Cailly 76690 Saint André sur Cailly",
-                  },
-                },
-              },
-            ],
+            create: input.stops.map((stop) => ({
+              time: stop.time,
+              locationId: stop.location,
+            })),
           },
         },
         include: {
@@ -45,6 +37,12 @@ export const commuteRouter = createTRPCRouter({
             select: {
               accounts: true,
               email: true,
+            },
+          },
+          stops: {
+            select: {
+              location: true,
+              time: true,
             },
           },
         },
@@ -58,13 +56,34 @@ export const commuteRouter = createTRPCRouter({
         ? `<@${slackUserId}>`
         : commute.createdBy?.email;
 
+      const locationsSlack = commute.stops.map((stop) => ({
+        type: "section",
+        text: {
+          type: "mrkdwn",
+          text: `📍 *${stop.location?.name}${
+            stop.time ? ` - ${stop.time}` : ""
+          }*\n${stop.location?.address}`,
+        },
+        accessory: {
+          type: "button",
+          text: {
+            type: "plain_text",
+            emoji: true,
+            text: "Choose",
+          },
+          value: "chekc",
+          url: `${env.NEXTAUTH_URL}/commutes`,
+        },
+      }));
+
       await slack.send({
         blocks: [
           {
             type: "section",
             text: {
               type: "mrkdwn",
-              text: `A new commute has been created by ${createdBy} @here`,
+              // text: `A new commute has been created by ${createdBy} @here`,
+              text: `A new commute has been created by ${createdBy}`,
             },
             accessory: {
               type: "button",
@@ -78,6 +97,10 @@ export const commuteRouter = createTRPCRouter({
               action_id: "button-action",
             },
           },
+          {
+            type: "divider",
+          },
+          ...locationsSlack,
         ],
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any);

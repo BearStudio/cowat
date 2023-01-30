@@ -7,7 +7,6 @@ import { api } from "@/utils/api";
 import { Button, Flex, Heading, Stack } from "@chakra-ui/react";
 import { Formiz } from "@formiz/core";
 import type { NextPage } from "next";
-import Head from "next/head";
 import { useRouter } from "next/router";
 
 type CreateLocationInput = RouterInputs["location"]["create"];
@@ -27,13 +26,16 @@ const Locations: NextPage = () => {
 
   return (
     <LayoutAuthenticated>
-      <Head>
-        <title>Cowat - Locations</title>
-      </Head>
-
-      <Stack spacing="4" as="main">
+      <Stack
+        spacing="4"
+        as="main"
+        boxShadow="card"
+        p="8"
+        bg="white"
+        rounded="md"
+      >
         <Flex justify="space-between">
-          <Heading size="lg">Create Location</Heading>
+          <Heading size="lg">New Location</Heading>
         </Flex>
         <Formiz autoForm onValidSubmit={handleOnValidSubmit}>
           <Stack>
