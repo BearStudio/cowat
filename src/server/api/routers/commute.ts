@@ -3,7 +3,6 @@ import { z } from "zod";
 import { slack } from "@/server/slack";
 import { TRPCError } from "@trpc/server";
 import dayjs from "dayjs";
-import { env } from "@/env/server.mjs";
 
 export const commuteRouter = createTRPCRouter({
   createCommute: protectedProcedure
@@ -64,16 +63,16 @@ export const commuteRouter = createTRPCRouter({
             stop.time ? ` - ${stop.time}` : ""
           }*\n${stop.location?.address}`,
         },
-        accessory: {
-          type: "button",
-          text: {
-            type: "plain_text",
-            emoji: true,
-            text: "Choose",
-          },
-          value: "chekc",
-          url: `${env.NEXTAUTH_URL}/commutes`,
-        },
+        // accessory: {
+        //   type: "button",
+        //   text: {
+        //     type: "plain_text",
+        //     emoji: true,
+        //     text: "Choose",
+        //   },
+        //   value: "chekc",
+        //   url: `${env.NEXTAUTH_URL}/commutes`,
+        // },
       }));
 
       await slack.send({
@@ -83,19 +82,19 @@ export const commuteRouter = createTRPCRouter({
             text: {
               type: "mrkdwn",
               // text: `A new commute has been created by ${createdBy} @here`,
-              text: `A new commute has been created by ${createdBy}`,
+              text: `A new commute has been created by ${createdBy} (💺 ${commute.seats} seats available)`,
             },
-            accessory: {
-              type: "button",
-              text: {
-                type: "plain_text",
-                text: "Check",
-                emoji: true,
-              },
-              value: "click_me_123",
-              url: "http://localhost:3000/commutes",
-              action_id: "button-action",
-            },
+            // accessory: {
+            //   type: "button",
+            //   text: {
+            //     type: "plain_text",
+            //     text: "Check",
+            //     emoji: true,
+            //   },
+            //   value: "click_me_123",
+            //   url: "http://localhost:3000/commutes",
+            //   action_id: "button-action",
+            // },
           },
           {
             type: "divider",
@@ -186,4 +185,62 @@ export const commuteRouter = createTRPCRouter({
 
       return commute;
     }),
+  todayCommutes: protectedProcedure.query(async ({ ctx }) => {
+    const commutes = await ctx.prisma.commute.findMany({
+      where: {
+        AND: [
+          {
+            date: {
+              gt: dayjs().startOf("day").toDate(),
+            },
+          },
+          {
+            date: {
+              lt: dayjs().endOf("day").toDate(),
+            },
+          },
+        ],
+      },
+      include: {
+        stops: {
+          include: {
+            location: true,
+            passengers: true,
+          },
+        },
+        createdBy: true,
+      },
+    });
+
+    return commutes;
+  }),
+  myBookings: protectedProcedure.query(async ({ ctx }) => {
+    const commutes = await ctx.prisma.commute.findMany({
+      where: {
+        stops: {
+          some: {
+            passengers: {
+              some: {
+                userId: ctx.session.user.id,
+                requestStatus: {
+                  notIn: ["CANCELED", "REFUSED"],
+                },
+              },
+            },
+          },
+        },
+      },
+      include: {
+        stops: {
+          include: {
+            location: true,
+            passengers: true,
+          },
+        },
+        createdBy: true,
+      },
+    });
+
+    return commutes;
+  }),
 });
