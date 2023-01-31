@@ -57,8 +57,11 @@ const newCommute = async (
         type: "section",
         text: {
           type: "mrkdwn",
-          // text: `A new commute has been created by ${createdBy} @here`,
-          text: `A new commute has been created by ${createdBy} (💺 ${commute.seats} seats available)`,
+          text: `A new commute for **${dayjs(commute.date).format(
+            "DD/MM/YYYY"
+          )}** has been created by ${createdBy} (💺 ${
+            commute.seats
+          } seats available) @here`,
         },
         // accessory: {
         //   type: "button",
