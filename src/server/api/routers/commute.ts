@@ -1,6 +1,6 @@
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { z } from "zod";
-import { notify } from "@/server/slack";
+import { slack } from "@/server/slack";
 import { TRPCError } from "@trpc/server";
 import dayjs from "dayjs";
 
@@ -47,62 +47,7 @@ export const commuteRouter = createTRPCRouter({
         },
       });
 
-      const slackUserId = commute.createdBy?.accounts.find(
-        (account) => account.provider === "slack"
-      )?.providerAccountId;
-
-      const createdBy = slackUserId
-        ? `<@${slackUserId}>`
-        : commute.createdBy?.email;
-
-      const locationsSlack = commute.stops.map((stop) => ({
-        type: "section",
-        text: {
-          type: "mrkdwn",
-          text: `📍 *${stop.location?.name}${
-            stop.time ? ` - ${stop.time}` : ""
-          }*\n${stop.location?.address}`,
-        },
-        // accessory: {
-        //   type: "button",
-        //   text: {
-        //     type: "plain_text",
-        //     emoji: true,
-        //     text: "Choose",
-        //   },
-        //   value: "chekc",
-        //   url: `${env.NEXTAUTH_URL}/commutes`,
-        // },
-      }));
-
-      await notify.send({
-        blocks: [
-          {
-            type: "section",
-            text: {
-              type: "mrkdwn",
-              // text: `A new commute has been created by ${createdBy} @here`,
-              text: `A new commute has been created by ${createdBy} (💺 ${commute.seats} seats available)`,
-            },
-            // accessory: {
-            //   type: "button",
-            //   text: {
-            //     type: "plain_text",
-            //     text: "Check",
-            //     emoji: true,
-            //   },
-            //   value: "click_me_123",
-            //   url: "http://localhost:3000/commutes",
-            //   action_id: "button-action",
-            // },
-          },
-          {
-            type: "divider",
-          },
-          ...locationsSlack,
-        ],
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } as any);
+      await slack.newCommute(commute);
 
       return commute;
     }),

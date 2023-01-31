@@ -5,6 +5,82 @@ import dayjs from "dayjs";
 
 export const notify = SlackNotify(env.SLACK_WEBHOOK_URL);
 
+const newCommute = async (
+  commute: Prisma.CommuteGetPayload<{
+    include: {
+      createdBy: {
+        select: {
+          accounts: true;
+          email: true;
+        };
+      };
+      stops: {
+        select: {
+          location: true;
+          time: true;
+        };
+      };
+    };
+  }>
+) => {
+  const slackUserId = commute.createdBy?.accounts.find(
+    (account) => account.provider === "slack"
+  )?.providerAccountId;
+
+  const createdBy = slackUserId
+    ? `<@${slackUserId}>`
+    : commute.createdBy?.email;
+
+  const locationsSlack = commute.stops.map((stop) => ({
+    type: "section",
+    text: {
+      type: "mrkdwn",
+      text: `📍 *${stop.location?.name}${
+        stop.time ? ` - ${stop.time}` : ""
+      }*\n${stop.location?.address}`,
+    },
+    // accessory: {
+    //   type: "button",
+    //   text: {
+    //     type: "plain_text",
+    //     emoji: true,
+    //     text: "Choose",
+    //   },
+    //   value: "chekc",
+    //   url: `${env.NEXTAUTH_URL}/commutes`,
+    // },
+  }));
+
+  return notify.send({
+    blocks: [
+      {
+        type: "section",
+        text: {
+          type: "mrkdwn",
+          // text: `A new commute has been created by ${createdBy} @here`,
+          text: `A new commute has been created by ${createdBy} (💺 ${commute.seats} seats available)`,
+        },
+        // accessory: {
+        //   type: "button",
+        //   text: {
+        //     type: "plain_text",
+        //     text: "Check",
+        //     emoji: true,
+        //   },
+        //   value: "click_me_123",
+        //   url: "http://localhost:3000/commutes",
+        //   action_id: "button-action",
+        // },
+      },
+      {
+        type: "divider",
+      },
+      ...locationsSlack,
+    ],
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } as any);
+};
+
 const newBookingFrom = (
   passengerOnStop: Prisma.PassengersOnStopsGetPayload<{
     include: {
@@ -92,4 +168,5 @@ const newBookingFrom = (
 
 export const slack = {
   newBookingFrom,
+  newCommute,
 };
