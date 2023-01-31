@@ -1,6 +1,6 @@
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { z } from "zod";
-import { slack } from "@/server/slack";
+import { notify } from "@/server/slack";
 import { TRPCError } from "@trpc/server";
 import dayjs from "dayjs";
 
@@ -75,7 +75,7 @@ export const commuteRouter = createTRPCRouter({
         // },
       }));
 
-      await slack.send({
+      await notify.send({
         blocks: [
           {
             type: "section",

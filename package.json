@@ -18,7 +18,7 @@
     "@chakra-ui/react": "2.4.9",
     "@emotion/react": "11.10.5",
     "@emotion/styled": "11.10.5",
-    "@formiz/core": "2.0.0-alpha.10",
+    "@formiz/core": "2.0.0-alpha.14",
     "@formiz/validations": "alpha",
     "@next-auth/prisma-adapter": "^1.0.5",
     "@prisma/client": "^4.9.0",

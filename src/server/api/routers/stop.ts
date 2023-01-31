@@ -1,3 +1,4 @@
+import { slack } from "@/server/slack";
 import { isValidRequestStatusTransition } from "@/utils/requestStatus";
 import { RequestStatus } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
@@ -12,7 +13,7 @@ export const stopRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const passengerOnStop = await ctx.prisma.passengersOnStops.findUnique({
+      const doesExist = await ctx.prisma.passengersOnStops.findUnique({
         where: {
           userId_stopId: { stopId: input.stopId, userId: ctx.session.user.id },
         },
@@ -29,8 +30,9 @@ export const stopRouter = createTRPCRouter({
         },
       });
 
-      if (passengerOnStop) {
-        const stop = await ctx.prisma.passengersOnStops.update({
+      // If passenger on stop exists, then update the data
+      if (doesExist) {
+        const passengerOnStop = await ctx.prisma.passengersOnStops.update({
           where: {
             userId_stopId: {
               stopId: input.stopId,
@@ -40,12 +42,34 @@ export const stopRouter = createTRPCRouter({
           data: {
             requestStatus: "REQUESTED",
           },
+          include: {
+            stop: {
+              include: {
+                commute: {
+                  include: {
+                    createdBy: {
+                      include: {
+                        accounts: true,
+                      },
+                    },
+                  },
+                },
+              },
+            },
+            user: {
+              include: {
+                accounts: true,
+              },
+            },
+          },
         });
 
-        return stop;
+        slack.newBookingFrom(passengerOnStop);
+
+        return passengerOnStop;
       }
 
-      const stop = await ctx.prisma.passengersOnStops.create({
+      const passengerOnStop = await ctx.prisma.passengersOnStops.create({
         data: {
           user: {
             connect: {
@@ -58,7 +82,29 @@ export const stopRouter = createTRPCRouter({
             },
           },
         },
+        include: {
+          stop: {
+            include: {
+              commute: {
+                include: {
+                  createdBy: {
+                    include: {
+                      accounts: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
+          user: {
+            include: {
+              accounts: true,
+            },
+          },
+        },
       });
+
+      slack.newBookingFrom(passengerOnStop);
 
       return stop;
     }),

@@ -54,6 +54,13 @@ const New: NextPage = () => {
             ]}
             formatValue={(value) => parseInt(value ?? "", 10)}
           />
+          <FieldInput
+            label="📆 Departure"
+            name="date"
+            type="datetime-local"
+            formatValue={(value) => new Date(value ?? "")}
+            required
+          />
           {stops.keys.map((key, index) => (
             <Stack key={key}>
               <HStack align="end">
@@ -86,13 +93,6 @@ const New: NextPage = () => {
           <AddPlaceholder onClick={() => stops.append()}>
             <Icon icon={FiPlus} /> Add Stop 📍
           </AddPlaceholder>
-          <FieldInput
-            label="📆 Departure"
-            name="date"
-            type="datetime-local"
-            formatValue={(value) => new Date(value ?? "")}
-            required
-          />
           <Button type="submit" isDisabled={createCommute.isLoading}>
             Save
           </Button>

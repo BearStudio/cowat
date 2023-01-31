@@ -7,7 +7,7 @@ specifiers:
   '@chakra-ui/styled-system': 2.5.1
   '@emotion/react': 11.10.5
   '@emotion/styled': 11.10.5
-  '@formiz/core': 2.0.0-alpha.10
+  '@formiz/core': 2.0.0-alpha.14
   '@formiz/validations': alpha
   '@next-auth/prisma-adapter': ^1.0.5
   '@prisma/client': ^4.9.0
@@ -44,7 +44,7 @@ dependencies:
   '@chakra-ui/react': 2.4.9_u22oa52zxqeklnr6e4grlvfqpa
   '@emotion/react': 11.10.5_yxdp3dl3eazy3vwpbmv4fq727a
   '@emotion/styled': 11.10.5_4erqsq3n444jecyuvaxwc5b3vi
-  '@formiz/core': 2.0.0-alpha.10_react@18.2.0
+  '@formiz/core': 2.0.0-alpha.14_react@18.2.0
   '@formiz/validations': 2.0.0-alpha.2
   '@next-auth/prisma-adapter': 1.0.5_ikpamvtwgtawdygfd76io3powe
   '@prisma/client': 4.9.0_prisma@4.9.0
@@ -1545,8 +1545,8 @@ packages:
       - supports-color
     dev: true
 
-  /@formiz/core/2.0.0-alpha.10_react@18.2.0:
-    resolution: {integrity: sha512-QY8Ak00FwT+rOX9t9fQ4v4WR2VlWeVpNwEaOBLiPBd2bYb+Ip+4zRxjJPm4ruSCjfNShF2JX1UG3ukLXd3d5QQ==}
+  /@formiz/core/2.0.0-alpha.14_react@18.2.0:
+    resolution: {integrity: sha512-JSEdS9c9mLIPl5uThx5aH2EdCoiX2riS9UP4zwoQf4b8z8gF5JplUXA+yPLmpGLMucqV3Q2a27fldTp0KFUrlA==}
     peerDependencies:
       react: '>=18'
     dependencies:
