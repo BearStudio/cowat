@@ -17,15 +17,9 @@ export default function SignIn({
     <>
       <Center h="100vh">
         <Stack spacing="8">
-          {Object.values(providers ?? {}).map((provider) => (
-            <Button
-              key={provider.name}
-              colorScheme="brand"
-              onClick={() => signIn(provider.id)}
-            >
-              Sign in with {provider.name}
-            </Button>
-          ))}
+          <Button colorScheme="brand" onClick={() => signIn("slack")}>
+            Sign in with Slack
+          </Button>
         </Stack>
       </Center>
     </>
