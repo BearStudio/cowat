@@ -85,7 +85,7 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
           <Stack spacing={0}>
             <HStack>
               <Text fontSize="sm" fontWeight="bold">
-                {dayjs(props.date).format("dddd DD MMMM YYYY")}
+                {dayjs(props.date).format("dddd DD MMMM YYYY HH:mm")}
               </Text>
               {isInThePast && <Badge fontSize="x-small">Past commute</Badge>}
             </HStack>
@@ -111,7 +111,8 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
                   <HStack key={stop.id}>
                     <Stack spacing={0} flex={1}>
                       <Text fontSize="sm" fontWeight="bold">
-                        {stop?.location?.name}
+                        {!!stop.time && `${stop.time} · `}
+                        {stop?.location?.name}{" "}
                       </Text>
                       <Text fontSize="sm">{stop?.location?.address}</Text>
                     </Stack>
