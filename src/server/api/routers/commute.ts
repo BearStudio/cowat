@@ -116,7 +116,11 @@ export const commuteRouter = createTRPCRouter({
         stops: {
           include: {
             location: true,
-            passengers: true,
+            passengers: {
+              include: {
+                user: true,
+              },
+            },
           },
         },
       },
@@ -138,7 +142,11 @@ export const commuteRouter = createTRPCRouter({
         stops: {
           include: {
             location: true,
-            passengers: true,
+            passengers: {
+              include: {
+                user: true,
+              },
+            },
           },
         },
         createdBy: true,
@@ -205,7 +213,11 @@ export const commuteRouter = createTRPCRouter({
         stops: {
           include: {
             location: true,
-            passengers: true,
+            passengers: {
+              include: {
+                user: true,
+              },
+            },
           },
         },
         createdBy: true,
@@ -234,7 +246,11 @@ export const commuteRouter = createTRPCRouter({
         stops: {
           include: {
             location: true,
-            passengers: true,
+            passengers: {
+              include: {
+                user: true,
+              },
+            },
           },
         },
         createdBy: true,

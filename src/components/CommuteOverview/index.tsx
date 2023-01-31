@@ -14,7 +14,9 @@ import {
   HStack,
   Stack,
   StackDivider,
+  Tag,
   Text,
+  Wrap,
 } from "@chakra-ui/react";
 import type { Prisma } from "@prisma/client";
 import dayjs from "dayjs";
@@ -23,7 +25,9 @@ import { useSession } from "next-auth/react";
 export type CommuteOverviewProps = Prisma.CommuteGetPayload<{
   include: {
     createdBy: true;
-    stops: { include: { location: true; passengers: true } };
+    stops: {
+      include: { location: true; passengers: { include: { user: true } } };
+    };
   };
 }>;
 
@@ -107,51 +111,75 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
             <AccordionPanel p={0}>
               <Stack divider={<StackDivider />} spacing="4">
                 <StackDivider />
-                {props.stops.map((stop) => (
-                  <HStack key={stop.id}>
-                    <Stack spacing={0} flex={1}>
-                      <Text fontSize="sm" fontWeight="bold">
-                        {!!stop.time && `${stop.time} · `}
-                        {stop?.location?.name}{" "}
-                      </Text>
-                      <Text fontSize="sm">{stop?.location?.address}</Text>
-                    </Stack>
-                    {!isDriver &&
-                      (!isPassenger || passengerStatus === "CANCELED") && (
-                        <HStack>
-                          <Button
-                            colorScheme="brand"
-                            onClick={() =>
-                              bookCommute.mutate({ stopId: stop.id })
-                            }
-                            isLoading={bookCommute.isLoading}
-                          >
-                            Book
-                          </Button>
-                        </HStack>
-                      )}
-                    {isPassenger &&
-                      getIsPassengerOnStop(stop) &&
-                      (passengerStatus === "REQUESTED" ||
-                        passengerStatus === "ACCEPTED") && (
-                        <HStack>
-                          <Button
-                            colorScheme="red"
-                            onClick={() =>
-                              updateRequestStatus.mutate({
-                                stopId: stop.id,
-                                passengerId: session.user?.id as string,
-                                requestStatus: "CANCELED",
-                              })
-                            }
-                            isLoading={updateRequestStatus.isLoading}
-                          >
-                            Cancel
-                          </Button>
-                        </HStack>
-                      )}
-                  </HStack>
-                ))}
+                {props.stops.map((stop) => {
+                  const passengers = stop.passengers.filter(
+                    (passenger) => passenger.requestStatus !== "CANCELED"
+                  );
+                  return (
+                    <HStack key={stop.id}>
+                      <Stack spacing={0} flex={1}>
+                        <Text fontSize="sm" fontWeight="bold">
+                          {!!stop.time && `${stop.time} · `}
+                          {stop?.location?.name}{" "}
+                        </Text>
+                        <Text fontSize="sm">{stop?.location?.address}</Text>
+                        {!!passengers.length && (
+                          <Wrap pt="1">
+                            {passengers.map((passenger) => (
+                              <Tag
+                                size="sm"
+                                key={passenger.userId}
+                                colorScheme={
+                                  passenger.requestStatus === "ACCEPTED"
+                                    ? "success"
+                                    : passenger.requestStatus === "REFUSED"
+                                    ? "error"
+                                    : undefined
+                                }
+                              >
+                                {passenger.user.name ?? passenger.user.email}
+                              </Tag>
+                            ))}
+                          </Wrap>
+                        )}
+                      </Stack>
+                      {!isDriver &&
+                        (!isPassenger || passengerStatus === "CANCELED") && (
+                          <HStack>
+                            <Button
+                              colorScheme="brand"
+                              onClick={() =>
+                                bookCommute.mutate({ stopId: stop.id })
+                              }
+                              isLoading={bookCommute.isLoading}
+                            >
+                              Book
+                            </Button>
+                          </HStack>
+                        )}
+                      {isPassenger &&
+                        getIsPassengerOnStop(stop) &&
+                        (passengerStatus === "REQUESTED" ||
+                          passengerStatus === "ACCEPTED") && (
+                          <HStack>
+                            <Button
+                              colorScheme="red"
+                              onClick={() =>
+                                updateRequestStatus.mutate({
+                                  stopId: stop.id,
+                                  passengerId: session.user?.id as string,
+                                  requestStatus: "CANCELED",
+                                })
+                              }
+                              isLoading={updateRequestStatus.isLoading}
+                            >
+                              Cancel
+                            </Button>
+                          </HStack>
+                        )}
+                    </HStack>
+                  );
+                })}
               </Stack>
             </AccordionPanel>
           </AccordionItem>
