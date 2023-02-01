@@ -4,22 +4,25 @@ import { Center, Spinner } from "@chakra-ui/react";
 import type { UserRole } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import { AppTopBar } from "@/layout/AppTopBar";
-import { Page, PageContent, PageTopBar } from "@/components/Page";
+import {
+  Page,
+  PageBottomBar,
+  PageContent,
+  PageTopBar,
+} from "@/components/Page";
 import type { PageProps } from "@/components/Page";
 import { ErrorPage } from "@/components/ErrorPage";
+import { BottomNavBar } from "@/components/BottomNavBar";
 
 export const LayoutAuthenticated = ({
   access = "USER",
   children,
   topBar,
-  bottomBar,
   containerSize,
 }: {
   children?: ReactNode;
   access?: "PUBLIC" | UserRole;
   topBar?: ReactNode;
-  bottomBar?: ReactNode;
   containerSize?: PageProps["containerSize"];
 }) => {
   const router = useRouter();
@@ -40,11 +43,7 @@ export const LayoutAuthenticated = ({
 
   return (
     <Page containerSize={containerSize}>
-      {topBar ?? (
-        <PageTopBar>
-          <AppTopBar />
-        </PageTopBar>
-      )}
+      {topBar && <PageTopBar>{topBar}</PageTopBar>}
       <PageContent>
         {access === "ADMIN" && session?.user?.role !== "ADMIN" ? (
           <ErrorPage errorCode={404} />
@@ -52,7 +51,9 @@ export const LayoutAuthenticated = ({
           children
         )}
       </PageContent>
-      {bottomBar}
+      <PageBottomBar>
+        <BottomNavBar />
+      </PageBottomBar>
     </Page>
   );
 };

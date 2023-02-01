@@ -25,7 +25,7 @@ const Locations: NextPage = () => {
   };
 
   return (
-    <LayoutAuthenticated>
+    <LayoutAuthenticated topBar={<Heading>New Location</Heading>}>
       <Stack
         spacing="4"
         as="main"

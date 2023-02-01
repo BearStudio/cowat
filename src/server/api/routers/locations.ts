@@ -21,29 +21,10 @@ export const locationRouter = createTRPCRouter({
 
       return location;
     }),
-  getAll: protectedProcedure.query(async ({ ctx }) => {
-    const locations = await ctx.prisma.location.findMany();
-
-    return locations;
-  }),
   mine: protectedProcedure.query(async ({ ctx }) => {
     const locations = await ctx.prisma.location.findMany({
       where: {
         createdById: ctx.session.user.id,
-      },
-    });
-
-    return locations;
-  }),
-  others: protectedProcedure.query(async ({ ctx }) => {
-    const locations = await ctx.prisma.location.findMany({
-      where: {
-        createdById: {
-          not: ctx.session.user.id,
-        },
-      },
-      include: {
-        createdBy: true,
       },
     });
 

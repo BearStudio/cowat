@@ -13,21 +13,18 @@ const CommutesIndex: NextPage = () => {
   const communityCommutes = api.commute.communityCommutes.useQuery();
 
   return (
-    <LayoutAuthenticated>
+    <LayoutAuthenticated topBar={<Heading>Commutes</Heading>}>
       <Stack spacing="16">
         {myCommutes.isLoading && <Skeleton height="8.5rem" />}
         {!myCommutes.isLoading && (
           <Stack spacing="4">
-            <Flex justify="space-between">
-              <Heading size="lg">My Commutes</Heading>
-              <Button
-                as={NextLink}
-                href="/commutes/new"
-                leftIcon={<Icon icon={FiPlus} />}
-              >
-                Create
-              </Button>
-            </Flex>
+            <Button
+              as={NextLink}
+              href="/commutes/new"
+              leftIcon={<Icon icon={FiPlus} />}
+            >
+              Create
+            </Button>
             {myCommutes.data?.length === 0 && (
               <EmptyState>You have no commute at the moment</EmptyState>
             )}

@@ -62,108 +62,101 @@ const CommutesIndex: NextPage = () => {
   };
 
   return (
-    <LayoutAuthenticated>
+    <LayoutAuthenticated topBar={<Heading>Commute details</Heading>}>
       {commute.isLoading && <CircularProgress isIndeterminate />}
       {!commute?.isLoading && (
-        <>
-          <Heading>Commute details</Heading>
+        <Stack spacing="4">
+          <Box>
+            <Text>Nombre de places disponible: {commute.data?.seats}</Text>
+          </Box>
+          {commute.data?.stops?.map((stop) => (
+            <Stack key={stop.id}>
+              <Flex gap="8" justifyContent="space-between">
+                <Box flex="1">
+                  <Text as="address">
+                    {stop.location?.name} - {stop.location?.address}
+                  </Text>
+                </Box>
+                {commute.data.createdById !== data?.user?.id &&
+                  !doesPassengersBookedTheStop(stop) && (
+                    <Box>
+                      <Button
+                        isLoading={bookCommute.isLoading}
+                        onClick={() => bookCommute.mutate({ stopId: stop.id })}
+                      >
+                        {doesPassengersBookedTheStop(stop)
+                          ? stop.passengers.find(
+                              (passenger) => passenger.userId === data?.user?.id
+                            )?.requestStatus
+                          : "Book"}
+                      </Button>
+                    </Box>
+                  )}
+              </Flex>
 
-          <Stack spacing="4">
-            <Box>
-              <Text>Nombre de places disponible: {commute.data?.seats}</Text>
-            </Box>
-            {commute.data?.stops?.map((stop) => (
-              <Stack key={stop.id}>
-                <Flex gap="8" justifyContent="space-between">
-                  <Box flex="1">
-                    <Text as="address">
-                      {stop.location?.name} - {stop.location?.address}
-                    </Text>
-                  </Box>
-                  {commute.data.createdById !== data?.user?.id &&
-                    !doesPassengersBookedTheStop(stop) && (
-                      <Box>
+              <Stack>
+                <Text>Passengers ({stop.passengers.length}):</Text>
+
+                {stop.passengers.map((passenger) => (
+                  <Flex
+                    key={passenger.userId}
+                    justify="space-between"
+                    align="center"
+                  >
+                    <Text>{passenger.user.email}</Text>
+                    <Badge
+                      colorScheme={
+                        RequestStatusColorSchemes[passenger.requestStatus]
+                      }
+                    >
+                      {passenger.requestStatus}
+                    </Badge>
+                    {data?.user?.id === commute.data.createdById && (
+                      <HStack>
                         <Button
-                          isLoading={bookCommute.isLoading}
+                          size="sm"
+                          colorScheme="success"
+                          isLoading={updateRequestStatus.isLoading}
+                          isDisabled={passenger.requestStatus === "ACCEPTED"}
                           onClick={() =>
-                            bookCommute.mutate({ stopId: stop.id })
+                            updateRequestStatus.mutate({
+                              stopId: passenger.stopId,
+                              passengerId: passenger.userId,
+                              requestStatus: "ACCEPTED",
+                            })
                           }
                         >
-                          {doesPassengersBookedTheStop(stop)
-                            ? stop.passengers.find(
-                                (passenger) =>
-                                  passenger.userId === data?.user?.id
-                              )?.requestStatus
-                            : "Book"}
+                          ACCEPT
                         </Button>
-                      </Box>
+                        <Button
+                          size="sm"
+                          colorScheme="error"
+                          isLoading={updateRequestStatus.isLoading}
+                          isDisabled={passenger.requestStatus === "REFUSED"}
+                          onClick={() =>
+                            updateRequestStatus.mutate({
+                              stopId: passenger.stopId,
+                              passengerId: passenger.userId,
+                              requestStatus: "REFUSED",
+                            })
+                          }
+                        >
+                          REFUSE
+                        </Button>
+                      </HStack>
                     )}
-                </Flex>
-
-                <Stack>
-                  <Text>Passengers ({stop.passengers.length}):</Text>
-
-                  {stop.passengers.map((passenger) => (
-                    <Flex
-                      key={passenger.userId}
-                      justify="space-between"
-                      align="center"
-                    >
-                      <Text>{passenger.user.email}</Text>
-                      <Badge
-                        colorScheme={
-                          RequestStatusColorSchemes[passenger.requestStatus]
-                        }
-                      >
-                        {passenger.requestStatus}
-                      </Badge>
-                      {data?.user?.id === commute.data.createdById && (
-                        <HStack>
-                          <Button
-                            size="sm"
-                            colorScheme="success"
-                            isLoading={updateRequestStatus.isLoading}
-                            isDisabled={passenger.requestStatus === "ACCEPTED"}
-                            onClick={() =>
-                              updateRequestStatus.mutate({
-                                stopId: passenger.stopId,
-                                passengerId: passenger.userId,
-                                requestStatus: "ACCEPTED",
-                              })
-                            }
-                          >
-                            ACCEPT
-                          </Button>
-                          <Button
-                            size="sm"
-                            colorScheme="error"
-                            isLoading={updateRequestStatus.isLoading}
-                            isDisabled={passenger.requestStatus === "REFUSED"}
-                            onClick={() =>
-                              updateRequestStatus.mutate({
-                                stopId: passenger.stopId,
-                                passengerId: passenger.userId,
-                                requestStatus: "REFUSED",
-                              })
-                            }
-                          >
-                            REFUSE
-                          </Button>
-                        </HStack>
-                      )}
-                    </Flex>
-                  ))}
-                </Stack>
+                  </Flex>
+                ))}
               </Stack>
-            ))}
-            <Box>
-              <Text fontSize="sm" color="gray.600">
-                By {commute.data?.createdBy?.name} for{" "}
-                {dayjs(commute.data?.date).format("DD MM YYYY")}
-              </Text>
-            </Box>
-          </Stack>
-        </>
+            </Stack>
+          ))}
+          <Box>
+            <Text fontSize="sm" color="gray.600">
+              By {commute.data?.createdBy?.name} for{" "}
+              {dayjs(commute.data?.date).format("DD MM YYYY")}
+            </Text>
+          </Box>
+        </Stack>
       )}
     </LayoutAuthenticated>
   );

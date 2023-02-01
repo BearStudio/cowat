@@ -37,10 +37,9 @@ const New: NextPage = () => {
   };
 
   return (
-    <LayoutAuthenticated>
+    <LayoutAuthenticated topBar={<Heading>New commute</Heading>}>
       <Formiz onValidSubmit={handleOnValidSubmit} autoForm connect={form}>
         <Stack bg="white" rounded="lg" boxShadow="card" p="8" spacing="4">
-          <Heading>New Commute</Heading>
           <FieldInput
             label="💺 Seats"
             name="seats"

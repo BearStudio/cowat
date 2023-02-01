@@ -92,8 +92,8 @@ export const PageTopBar = ({
         pb={isScrolled ? 2 : 4}
         boxShadow={isScrolled ? "layout" : undefined}
         transition="0.2s"
-        bg="gray.50"
-        _dark={{ bg: "gray.800" }}
+        bg="white"
+        _dark={{ bg: "black" }}
         {...rest}
       >
         <Box w="full" h="0" pb="safe-top" />
