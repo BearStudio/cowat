@@ -3,6 +3,7 @@ import { z } from "zod";
 import { slack } from "@/server/slack";
 import { TRPCError } from "@trpc/server";
 import dayjs from "dayjs";
+import { RequestStatus } from "@prisma/client";
 
 export const commuteRouter = createTRPCRouter({
   createCommute: protectedProcedure
@@ -203,5 +204,32 @@ export const commuteRouter = createTRPCRouter({
     });
 
     return commutes;
+  }),
+  allRequestsForMyCommute: protectedProcedure.query(async ({ ctx }) => {
+    const requests = ctx.prisma.passengersOnStops.findMany({
+      where: {
+        stop: {
+          commute: {
+            createdById: ctx.session.user.id,
+            date: {
+              gte: new Date(),
+            },
+          },
+        },
+        requestStatus: {
+          equals: RequestStatus.REQUESTED,
+        },
+      },
+      include: {
+        stop: {
+          include: {
+            commute: true,
+          },
+        },
+        user: true,
+      },
+    });
+
+    return requests;
   }),
 });
