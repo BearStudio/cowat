@@ -2,12 +2,13 @@ import { NavigationLink } from "@/components/NavigationLink";
 import type { StackProps } from "@chakra-ui/react";
 import { Box, Button, HStack } from "@chakra-ui/react";
 import { signOut } from "next-auth/react";
-import { FiLayout, FiMapPin, FiNavigation } from "react-icons/fi";
+import { Bell, Car, LayoutDashboard, User } from "lucide-react";
 
 const navigations = [
-  { name: "Dashboard", href: "/dashboard", icon: FiLayout },
-  { name: "Locations", href: "/locations", icon: FiMapPin },
-  { name: "Commutes", href: "/commutes", icon: FiNavigation },
+  { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+  { name: "Commutes", href: "/commutes", icon: Car },
+  { name: "Requests", href: "/requests", icon: Bell },
+  { name: "Account", href: "/account", icon: User },
 ];
 
 export const BottomNavBar = (props: StackProps) => {
@@ -18,9 +19,6 @@ export const BottomNavBar = (props: StackProps) => {
           {nav.name}
         </NavigationLink>
       ))}
-      <Box>
-        <Button onClick={() => signOut()}>Log out</Button>
-      </Box>
     </HStack>
   );
 };

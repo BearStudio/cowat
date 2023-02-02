@@ -224,6 +224,7 @@ export const commuteRouter = createTRPCRouter({
         stop: {
           include: {
             commute: true,
+            location: true,
           },
         },
         user: true,

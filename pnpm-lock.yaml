@@ -27,6 +27,7 @@ specifiers:
   eslint-config-next: 13.1.5
   framer-motion: 8.5.3
   local-ssl-proxy: 1.3.0
+  lucide-react: 0.109.0
   next: 13.1.5
   next-auth: ^4.18.10
   prettier: ^2.8.3
@@ -55,6 +56,7 @@ dependencies:
   '@trpc/server': 10.9.0
   dayjs: 1.11.7
   framer-motion: 8.5.3_biqbaboplfbrettd7655fr4n2y
+  lucide-react: 0.109.0_react@18.2.0
   next: 13.1.5_pjwopsidmaokadturxaafygjp4
   next-auth: 4.18.10_s6zlkfvllybxhmcq5pkr2zsuza
   react: 18.2.0
@@ -4195,6 +4197,14 @@ packages:
     engines: {node: '>=10'}
     dependencies:
       yallist: 4.0.0
+
+  /lucide-react/0.109.0_react@18.2.0:
+    resolution: {integrity: sha512-CXBQnHSd/EHaSN+Bs9T73jgCbjb/0IVykFG7NvWjk+kG2skiEgXeIIJjpkta2DVSORy8u6RXN2WZuryiuNmC0Q==}
+    peerDependencies:
+      react: ^16.5.1 || ^17.0.0 || ^18.0.0
+    dependencies:
+      react: 18.2.0
+    dev: false
 
   /make-dir/3.1.0:
     resolution: {integrity: sha512-g3FeP20LNwhALb/6Cz6Dd4F2ngze0jz7tbzrD2wAV+o9FeNHe4rL+yK2md0J/fiSf1sa1ADhXqi5+oVwOM/eGw==}
