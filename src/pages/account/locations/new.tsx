@@ -1,10 +1,12 @@
+import { Icon } from "@/components/Icon";
 import { LocationForm } from "@/components/LocationForm";
 import { LayoutAuthenticated } from "@/layout/LayoutAuthenticated";
 
 import type { RouterInputs } from "@/utils/api";
 import { api } from "@/utils/api";
-import { Flex, Heading, Stack } from "@chakra-ui/react";
+import { Flex, Heading, HStack, IconButton, Stack } from "@chakra-ui/react";
 import { Formiz } from "@formiz/core";
+import { ArrowLeft } from "lucide-react";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
 
@@ -24,7 +26,18 @@ const Locations: NextPage = () => {
   };
 
   return (
-    <LayoutAuthenticated topBar={<Heading>New Location</Heading>}>
+    <LayoutAuthenticated
+      topBar={
+        <HStack>
+          <IconButton
+            aria-label="Go back"
+            icon={<Icon icon={ArrowLeft} />}
+            onClick={() => router.back()}
+          />
+          <Heading>New Location</Heading>
+        </HStack>
+      }
+    >
       <Stack
         spacing="4"
         as="main"

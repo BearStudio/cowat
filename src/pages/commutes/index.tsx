@@ -3,28 +3,34 @@ import { EmptyState } from "@/components/EmptyState";
 import { Icon } from "@/components/Icon";
 import { LayoutAuthenticated } from "@/layout/LayoutAuthenticated";
 import { api } from "@/utils/api";
-import { Button, Flex, Heading, Skeleton, Stack } from "@chakra-ui/react";
+import { Flex, Heading, IconButton, Skeleton, Stack } from "@chakra-ui/react";
+import { Plus } from "lucide-react";
 import type { NextPage } from "next";
 import NextLink from "next/link";
-import { FiPlus } from "react-icons/fi";
 
 const CommutesIndex: NextPage = () => {
   const myCommutes = api.commute.myCommute.useQuery();
   const communityCommutes = api.commute.communityCommutes.useQuery();
 
   return (
-    <LayoutAuthenticated topBar={<Heading>Commutes</Heading>}>
+    <LayoutAuthenticated
+      topBar={
+        <Flex justify="space-between">
+          <Heading>Commutes</Heading>
+          <IconButton
+            variant="primary"
+            aria-label="Create commute"
+            icon={<Icon icon={Plus} />}
+            as={NextLink}
+            href="/commutes/new"
+          />
+        </Flex>
+      }
+    >
       <Stack spacing="16">
         {myCommutes.isLoading && <Skeleton height="8.5rem" />}
         {!myCommutes.isLoading && (
           <Stack spacing="4">
-            <Button
-              as={NextLink}
-              href="/commutes/new"
-              leftIcon={<Icon icon={FiPlus} />}
-            >
-              Create
-            </Button>
             {myCommutes.data?.length === 0 && (
               <EmptyState>You have no commute at the moment</EmptyState>
             )}

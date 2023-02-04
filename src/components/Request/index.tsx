@@ -1,17 +1,16 @@
 import { Icon } from "@/components/Icon";
 import { api } from "@/utils/api";
 import { Avatar, Button, Flex, Stack, Text } from "@chakra-ui/react";
-import {
+import type {
   Commute,
   Location,
   PassengersOnStops,
-  RequestStatus,
   Stop,
   User,
 } from "@prisma/client";
+import { RequestStatus } from "@prisma/client";
 import dayjs from "dayjs";
 import { Check, X } from "lucide-react";
-import type { MouseEventHandler } from "react";
 
 type RequestProps = {
   request: PassengersOnStops & {

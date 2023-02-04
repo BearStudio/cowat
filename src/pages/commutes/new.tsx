@@ -11,6 +11,7 @@ import { AddPlaceholder } from "@/components/AddPlaceholder";
 import { FiPlus, FiTrash } from "react-icons/fi";
 import { FieldSelect } from "@/components/FieldSelect";
 import { Icon } from "@/components/Icon";
+import { ArrowLeft } from "lucide-react";
 
 type CreateCommuteInput = RouterInputs["commute"]["createCommute"];
 const New: NextPage = () => {
@@ -37,7 +38,18 @@ const New: NextPage = () => {
   };
 
   return (
-    <LayoutAuthenticated topBar={<Heading>New commute</Heading>}>
+    <LayoutAuthenticated
+      topBar={
+        <HStack>
+          <IconButton
+            aria-label="Go back"
+            icon={<Icon icon={ArrowLeft} />}
+            onClick={() => router.back()}
+          />
+          <Heading>New commute</Heading>
+        </HStack>
+      }
+    >
       <Formiz onValidSubmit={handleOnValidSubmit} autoForm connect={form}>
         <Stack bg="white" rounded="lg" boxShadow="card" p="8" spacing="4">
           <FieldInput
@@ -77,7 +89,7 @@ const New: NextPage = () => {
                 />
 
                 <IconButton
-                  colorScheme="error"
+                  variant="danger"
                   aria-label={`Remove stop ${index}`}
                   icon={<FiTrash />}
                   onClick={() => stops.remove(index)}

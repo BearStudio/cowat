@@ -18,13 +18,19 @@ export const AddPlaceholder: FC<ButtonProps> = ({ children, ...props }) => {
       borderRadius="md"
       transition="0.2s"
       _hover={{ borderColor: "gray.400" }}
-      _focus={{ outline: "none", boxShadow: "outline" }}
       _active={{ bg: "gray.200" }}
       _dark={{
         bg: "gray.900",
         borderColor: "gray.700",
         _hover: { borderColor: "gray.600" },
         _active: { bg: "gray.800" },
+      }}
+      _focusVisible={{
+        shadow: "none",
+        ring: "2px",
+        ringColor: "gray.900",
+        ringOffset: "2px",
+        ringOffsetColor: "white",
       }}
       {...props}
     >
