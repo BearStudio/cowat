@@ -4,6 +4,7 @@ import { slack } from "@/server/slack";
 import { TRPCError } from "@trpc/server";
 import dayjs from "dayjs";
 import { RequestStatus } from "@prisma/client";
+import { groupBy } from "remeda";
 
 export const commuteRouter = createTRPCRouter({
   createCommute: protectedProcedure
@@ -232,5 +233,28 @@ export const commuteRouter = createTRPCRouter({
     });
 
     return requests;
+  }),
+  allUpcomingCommutes: protectedProcedure.query(async ({ ctx }) => {
+    const commutes = await ctx.prisma.commute.findMany({
+      where: {
+        date: {
+          gte: dayjs().startOf("day").toDate(),
+          lte: dayjs().add(7, "days").endOf("day").toDate(),
+        },
+      },
+      include: {
+        createdBy: true,
+        stops: {
+          include: { location: true, passengers: { include: { user: true } } },
+        },
+      },
+      orderBy: {
+        date: "asc",
+      },
+    });
+
+    return groupBy(commutes, (commute) =>
+      dayjs(commute.date).format("YYYY-MM-DD")
+    );
   }),
 });

@@ -1,4 +1,5 @@
 import { api } from "@/utils/api";
+import { getPassengers } from "@/utils/commutes";
 import {
   Accordion,
   AccordionButton,
@@ -6,11 +7,13 @@ import {
   AccordionItem,
   AccordionPanel,
   Avatar,
+  AvatarGroup,
   Badge,
   Button,
   Card,
   CardBody,
   CardHeader,
+  Flex,
   HStack,
   Stack,
   StackDivider,
@@ -59,7 +62,7 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
   const passengerStatus = passengerStop?.passengers.find(
     (passenger) => passenger.userId === session?.user?.id
   )?.requestStatus;
-  const isDriver =
+  const isCurrentUserDriver =
     !!session?.user?.id && props.createdBy?.id === session?.user?.id;
 
   const getIsPassengerOnStop = (
@@ -75,38 +78,66 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
     );
   };
 
-  const isInThePast = dayjs(props.date).isBefore(dayjs().subtract(1, "day"));
+  const passengers = getPassengers(props.stops);
 
   return (
-    <Card boxShadow="card">
+    <Card
+      borderStart="6px solid"
+      borderColor={isCurrentUserDriver ? "brand.500" : undefined}
+      boxShadow="card"
+    >
       <CardHeader pb={0}>
-        <HStack>
-          <Avatar
-            size="sm"
-            name={props.createdBy?.name ?? ""}
-            src={props.createdBy?.image ?? ""}
-          />
-          <Stack spacing={0}>
-            <HStack>
-              <Text fontSize="sm" fontWeight="bold">
-                {dayjs(props.date).format("dddd DD MMMM YYYY HH:mm")}
+        <Flex justify="space-between">
+          <HStack>
+            <Avatar
+              size="md"
+              borderRadius={isCurrentUserDriver ? "md" : undefined}
+              name={props.createdBy?.name ?? ""}
+              src={props.createdBy?.image ?? ""}
+            />
+            <Stack spacing={0}>
+              <HStack>
+                <Text fontSize="sm" fontWeight="bold">
+                  {dayjs(props.date).format("dddd DD MMM HH:mm")}
+                </Text>
+              </HStack>
+              <Text fontSize="sm">
+                {props.createdBy?.name ?? props.createdBy?.email}
               </Text>
-              {isInThePast && <Badge fontSize="x-small">Past commute</Badge>}
-            </HStack>
-            <Text fontSize="sm">
-              {props.createdBy?.name ?? props.createdBy?.email}
-            </Text>
-            <Text fontSize="xs">{props.id}</Text>
-          </Stack>
-        </HStack>
+            </Stack>
+          </HStack>
+          <AvatarGroup size="sm" max={3}>
+            {passengers.map((passenger) => (
+              <Avatar
+                key={passenger.id}
+                src={passenger.image ?? ""}
+                name={passenger.name ?? passenger.email ?? ""}
+                border="2px solid white"
+              />
+            ))}
+          </AvatarGroup>
+        </Flex>
       </CardHeader>
       <CardBody pt={2}>
         <Accordion allowToggle>
           <AccordionItem border="none">
             <AccordionButton p={0} _hover={{ bg: "none" }}>
-              <AccordionIcon />
-              {props.stops.length} stop{props.stops.length > 1 ? "s" : ""} ·{" "}
-              {props.seats} seat{props.seats > 1 ? "s" : ""}
+              <Flex flex="1" align="center" justify="space-between">
+                <Flex align="center">
+                  <AccordionIcon />
+                  <Text fontWeight="medium" fontSize="sm">
+                    {props.stops.length} stop{props.stops.length > 1 ? "s" : ""}{" "}
+                    · {passengers.length}/{props.seats} seat
+                    {props.seats > 1 ? "s" : ""}
+                  </Text>
+                </Flex>
+                <Badge
+                  colorScheme={isCurrentUserDriver ? "brand" : "gray"}
+                  variant="solid"
+                >
+                  Driver
+                </Badge>
+              </Flex>
             </AccordionButton>
             <AccordionPanel p={0}>
               <Stack divider={<StackDivider />} spacing="4">
@@ -143,7 +174,7 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
                           </Wrap>
                         )}
                       </Stack>
-                      {!isDriver &&
+                      {!isCurrentUserDriver &&
                         (!isPassenger || passengerStatus === "CANCELED") && (
                           <HStack>
                             <Button

@@ -1,7 +1,6 @@
 import { NavigationLink } from "@/components/NavigationLink";
 import type { StackProps } from "@chakra-ui/react";
-import { Box, Button, HStack } from "@chakra-ui/react";
-import { signOut } from "next-auth/react";
+import { HStack } from "@chakra-ui/react";
 import { Bell, Car, LayoutDashboard, User } from "lucide-react";
 
 const navigations = [

@@ -1,11 +1,8 @@
 import { Button, Center, Stack } from "@chakra-ui/react";
-import type { InferGetServerSidePropsType } from "next";
-import { getProviders, signIn, useSession } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 
-export default function SignIn({
-  providers,
-}: InferGetServerSidePropsType<typeof getServerSideProps>) {
+export default function SignIn() {
   const router = useRouter();
   const { status } = useSession();
 
@@ -24,11 +21,4 @@ export default function SignIn({
       </Center>
     </>
   );
-}
-
-export async function getServerSideProps() {
-  const providers = await getProviders();
-  return {
-    props: { providers },
-  };
 }

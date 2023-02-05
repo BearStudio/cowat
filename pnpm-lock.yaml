@@ -36,6 +36,7 @@ specifiers:
   react-dom: 18.2.0
   react-icons: 4.7.1
   react-use-measure: 2.1.1
+  remeda: 1.6.1
   slack-notify: 2.0.6
   superjson: 1.12.2
   typescript: ^4.9.4
@@ -63,6 +64,7 @@ dependencies:
   react-dom: 18.2.0_react@18.2.0
   react-icons: 4.7.1_react@18.2.0
   react-use-measure: 2.1.1_biqbaboplfbrettd7655fr4n2y
+  remeda: 1.6.1
   slack-notify: 2.0.6
   superjson: 1.12.2
   zod: 3.20.2
@@ -4840,6 +4842,10 @@ packages:
     dependencies:
       rc: 1.2.8
     dev: true
+
+  /remeda/1.6.1:
+    resolution: {integrity: sha512-ywn4Tv2cPBj6hk0TEYMHusWVXu72yJNCaWUdMK7kc7x/PjQPBSvtMbmBWP4PQH791kpl3rPBe3ZVkJyPj3c+0g==}
+    dev: false
 
   /requires-port/1.0.0:
     resolution: {integrity: sha512-KigOCHcocU3XODJxsu8i/j8T9tzT4adHiecwORRQ0ZZFcp7ahwXuRU1m+yuO90C5ZUyGeGfocHDI14M3L3yDAQ==}
