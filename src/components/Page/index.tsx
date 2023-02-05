@@ -12,7 +12,7 @@ import {
 import { FiArrowLeft } from "react-icons/fi";
 import useMeasure from "react-use-measure";
 
-const PAGE_TOPBAR_MARGIN = 16;
+const PAGE_TOPBAR_MARGIN = 24;
 
 type PageContextValue = {
   nav: React.ReactNode;

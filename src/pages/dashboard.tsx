@@ -11,10 +11,10 @@ const Dashboard = () => {
 
   return (
     <LayoutAuthenticated topBar={<Heading>Cowat</Heading>}>
-      {commutesByDate.data &&
-        Object.keys(commutesByDate.data).map((key) => (
-          <Stack spacing="8" key={key}>
-            <Stack>
+      <Stack spacing="8">
+        {commutesByDate.data &&
+          Object.keys(commutesByDate.data).map((key) => (
+            <Stack key={key}>
               <Text fontSize="lg" fontWeight="bold">
                 {key === dayjs().format("YYYY-MM-DD")
                   ? "Today"
@@ -34,8 +34,8 @@ const Dashboard = () => {
                 </Button>
               )}
             </Stack>
-          </Stack>
-        ))}
+          ))}
+      </Stack>
     </LayoutAuthenticated>
   );
 };

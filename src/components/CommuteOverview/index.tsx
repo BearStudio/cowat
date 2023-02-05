@@ -1,3 +1,4 @@
+import { Icon } from "@/components/Icon";
 import { api } from "@/utils/api";
 import { getPassengers } from "@/utils/commutes";
 import {
@@ -23,6 +24,7 @@ import {
 } from "@chakra-ui/react";
 import type { Prisma } from "@prisma/client";
 import dayjs from "dayjs";
+import { CheckCircle2, Clock } from "lucide-react";
 import { useSession } from "next-auth/react";
 
 export type CommuteOverviewProps = Prisma.CommuteGetPayload<{
@@ -79,11 +81,26 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
   };
 
   const passengers = getPassengers(props.stops);
+  const commuteColorScheme = () => {
+    if (isCurrentUserDriver) {
+      return "brand";
+    }
+
+    if (passengerStatus === "ACCEPTED") {
+      return "success";
+    }
+
+    if (passengerStatus === "REQUESTED") {
+      return "warning";
+    }
+
+    return "gray";
+  };
 
   return (
     <Card
       borderStart="6px solid"
-      borderColor={isCurrentUserDriver ? "brand.500" : undefined}
+      borderColor={`${commuteColorScheme()}.500`}
       boxShadow="card"
     >
       <CardHeader pb={0}>
@@ -91,7 +108,7 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
           <HStack>
             <Avatar
               size="md"
-              borderRadius={isCurrentUserDriver ? "md" : undefined}
+              borderRadius="md"
               name={props.createdBy?.name ?? ""}
               src={props.createdBy?.image ?? ""}
             />
@@ -131,12 +148,21 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
                     {props.seats > 1 ? "s" : ""}
                   </Text>
                 </Flex>
-                <Badge
-                  colorScheme={isCurrentUserDriver ? "brand" : "gray"}
-                  variant="solid"
-                >
-                  Driver
-                </Badge>
+                {passengerStatus === "ACCEPTED" && (
+                  <Badge colorScheme="success" variant="solid">
+                    Passenger <Icon icon={CheckCircle2} />
+                  </Badge>
+                )}
+                {passengerStatus === "REQUESTED" && (
+                  <Badge colorScheme="warning" variant="solid">
+                    Passenger <Icon icon={Clock} />
+                  </Badge>
+                )}
+                {isCurrentUserDriver && (
+                  <Badge colorScheme="brand" variant="solid">
+                    Driver
+                  </Badge>
+                )}
               </Flex>
             </AccordionButton>
             <AccordionPanel p={0}>
@@ -178,7 +204,7 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
                         (!isPassenger || passengerStatus === "CANCELED") && (
                           <HStack>
                             <Button
-                              colorScheme="brand"
+                              variant="primary"
                               onClick={() =>
                                 bookCommute.mutate({ stopId: stop.id })
                               }
