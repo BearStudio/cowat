@@ -14,7 +14,7 @@ export const AddPlaceholder: FC<ButtonProps> = ({ children, ...props }) => {
       p="4"
       bg="gray.50"
       border="1px dashed"
-      borderColor="gray.200"
+      borderColor="gray.400"
       borderRadius="md"
       transition="0.2s"
       _hover={{ borderColor: "gray.400" }}

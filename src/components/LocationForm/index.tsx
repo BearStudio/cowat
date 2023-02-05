@@ -18,16 +18,17 @@ export const LocationForm = () => {
       />
       <Button
         as={Link}
-        href={`https://www.google.com/maps/search/${fields.address?.value}`}
+        href={
+          fields.address?.value
+            ? `https://www.google.com/maps/search/${fields.address?.value}`
+            : "#"
+        }
         isDisabled={!fields.address?.value}
         title="Open the address on Google Maps"
-        isExternal
+        isExternal={!!fields.address?.value}
         rightIcon={<Icon icon={ExternalLink} />}
       >
         Maps
-      </Button>
-      <Button variant="primary" type="submit">
-        Save
       </Button>
     </Stack>
   );

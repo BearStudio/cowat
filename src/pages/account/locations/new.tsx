@@ -4,7 +4,14 @@ import { LayoutAuthenticated } from "@/layout/LayoutAuthenticated";
 
 import type { RouterInputs } from "@/utils/api";
 import { api } from "@/utils/api";
-import { Flex, Heading, HStack, IconButton, Stack } from "@chakra-ui/react";
+import {
+  Button,
+  Flex,
+  Heading,
+  HStack,
+  IconButton,
+  Stack,
+} from "@chakra-ui/react";
 import { Formiz } from "@formiz/core";
 import { ArrowLeft } from "lucide-react";
 import type { NextPage } from "next";
@@ -50,7 +57,12 @@ const Locations: NextPage = () => {
           <Heading size="lg">New Location</Heading>
         </Flex>
         <Formiz autoForm onValidSubmit={handleOnValidSubmit}>
-          <LocationForm />
+          <Stack>
+            <LocationForm />
+            <Button variant="primary" type="submit">
+              Save
+            </Button>
+          </Stack>
         </Formiz>
       </Stack>
     </LayoutAuthenticated>

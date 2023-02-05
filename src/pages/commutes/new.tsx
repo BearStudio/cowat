@@ -5,19 +5,37 @@ import { FieldInput } from "@/components/FieldInput";
 import type { RouterInputs } from "@/utils/api";
 import { api } from "@/utils/api";
 import { useRouter } from "next/router";
-import { Button, Heading, HStack, IconButton, Stack } from "@chakra-ui/react";
+import {
+  Button,
+  Heading,
+  HStack,
+  IconButton,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  Stack,
+  useDisclosure,
+} from "@chakra-ui/react";
 import { LayoutAuthenticated } from "@/layout/LayoutAuthenticated";
 import { AddPlaceholder } from "@/components/AddPlaceholder";
 import { FiPlus, FiTrash } from "react-icons/fi";
 import { FieldSelect } from "@/components/FieldSelect";
 import { Icon } from "@/components/Icon";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Plus } from "lucide-react";
+import { LocationForm } from "@/components/LocationForm";
 
 type CreateCommuteInput = RouterInputs["commute"]["createCommute"];
 const New: NextPage = () => {
   const router = useRouter();
 
   const form = useForm();
+  const ctx = api.useContext();
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const stops = useRepeater({
     name: "stops",
@@ -32,8 +50,14 @@ const New: NextPage = () => {
 
   const locations = api.location.mine.useQuery();
 
+  const location = api.location.create.useMutation({
+    onSuccess: () => {
+      ctx.location.invalidate();
+      onClose();
+    },
+  });
+
   const handleOnValidSubmit = (values: CreateCommuteInput) => {
-    console.log(values);
     createCommute.mutate(values);
   };
 
@@ -87,7 +111,17 @@ const New: NextPage = () => {
                   }
                   required="Stop is required"
                 />
-
+                <IconButton
+                  aria-label="Add a location"
+                  icon={<Icon icon={Plus} />}
+                  onClick={onOpen}
+                />
+              </HStack>
+              <HStack align="end">
+                <FieldInput
+                  name={`stops[${index}].time`}
+                  placeholder="🕘 09:00"
+                />
                 <IconButton
                   variant="danger"
                   aria-label={`Remove stop ${index}`}
@@ -95,20 +129,46 @@ const New: NextPage = () => {
                   onClick={() => stops.remove(index)}
                 />
               </HStack>
-              <FieldInput
-                name={`stops[${index}].time`}
-                placeholder="🕘 09:00"
-              />
             </Stack>
           ))}
           <AddPlaceholder onClick={() => stops.append()}>
             <Icon icon={FiPlus} /> Add Stop 📍
           </AddPlaceholder>
-          <Button type="submit" isDisabled={createCommute.isLoading}>
+          <Button
+            variant="primary"
+            type="submit"
+            isDisabled={createCommute.isLoading}
+          >
             Save
           </Button>
         </Stack>
       </Formiz>
+
+      {isOpen && (
+        <Modal isOpen onClose={onClose} size="sm">
+          <ModalOverlay />
+          <Formiz
+            autoForm
+            onValidSubmit={(values: RouterInputs["location"]["create"]) =>
+              location.mutate(values)
+            }
+          >
+            <ModalContent>
+              <ModalHeader>New location</ModalHeader>
+              <ModalCloseButton />
+              <ModalBody>
+                <LocationForm />
+              </ModalBody>
+
+              <ModalFooter>
+                <Button variant="primary" type="submit">
+                  Save
+                </Button>
+              </ModalFooter>
+            </ModalContent>
+          </Formiz>
+        </Modal>
+      )}
     </LayoutAuthenticated>
   );
 };
