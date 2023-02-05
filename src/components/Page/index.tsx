@@ -163,7 +163,7 @@ export const PageBottomBar = ({ children, ...rest }: FlexProps) => {
         bottom="0"
         insetStart="0"
         insetEnd="0"
-        py="2"
+        py="0"
         bg="white"
         _dark={{ bg: "gray.900" }}
         {...rest}

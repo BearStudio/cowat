@@ -47,7 +47,7 @@ const AccountPage = () => {
         {myLocations.data?.length === 0 && (
           <EmptyState>You have no locations at the moment.</EmptyState>
         )}
-        <SimpleGrid columns={{ base: 1, md: 2 }} spacing={10}>
+        <SimpleGrid columns={{ base: 1, md: 2 }} spacing="4">
           {myLocations.data?.map((location) => (
             <Card key={location.id} size="sm">
               <CardHeader>
