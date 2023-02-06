@@ -35,6 +35,7 @@ export const NavigationLink: FC<NavigationLinkProps> = ({
       flexBasis="100%"
       py="2"
       pt="3"
+      textAlign="center"
       {...rest}
     >
       <Icon
