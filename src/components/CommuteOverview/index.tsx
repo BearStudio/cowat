@@ -34,7 +34,9 @@ export type CommuteOverviewProps = Prisma.CommuteGetPayload<{
       include: { location: true; passengers: { include: { user: true } } };
     };
   };
-}>;
+}> & {
+  onBooked?: () => void;
+};
 
 export const CommuteOverview = (props: CommuteOverviewProps) => {
   const { data: session } = useSession();
@@ -43,12 +45,14 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
   const bookCommute = api.stop.book.useMutation({
     onSuccess: () => {
       ctx.commute.invalidate();
+      props.onBooked?.();
     },
   });
 
   const updateRequestStatus = api.stop.requestStatus.useMutation({
     onSuccess: () => {
       ctx.commute.invalidate();
+      ctx.stop.invalidate();
     },
   });
 
