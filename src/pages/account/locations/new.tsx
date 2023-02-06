@@ -24,7 +24,7 @@ const Locations: NextPage = () => {
 
   const location = api.location.create.useMutation({
     onSuccess: () => {
-      router.push("/locations");
+      router.push("/account/locations");
     },
   });
 
