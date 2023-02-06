@@ -5,7 +5,7 @@ import { Bell, Car, LayoutDashboard, User } from "lucide-react";
 
 const navigations = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard, exact: true },
-  { name: "Commutes", href: "/commutes", icon: Car, exact: false },
+  { name: "My Commutes", href: "/commutes", icon: Car, exact: false },
   { name: "Requests", href: "/requests", icon: Bell, exact: false },
   { name: "Account", href: "/account", icon: User, exact: false },
 ];

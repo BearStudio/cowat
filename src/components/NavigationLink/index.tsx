@@ -33,7 +33,7 @@ export const NavigationLink: FC<NavigationLinkProps> = ({
       align="center"
       flexGrow="1"
       flexBasis="100%"
-      p="2"
+      py="2"
       pt="3"
       {...rest}
     >
@@ -44,7 +44,7 @@ export const NavigationLink: FC<NavigationLinkProps> = ({
       />
       <Text
         fontSize="0.55rem"
-        fontWeight={isActive ? "bold" : "medium"}
+        fontWeight={isActive ? "bold" : "semibold"}
         textTransform="uppercase"
         mt="1"
       >
