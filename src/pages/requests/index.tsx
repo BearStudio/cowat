@@ -8,7 +8,7 @@ const RequestsPage = () => {
   const requests = api.commute.allRequestsForMyCommute.useQuery();
 
   return (
-    <LayoutAuthenticated topBar={<Heading>Requests</Heading>}>
+    <LayoutAuthenticated topBar={<Heading size="md">Requests</Heading>}>
       <Stack>
         {requests.isLoading &&
           Array.from({ length: 3 }).map((_, index) => (

@@ -11,6 +11,7 @@ import {
   CardHeader,
   Flex,
   Heading,
+  HStack,
   IconButton,
   Link,
   SimpleGrid,
@@ -24,16 +25,17 @@ const LocationsPage = () => {
   return (
     <LayoutAuthenticated
       topBar={
-        <Flex justify="space-between">
-          <Heading>Locations</Heading>
+        <HStack justify="space-between">
+          <Heading size="md">Locations</Heading>
           <IconButton
+            size="sm"
             variant="primary"
             aria-label="Create location"
             icon={<Icon icon={Plus} />}
             as={Link}
             href="/account/locations/new"
           />
-        </Flex>
+        </HStack>
       }
     >
       <Stack spacing="4" as="main">

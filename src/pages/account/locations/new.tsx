@@ -37,11 +37,12 @@ const Locations: NextPage = () => {
       topBar={
         <HStack>
           <IconButton
+            size="sm"
             aria-label="Go back"
             icon={<Icon icon={ArrowLeft} />}
             onClick={() => router.back()}
           />
-          <Heading>New Location</Heading>
+          <Heading size="md">New Location</Heading>
         </HStack>
       }
     >

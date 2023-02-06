@@ -7,7 +7,7 @@ import Link from "next/link";
 
 const AccountPage = () => {
   return (
-    <LayoutAuthenticated topBar={<Heading>Account</Heading>}>
+    <LayoutAuthenticated topBar={<Heading size="md">Account</Heading>}>
       <Stack spacing="4">
         <Button
           variant="default"

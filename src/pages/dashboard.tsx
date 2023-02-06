@@ -17,7 +17,7 @@ const Dashboard = () => {
   const commutesByDate = api.commute.allUpcomingCommutes.useQuery();
 
   return (
-    <LayoutAuthenticated topBar={<Heading>Cowat</Heading>}>
+    <LayoutAuthenticated topBar={<Heading size="md">Cowat</Heading>}>
       {commutesByDate.isLoading && (
         <Center flex={1}>
           <Spinner />

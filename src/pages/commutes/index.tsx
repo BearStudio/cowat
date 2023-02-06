@@ -3,7 +3,14 @@ import { EmptyState } from "@/components/EmptyState";
 import { Icon } from "@/components/Icon";
 import { LayoutAuthenticated } from "@/layout/LayoutAuthenticated";
 import { api } from "@/utils/api";
-import { Flex, Heading, IconButton, Skeleton, Stack } from "@chakra-ui/react";
+import {
+  Flex,
+  Heading,
+  HStack,
+  IconButton,
+  Skeleton,
+  Stack,
+} from "@chakra-ui/react";
 import { Plus } from "lucide-react";
 import type { NextPage } from "next";
 import NextLink from "next/link";
@@ -15,16 +22,17 @@ const CommutesIndex: NextPage = () => {
   return (
     <LayoutAuthenticated
       topBar={
-        <Flex justify="space-between">
-          <Heading>Commutes</Heading>
+        <HStack justify="space-between">
+          <Heading size="md">Commutes</Heading>
           <IconButton
             variant="primary"
+            size="sm"
             aria-label="Create commute"
             icon={<Icon icon={Plus} />}
             as={NextLink}
             href="/commutes/new"
           />
-        </Flex>
+        </HStack>
       }
     >
       <Stack spacing="16">

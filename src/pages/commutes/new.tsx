@@ -66,11 +66,12 @@ const New: NextPage = () => {
       topBar={
         <HStack>
           <IconButton
+            size="sm"
             aria-label="Go back"
             icon={<Icon icon={ArrowLeft} />}
             onClick={() => router.back()}
           />
-          <Heading>New commute</Heading>
+          <Heading size="md">New commute</Heading>
         </HStack>
       }
     >
