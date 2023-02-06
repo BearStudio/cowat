@@ -10,6 +10,7 @@ import {
   Avatar,
   AvatarGroup,
   Badge,
+  Box,
   Button,
   Card,
   CardBody,
@@ -85,30 +86,45 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
   };
 
   const passengers = getPassengers(props.stops);
-  const commuteColorScheme = () => {
+  const commuteColor = (() => {
     if (isCurrentUserDriver) {
-      return "brand";
+      return "brand.500";
     }
 
     if (passengerStatus === "ACCEPTED") {
-      return "success";
+      return "success.500";
     }
 
     if (passengerStatus === "REQUESTED") {
-      return "warning";
+      return "warning.500";
     }
 
-    return "gray";
-  };
+    return "gray.300";
+  })();
 
   return (
     <Card
       position="relative"
       borderStart="6px solid"
-      borderColor={`${commuteColorScheme()}.500`}
+      borderColor={commuteColor}
       boxShadow="card"
+      overflow="hidden"
     >
-      <CardHeader pb={0}>
+      <CardHeader pb={0} position="relative">
+        {(isPassenger || isCurrentUserDriver) && (
+          <Box
+            position="absolute"
+            top={12}
+            right={-8}
+            borderRadius="full"
+            w={32}
+            h={32}
+            bg={commuteColor}
+            opacity={0.6}
+            filter="blur(80px)"
+            blendMode="multiply"
+          />
+        )}
         <Flex justify="space-between">
           <HStack>
             <Avatar
@@ -181,7 +197,10 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
               </Flex>
             </AccordionButton>
             <AccordionPanel p={0}>
-              <Stack divider={<StackDivider />} spacing="4">
+              <Stack
+                divider={<StackDivider borderColor="blackAlpha.100" />}
+                spacing="4"
+              >
                 <StackDivider />
                 {props.stops.map((stop) => {
                   const passengers = stop.passengers.filter(
@@ -191,10 +210,12 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
                     <HStack key={stop.id}>
                       <Stack spacing={0} flex={1}>
                         <Text fontSize="sm" fontWeight="bold">
-                          {!!stop.time && `${stop.time} · `}
+                          📍 {!!stop.time && `${stop.time} · `}
                           {stop?.location?.name}{" "}
                         </Text>
-                        <Text fontSize="sm">{stop?.location?.address}</Text>
+                        <Text fontSize="sm" color="gray.600">
+                          {stop?.location?.address}
+                        </Text>
                         {!!passengers.length && (
                           <Wrap pt="1">
                             {passengers.map((passenger) => (
