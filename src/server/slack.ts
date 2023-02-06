@@ -132,11 +132,13 @@ const newBookingFrom = (
         type: "section",
         text: {
           type: "mrkdwn",
-          text: `Dear ${driver}, ${passenger} requested to be part of your ${
+          text: `💺 Hey ${driver}, ${passenger} requested a seat on your *${
             passengerOnStop.stop.commute?.date
-              ? dayjs(passengerOnStop.stop.commute.date).format("DD/MM/YYYY")
+              ? dayjs(passengerOnStop.stop.commute.date).format(
+                  "dddd DD MMM HH:mm"
+                )
               : ""
-          } commute`,
+          }* commute.`,
         },
       },
       // TODO: coming later, action to accept or refuse from slack
