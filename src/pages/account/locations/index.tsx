@@ -1,5 +1,6 @@
 import { EmptyState } from "@/components/EmptyState";
 import { Icon } from "@/components/Icon";
+import { searchOnMaps } from "@/constants/google";
 import { LayoutAuthenticated } from "@/layout/LayoutAuthenticated";
 import type { RouterOutputs } from "@/utils/api";
 import { api } from "@/utils/api";
@@ -83,7 +84,7 @@ const LocationCard = ({ location }: LocationCardProps) => {
       <CardFooter justifyContent="space-between">
         <Button
           as={ChakraLink}
-          href={`https://www.google.com/maps/search/${location.address}`}
+          href={searchOnMaps(location.address)}
           title="Open the address on Google Maps"
           isExternal
           rightIcon={<Icon icon={ExternalLink} />}

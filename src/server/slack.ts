@@ -2,6 +2,7 @@ import SlackNotify from "slack-notify";
 import { env } from "@/env/server.mjs";
 import type { Prisma } from "@prisma/client";
 import dayjs from "dayjs";
+import { searchOnMaps } from "@/constants/google";
 
 export const notify = SlackNotify(env.SLACK_WEBHOOK_URL);
 
@@ -44,10 +45,11 @@ const newCommute = async (
     //   text: {
     //     type: "plain_text",
     //     emoji: true,
-    //     text: "Choose",
+    //     text: "Maps",
     //   },
-    //   value: "chekc",
-    //   url: `${env.NEXTAUTH_URL}/commutes`,
+    //   value: "value",
+    //   url: searchOnMaps(stop.location?.address ?? ""),
+    //   action_id: "button-action",
     // },
   }));
 

@@ -1,6 +1,7 @@
 import { FieldInput } from "@/components/FieldInput";
 import { FieldTextarea } from "@/components/FieldTextarea";
 import { Icon } from "@/components/Icon";
+import { searchOnMaps } from "@/constants/google";
 import { Button, Link, Stack } from "@chakra-ui/react";
 import { useFormFields } from "@formiz/core";
 import { ExternalLink } from "lucide-react";
@@ -18,11 +19,7 @@ export const LocationForm = () => {
       />
       <Button
         as={Link}
-        href={
-          fields.address?.value
-            ? `https://www.google.com/maps/search/${fields.address?.value}`
-            : "#"
-        }
+        href={fields.address?.value ? searchOnMaps(fields.address.value) : "#"}
         isDisabled={!fields.address?.value}
         title="Open the address on Google Maps"
         isExternal={!!fields.address?.value}
