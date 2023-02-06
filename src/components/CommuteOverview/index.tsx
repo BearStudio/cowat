@@ -99,6 +99,7 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
 
   return (
     <Card
+      position="relative"
       borderStart="6px solid"
       borderColor={`${commuteColorScheme()}.500`}
       boxShadow="card"
@@ -138,7 +139,17 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
       <CardBody pt={2}>
         <Accordion allowToggle>
           <AccordionItem border="none">
-            <AccordionButton p={0} _hover={{ bg: "none" }}>
+            <AccordionButton
+              p={0}
+              _hover={{ bg: "none" }}
+              // Allows to click on the full card
+              _before={{
+                content: '""',
+                position: "absolute",
+                background: "transparent",
+                inset: 0,
+              }}
+            >
               <Flex flex="1" align="center" justify="space-between">
                 <Flex align="center">
                   <AccordionIcon />
