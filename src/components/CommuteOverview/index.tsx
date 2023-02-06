@@ -44,16 +44,16 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
   const ctx = api.useContext();
 
   const bookCommute = api.stop.book.useMutation({
-    onSuccess: () => {
-      ctx.commute.invalidate();
+    onSuccess: async () => {
+      await ctx.commute.invalidate();
       props.onBooked?.();
     },
   });
 
   const updateRequestStatus = api.stop.requestStatus.useMutation({
-    onSuccess: () => {
-      ctx.commute.invalidate();
-      ctx.stop.invalidate();
+    onSuccess: async () => {
+      await ctx.commute.invalidate();
+      await ctx.stop.invalidate();
     },
   });
 
