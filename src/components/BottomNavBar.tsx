@@ -1,28 +1,92 @@
-import { NavigationLink } from "@/components/NavigationLink";
-import type { StackProps } from "@chakra-ui/react";
-import { HStack } from "@chakra-ui/react";
+import type { FC } from "react";
 import { Bell, Car, LayoutDashboard, User } from "lucide-react";
-
-const navigations = [
-  { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard, exact: true },
-  { name: "My Commutes", href: "/commutes", icon: Car, exact: false },
-  { name: "Requests", href: "/requests", icon: Bell, exact: false },
-  { name: "Account", href: "/account", icon: User, exact: false },
-];
+import type { FlexProps, StackProps } from "@chakra-ui/react";
+import { HStack, Flex, Text } from "@chakra-ui/react";
+import Link from "next/link";
+import { Icon } from "@/components/Icon";
+import { useIsActive } from "@/hooks/useIsActive";
+import { api } from "@/utils/api";
+import type { IconType } from "react-icons";
 
 export const BottomNavBar = (props: StackProps) => {
+  const requests = api.commute.allRequestsForMyCommute.useQuery();
+
   return (
     <HStack as="nav" {...props}>
-      {navigations.map((nav) => (
-        <NavigationLink
-          key={nav.href}
-          icon={nav.icon}
-          href={nav.href}
-          exact={nav.exact}
+      <NavBarItem icon={LayoutDashboard} href="/dashboard" exact>
+        Dashboard
+      </NavBarItem>
+      <NavBarItem icon={Car} href="/commutes">
+        My Commutes
+      </NavBarItem>
+      <NavBarItem icon={Bell} href="/requests" position="relative">
+        Requests
+        <Flex
+          position="absolute"
+          top="2"
+          right="5"
+          fontWeight="bold"
+          color="white"
+          bg="error.500"
+          w="4"
+          h="4"
+          borderRadius="full"
+          justify="center"
+          align="center"
         >
-          {nav.name}
-        </NavigationLink>
-      ))}
+          {requests.data?.length}
+        </Flex>
+      </NavBarItem>
+      <NavBarItem icon={User} href="/account">
+        Account
+      </NavBarItem>
     </HStack>
+  );
+};
+
+type NavBarItemProps = FlexProps & {
+  href: string;
+  icon: IconType;
+  exact?: boolean;
+};
+
+export const NavBarItem: FC<NavBarItemProps> = ({
+  href,
+  children,
+  icon,
+  exact = false,
+  ...rest
+}) => {
+  const isActive = useIsActive(href, exact);
+
+  return (
+    <Flex
+      as={Link}
+      href={href}
+      cursor="pointer"
+      color={isActive ? "black" : "gray.500"}
+      flexDir="column"
+      align="center"
+      flexGrow="1"
+      flexBasis="100%"
+      py="2"
+      pt="3"
+      textAlign="center"
+      {...rest}
+    >
+      <Icon
+        fontSize="1.2rem"
+        icon={icon}
+        color={isActive ? "black" : "gray.400"}
+      />
+      <Text
+        fontSize="0.55rem"
+        fontWeight={isActive ? "bold" : "semibold"}
+        textTransform="uppercase"
+        mt="1"
+      >
+        {children}
+      </Text>
+    </Flex>
   );
 };
