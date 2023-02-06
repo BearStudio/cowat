@@ -18,7 +18,7 @@ export const NavigationLink: FC<NavigationLinkProps> = ({
   href,
   children,
   icon,
-  exact = true,
+  exact = false,
   ...rest
 }) => {
   const isActive = useIsActive(href, exact);
@@ -28,7 +28,7 @@ export const NavigationLink: FC<NavigationLinkProps> = ({
       as={Link}
       href={href}
       cursor="pointer"
-      color={isActive ? "black" : "gray.600"}
+      color={isActive ? "black" : "gray.500"}
       flexDir="column"
       align="center"
       flexGrow="1"
@@ -37,10 +37,14 @@ export const NavigationLink: FC<NavigationLinkProps> = ({
       pt="3"
       {...rest}
     >
-      <Icon fontSize="1.2rem" icon={icon} />
+      <Icon
+        fontSize="1.2rem"
+        icon={icon}
+        color={isActive ? "black" : "gray.400"}
+      />
       <Text
         fontSize="0.55rem"
-        fontWeight="bold"
+        fontWeight={isActive ? "bold" : "medium"}
         textTransform="uppercase"
         mt="1"
       >
