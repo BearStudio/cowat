@@ -9,24 +9,34 @@ import {
   CardBody,
   CardFooter,
   CardHeader,
-  Flex,
   Heading,
   HStack,
   IconButton,
-  Link,
+  Link as ChakraLink,
   SimpleGrid,
   Stack,
 } from "@chakra-ui/react";
-import { ExternalLink, Plus, Trash } from "lucide-react";
+import { ArrowLeft, ExternalLink, Plus, Trash } from "lucide-react";
+import Link from "next/link";
 
 const LocationsPage = () => {
   const myLocations = api.location.mine.useQuery();
 
   return (
     <LayoutAuthenticated
+      hideNav
       topBar={
-        <HStack justify="space-between">
-          <Heading size="md">Locations</Heading>
+        <HStack>
+          <IconButton
+            as={Link}
+            size="sm"
+            aria-label="Go back"
+            icon={<Icon icon={ArrowLeft} />}
+            href="/account"
+          />
+          <Heading size="md" flex={1}>
+            Locations
+          </Heading>
           <IconButton
             size="sm"
             variant="primary"
@@ -72,7 +82,7 @@ const LocationCard = ({ location }: LocationCardProps) => {
       <CardBody>{location.address}</CardBody>
       <CardFooter justifyContent="space-between">
         <Button
-          as={Link}
+          as={ChakraLink}
           href={`https://www.google.com/maps/search/${location.address}`}
           title="Open the address on Google Maps"
           isExternal

@@ -63,6 +63,7 @@ const New: NextPage = () => {
 
   return (
     <LayoutAuthenticated
+      hideNav
       topBar={
         <HStack>
           <IconButton

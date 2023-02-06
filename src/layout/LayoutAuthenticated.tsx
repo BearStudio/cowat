@@ -18,11 +18,13 @@ export const LayoutAuthenticated = ({
   access = "USER",
   children,
   topBar,
+  hideNav,
   containerSize,
 }: {
   children?: ReactNode;
   access?: "PUBLIC" | UserRole;
   topBar?: ReactNode;
+  hideNav?: boolean;
   containerSize?: PageProps["containerSize"];
 }) => {
   const router = useRouter();
@@ -51,9 +53,11 @@ export const LayoutAuthenticated = ({
           children
         )}
       </PageContent>
-      <PageBottomBar>
-        <BottomNavBar />
-      </PageBottomBar>
+      {!hideNav && (
+        <PageBottomBar>
+          <BottomNavBar />
+        </PageBottomBar>
+      )}
     </Page>
   );
 };

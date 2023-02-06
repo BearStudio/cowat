@@ -34,6 +34,7 @@ const Locations: NextPage = () => {
 
   return (
     <LayoutAuthenticated
+      hideNav
       topBar={
         <HStack>
           <IconButton
