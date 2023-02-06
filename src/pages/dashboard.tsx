@@ -2,7 +2,14 @@ import { CommuteOverview } from "@/components/CommuteOverview";
 import { Icon } from "@/components/Icon";
 import { LayoutAuthenticated } from "@/layout/LayoutAuthenticated";
 import { api } from "@/utils/api";
-import { Button, Heading, Stack, Text } from "@chakra-ui/react";
+import {
+  Button,
+  Center,
+  Heading,
+  Spinner,
+  Stack,
+  Text,
+} from "@chakra-ui/react";
 import dayjs from "dayjs";
 import { Navigation } from "lucide-react";
 
@@ -11,6 +18,11 @@ const Dashboard = () => {
 
   return (
     <LayoutAuthenticated topBar={<Heading>Cowat</Heading>}>
+      {commutesByDate.isLoading && (
+        <Center flex={1}>
+          <Spinner />
+        </Center>
+      )}
       <Stack spacing="8">
         {commutesByDate.data &&
           Object.keys(commutesByDate.data).map((key) => (
@@ -30,7 +42,7 @@ const Dashboard = () => {
                   leftIcon={<Icon icon={Navigation} />}
                   isDisabled
                 >
-                  Open driver&apos;s view
+                  Open commute&apos;s view
                 </Button>
               )}
             </Stack>

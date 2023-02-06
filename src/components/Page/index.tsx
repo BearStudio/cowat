@@ -33,7 +33,8 @@ const PageContainer = ({ children, ...rest }: FlexProps) => {
 
   return (
     <Container
-      direction="column"
+      display="flex"
+      flexDirection="column"
       flex="1"
       w="full"
       px="6"
