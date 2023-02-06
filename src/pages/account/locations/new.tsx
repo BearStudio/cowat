@@ -15,6 +15,7 @@ import {
 import { Formiz } from "@formiz/core";
 import { ArrowLeft } from "lucide-react";
 import type { NextPage } from "next";
+import Link from "next/link";
 import { useRouter } from "next/router";
 
 type CreateLocationInput = RouterInputs["location"]["create"];
@@ -41,7 +42,8 @@ const Locations: NextPage = () => {
             size="sm"
             aria-label="Go back"
             icon={<Icon icon={ArrowLeft} />}
-            onClick={() => router.back()}
+            as={Link}
+            href="/account/locations"
           />
           <Heading size="md">New Location</Heading>
         </HStack>
@@ -51,7 +53,7 @@ const Locations: NextPage = () => {
         spacing="4"
         as="main"
         boxShadow="card"
-        p="8"
+        p="4"
         bg="white"
         rounded="md"
       >
