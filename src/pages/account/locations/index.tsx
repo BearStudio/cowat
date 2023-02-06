@@ -1,6 +1,7 @@
 import { EmptyState } from "@/components/EmptyState";
 import { Icon } from "@/components/Icon";
 import { LayoutAuthenticated } from "@/layout/LayoutAuthenticated";
+import type { RouterOutputs } from "@/utils/api";
 import { api } from "@/utils/api";
 import {
   Button,
@@ -17,16 +18,8 @@ import {
 } from "@chakra-ui/react";
 import { ExternalLink, Plus, Trash } from "lucide-react";
 
-const AccountPage = () => {
-  const ctx = api.useContext();
-
+const LocationsPage = () => {
   const myLocations = api.location.mine.useQuery();
-
-  const deleteLocation = api.location.delete.useMutation({
-    onSuccess: () => {
-      ctx.location.invalidate();
-    },
-  });
 
   return (
     <LayoutAuthenticated
@@ -49,30 +42,7 @@ const AccountPage = () => {
         )}
         <SimpleGrid columns={{ base: 1, md: 2 }} spacing="4">
           {myLocations.data?.map((location) => (
-            <Card key={location.id} size="sm">
-              <CardHeader>
-                <Heading size="md">{location.name}</Heading>
-              </CardHeader>
-              <CardBody>{location.address}</CardBody>
-              <CardFooter justifyContent="space-between">
-                <Button
-                  as={Link}
-                  href={`https://www.google.com/maps/search/${location.address}`}
-                  title="Open the address on Google Maps"
-                  isExternal
-                  rightIcon={<Icon icon={ExternalLink} />}
-                >
-                  Maps
-                </Button>
-                <IconButton
-                  variant="danger"
-                  aria-label="Remove this location"
-                  icon={<Icon icon={Trash} />}
-                  onClick={() => deleteLocation.mutate(location.id)}
-                  isLoading={deleteLocation.isLoading}
-                />
-              </CardFooter>
-            </Card>
+            <LocationCard key={location.id} location={location} />
           ))}
         </SimpleGrid>
       </Stack>
@@ -80,4 +50,44 @@ const AccountPage = () => {
   );
 };
 
-export default AccountPage;
+type LocationCardProps = {
+  location: RouterOutputs["location"]["mine"][number];
+};
+
+const LocationCard = ({ location }: LocationCardProps) => {
+  const ctx = api.useContext();
+  const deleteLocation = api.location.delete.useMutation({
+    onSuccess: () => {
+      ctx.location.invalidate();
+    },
+  });
+
+  return (
+    <Card size="sm">
+      <CardHeader>
+        <Heading size="md">{location.name}</Heading>
+      </CardHeader>
+      <CardBody>{location.address}</CardBody>
+      <CardFooter justifyContent="space-between">
+        <Button
+          as={Link}
+          href={`https://www.google.com/maps/search/${location.address}`}
+          title="Open the address on Google Maps"
+          isExternal
+          rightIcon={<Icon icon={ExternalLink} />}
+        >
+          Maps
+        </Button>
+        <IconButton
+          variant="danger"
+          aria-label="Remove this location"
+          icon={<Icon icon={Trash} />}
+          onClick={() => deleteLocation.mutate(location.id)}
+          isLoading={deleteLocation.isLoading}
+        />
+      </CardFooter>
+    </Card>
+  );
+};
+
+export default LocationsPage;
