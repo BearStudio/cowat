@@ -5,6 +5,7 @@ import { TRPCError } from "@trpc/server";
 import dayjs from "dayjs";
 import { RequestStatus } from "@prisma/client";
 import { groupBy } from "remeda";
+import { YEAR_MONTH_DAY } from "@/constants/dates";
 
 export const commuteRouter = createTRPCRouter({
   createCommute: protectedProcedure
@@ -298,7 +299,7 @@ export const commuteRouter = createTRPCRouter({
     });
 
     return groupBy(commutes, (commute) =>
-      dayjs(commute.date).format("YYYY-MM-DD")
+      dayjs(commute.date).format(YEAR_MONTH_DAY)
     );
   }),
 });

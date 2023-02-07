@@ -1,4 +1,5 @@
 import { Icon } from "@/components/Icon";
+import { FULL_TEXT_DATE_WITH_TIME } from "@/constants/dates";
 import { api } from "@/utils/api";
 import { Avatar, Button, Flex, Stack, Text } from "@chakra-ui/react";
 import type {
@@ -43,7 +44,9 @@ export const Request = ({ request }: RequestProps) => {
             <>
               For{" "}
               <Text as="span" fontWeight="bold">
-                {dayjs(request.stop.commute?.date).format("dddd DD MMM hh:mm")}
+                {dayjs(request.stop.commute?.date).format(
+                  FULL_TEXT_DATE_WITH_TIME
+                )}
               </Text>{" "}
               commute
             </>

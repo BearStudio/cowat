@@ -1,6 +1,7 @@
 import { CommuteOverview } from "@/components/CommuteOverview";
 import { EmptyState } from "@/components/EmptyState";
 import { Icon } from "@/components/Icon";
+import { FULL_TEXT_DATE, YEAR_MONTH_DAY } from "@/constants/dates";
 import { LayoutAuthenticated } from "@/layout/LayoutAuthenticated";
 import type { RouterOutputs } from "@/utils/api";
 import { api } from "@/utils/api";
@@ -71,9 +72,9 @@ const Day = ({ date, commutes }: DayProps) => {
   return (
     <Stack>
       <Text fontSize="lg" fontWeight="bold">
-        {date === dayjs().format("YYYY-MM-DD")
+        {date === dayjs().format(YEAR_MONTH_DAY)
           ? "Today"
-          : dayjs(date).format("dddd DD MMM")}
+          : dayjs(date).format(FULL_TEXT_DATE)}
       </Text>
       {!myCommutes?.length && (
         <EmptyState
@@ -122,7 +123,7 @@ const Day = ({ date, commutes }: DayProps) => {
       {myCommutes?.map((commute) => (
         <CommuteOverview key={commute.id} {...commute} />
       ))}
-      {date === dayjs().format("YYYY-MM-DD") && (
+      {date === dayjs().format(YEAR_MONTH_DAY) && (
         <Button
           variant="primary"
           size="lg"
@@ -147,7 +148,7 @@ const CommutesModal = ({ onClose, commutes, date }: CommutesModalProps) => {
     <Modal isOpen={true} onClose={onClose}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>{dayjs(date).format("dddd DD MMM")}</ModalHeader>
+        <ModalHeader>{dayjs(date).format(FULL_TEXT_DATE)}</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
           {commutes.map((commute) => (

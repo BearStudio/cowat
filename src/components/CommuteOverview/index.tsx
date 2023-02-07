@@ -1,4 +1,5 @@
 import { Icon } from "@/components/Icon";
+import { FULL_TEXT_DATE_WITH_TIME } from "@/constants/dates";
 import { api } from "@/utils/api";
 import { getPassengers } from "@/utils/commutes";
 import {
@@ -136,7 +137,7 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
             <Stack spacing={0}>
               <HStack>
                 <Text fontSize="sm" fontWeight="bold">
-                  {dayjs(props.date).format("dddd DD MMM HH:mm")}
+                  {dayjs(props.date).format(FULL_TEXT_DATE_WITH_TIME)}
                 </Text>
               </HStack>
               <Text fontSize="sm">
