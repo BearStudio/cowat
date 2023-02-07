@@ -266,6 +266,25 @@ export const commuteRouter = createTRPCRouter({
           gte: dayjs().startOf("day").toDate(),
           lte: dayjs().add(7, "days").endOf("day").toDate(),
         },
+        OR: [
+          {
+            createdById: ctx.session.user.id,
+          },
+          {
+            stops: {
+              some: {
+                passengers: {
+                  some: {
+                    userId: ctx.session.user.id,
+                    requestStatus: {
+                      notIn: ["CANCELED", "REFUSED"],
+                    },
+                  },
+                },
+              },
+            },
+          },
+        ],
       },
       include: {
         createdBy: true,
