@@ -237,7 +237,9 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
                         )}
                       </Stack>
                       {!isCurrentUserDriver &&
-                        (!isPassenger || passengerStatus === "CANCELED") && (
+                        (!isPassenger ||
+                          passengerStatus === "CANCELED" ||
+                          passengerStatus === "REFUSED") && (
                           <HStack>
                             <Button
                               variant="primary"
