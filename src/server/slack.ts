@@ -3,6 +3,7 @@ import { env } from "@/env/server.mjs";
 import type { Prisma } from "@prisma/client";
 import dayjs from "dayjs";
 import { searchOnMaps } from "@/constants/google";
+import { FULL_TEXT_DATE_WITH_TIME } from "@/constants/dates";
 
 export const notify = SlackNotify(env.SLACK_WEBHOOK_URL);
 
@@ -59,9 +60,9 @@ const newCommute = async (
         type: "section",
         text: {
           type: "mrkdwn",
-          text: `A new commute for **${dayjs(commute.date).format(
-            "DD/MM/YYYY"
-          )}** has been created by ${createdBy} (💺 ${
+          text: `A new commute for *${dayjs(commute.date).format(
+            FULL_TEXT_DATE_WITH_TIME
+          )}* has been created by ${createdBy} (💺 ${
             commute.seats
           } seats available) @here`,
         },
