@@ -263,27 +263,43 @@ export const commuteRouter = createTRPCRouter({
   allUpcomingCommutes: protectedProcedure.query(async ({ ctx }) => {
     const commutes = await ctx.prisma.commute.findMany({
       where: {
-        date: {
-          gte: dayjs().startOf("day").toDate(),
-          lte: dayjs().add(7, "days").endOf("day").toDate(),
-        },
         OR: [
           {
-            createdById: ctx.session.user.id,
+            date: {
+              gte: dayjs().toDate(),
+              lte: dayjs().add(14, "days").endOf("day").toDate(),
+            },
           },
           {
-            stops: {
-              some: {
-                passengers: {
-                  some: {
-                    userId: ctx.session.user.id,
-                    requestStatus: {
-                      notIn: ["CANCELED", "REFUSED"],
-                    },
-                  },
+            AND: [
+              {
+                date: {
+                  gte: dayjs().startOf("day").toDate(),
+                  lte: dayjs().add(7, "days").endOf("day").toDate(),
                 },
               },
-            },
+              {
+                OR: [
+                  {
+                    createdById: ctx.session.user.id,
+                  },
+                  {
+                    stops: {
+                      some: {
+                        passengers: {
+                          some: {
+                            userId: ctx.session.user.id,
+                            requestStatus: {
+                              notIn: ["CANCELED", "REFUSED"],
+                            },
+                          },
+                        },
+                      },
+                    },
+                  },
+                ],
+              },
+            ],
           },
         ],
       },
