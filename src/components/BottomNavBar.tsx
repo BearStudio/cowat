@@ -9,7 +9,9 @@ import { api } from "@/utils/api";
 import type { IconType } from "react-icons";
 
 export const BottomNavBar = (props: StackProps) => {
-  const requests = api.commute.allRequestsForMyCommute.useQuery();
+  const requests = api.commute.allRequestsForMyCommute.useQuery(undefined, {
+    refetchInterval: 30_000,
+  });
 
   return (
     <HStack as="nav" {...props}>
@@ -21,21 +23,24 @@ export const BottomNavBar = (props: StackProps) => {
       </NavBarItem>
       <NavBarItem icon={Bell} href="/requests" position="relative">
         Requests
-        <Flex
-          position="absolute"
-          top="2"
-          right="5"
-          fontWeight="bold"
-          color="white"
-          bg="error.500"
-          w="4"
-          h="4"
-          borderRadius="full"
-          justify="center"
-          align="center"
-        >
-          {requests.data?.length}
-        </Flex>
+        {!!requests.data?.length && (
+          <Flex
+            position="absolute"
+            top="50%"
+            left="50%"
+            transform="translate(20%, -140%)"
+            fontWeight="bold"
+            color="white"
+            bg="error.500"
+            w="4"
+            h="4"
+            borderRadius="full"
+            justify="center"
+            align="center"
+          >
+            {requests.data?.length}
+          </Flex>
+        )}
       </NavBarItem>
       <NavBarItem icon={User} href="/account">
         Account
