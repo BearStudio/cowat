@@ -1,7 +1,6 @@
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { z } from "zod";
 import { slack } from "@/server/slack";
-import { TRPCError } from "@trpc/server";
 import dayjs from "dayjs";
 import { RequestStatus } from "@prisma/client";
 import { groupBy } from "remeda";
@@ -54,28 +53,6 @@ export const commuteRouter = createTRPCRouter({
 
       return commute;
     }),
-  myCommute: protectedProcedure.query(async ({ ctx }) => {
-    const commutes = await ctx.prisma.commute.findMany({
-      where: {
-        createdById: ctx.session.user.id,
-      },
-      include: {
-        createdBy: true,
-        stops: {
-          include: {
-            location: true,
-            passengers: {
-              include: {
-                user: true,
-              },
-            },
-          },
-        },
-      },
-    });
-
-    return commutes;
-  }),
   allMyCommutes: protectedProcedure.query(async ({ ctx }) => {
     const commutes = await ctx.prisma.commute.findMany({
       where: {
@@ -128,110 +105,6 @@ export const commuteRouter = createTRPCRouter({
 
     return commutes;
   }),
-  commute: protectedProcedure
-    .input(
-      z.object({
-        id: z.string(),
-      })
-    )
-    .query(async ({ input, ctx }) => {
-      const commute = ctx.prisma.commute.findFirstOrThrow({
-        where: {
-          id: input.id,
-        },
-        include: {
-          stops: {
-            include: {
-              location: true,
-              passengers: {
-                include: {
-                  user: true,
-                },
-              },
-            },
-          },
-          createdBy: {
-            select: {
-              name: true,
-            },
-          },
-        },
-      });
-
-      if (!commute) {
-        throw new TRPCError({
-          code: "NOT_FOUND",
-        });
-      }
-
-      return commute;
-    }),
-  todayCommutes: protectedProcedure.query(async ({ ctx }) => {
-    const commutes = await ctx.prisma.commute.findMany({
-      where: {
-        AND: [
-          {
-            date: {
-              gt: dayjs().startOf("day").toDate(),
-            },
-          },
-          {
-            date: {
-              lt: dayjs().endOf("day").toDate(),
-            },
-          },
-        ],
-      },
-      include: {
-        stops: {
-          include: {
-            location: true,
-            passengers: {
-              include: {
-                user: true,
-              },
-            },
-          },
-        },
-        createdBy: true,
-      },
-    });
-
-    return commutes;
-  }),
-  myBookings: protectedProcedure.query(async ({ ctx }) => {
-    const commutes = await ctx.prisma.commute.findMany({
-      where: {
-        stops: {
-          some: {
-            passengers: {
-              some: {
-                userId: ctx.session.user.id,
-                requestStatus: {
-                  notIn: ["CANCELED", "REFUSED"],
-                },
-              },
-            },
-          },
-        },
-      },
-      include: {
-        stops: {
-          include: {
-            location: true,
-            passengers: {
-              include: {
-                user: true,
-              },
-            },
-          },
-        },
-        createdBy: true,
-      },
-    });
-
-    return commutes;
-  }),
   allRequestsForMyCommute: protectedProcedure.query(async ({ ctx }) => {
     const requests = ctx.prisma.passengersOnStops.findMany({
       where: {
@@ -265,6 +138,7 @@ export const commuteRouter = createTRPCRouter({
 
     const commutes = await ctx.prisma.commute.findMany({
       where: {
+        isDeleted: false,
         OR: [
           {
             date: {
@@ -323,4 +197,18 @@ export const commuteRouter = createTRPCRouter({
       numberOfDays: NUMBER_OF_DAYS,
     };
   }),
+  cancelCommute: protectedProcedure
+    .input(z.object({ id: z.string().cuid() }))
+    .mutation(async ({ ctx, input }) => {
+      await ctx.prisma.commute.update({
+        where: {
+          id: input.id,
+          createdById: ctx.session.user.id,
+        },
+        data: {
+          isDeleted: true,
+        },
+      });
+      // TODO send notification to passengers
+    }),
 });

@@ -37,7 +37,7 @@ export const ConfirmPopover: React.FC<
   message,
   onConfirm,
   confirmText,
-  confirmVariant = "@primary",
+  confirmVariant = "primary",
   cancelText,
   ...rest
 }) => {

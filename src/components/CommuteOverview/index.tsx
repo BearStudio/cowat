@@ -3,6 +3,7 @@ import { FULL_TEXT_DATE_WITH_TIME } from "@/constants/dates";
 import { api } from "@/utils/api";
 import { getPassengers } from "@/utils/commutes";
 import {
+  chakra,
   Accordion,
   AccordionButton,
   AccordionIcon,
@@ -28,6 +29,7 @@ import type { Prisma } from "@prisma/client";
 import dayjs from "dayjs";
 import { CheckCircle2, Clock } from "lucide-react";
 import { useSession } from "next-auth/react";
+import { ConfirmModal } from "../ConfirmModal";
 
 export type CommuteOverviewProps = Prisma.CommuteGetPayload<{
   include: {
@@ -55,6 +57,12 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
     onSuccess: async () => {
       await ctx.commute.invalidate();
       await ctx.stop.invalidate();
+    },
+  });
+
+  const cancelCommute = api.commute.cancelCommute.useMutation({
+    onSuccess: async () => {
+      await ctx.commute.invalidate();
     },
   });
 
@@ -88,6 +96,10 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
 
   const passengers = getPassengers(props.stops);
   const commuteColor = (() => {
+    if (props.isDeleted) {
+      return "error.500";
+    }
+
     if (isCurrentUserDriver) {
       return "brand.500";
     }
@@ -190,9 +202,14 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
                     Passenger <Icon icon={Clock} />
                   </Badge>
                 )}
-                {isCurrentUserDriver && (
+                {isCurrentUserDriver && !props.isDeleted && (
                   <Badge colorScheme="brand" variant="solid">
                     Driver
+                  </Badge>
+                )}
+                {props.isDeleted && (
+                  <Badge colorScheme="error" variant="solid">
+                    Canceled
                   </Badge>
                 )}
               </Flex>
@@ -277,6 +294,47 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
                     </HStack>
                   );
                 })}
+                {isCurrentUserDriver && !props.isDeleted && (
+                  <Flex>
+                    <ConfirmModal
+                      onConfirm={() => {
+                        cancelCommute.mutate({ id: props.id });
+                      }}
+                      confirmVariant="danger"
+                      confirmText="Cancel commute"
+                      cancelText="Keep"
+                      title="You're about to cancel the following commute"
+                      message={
+                        <>
+                          <strong>
+                            {dayjs(props.date).format(FULL_TEXT_DATE_WITH_TIME)}
+                          </strong>{" "}
+                          commute
+                          <br />
+                          with{" "}
+                          <chakra.strong
+                            color={
+                              passengers.length > 0
+                                ? "error.700"
+                                : "success.600"
+                            }
+                          >
+                            {passengers.length ?? ""} passenger
+                            {passengers.length > 1 ? "s" : ""}
+                          </chakra.strong>
+                          .
+                        </>
+                      }
+                    >
+                      <Button
+                        variant="danger"
+                        isLoading={cancelCommute.isLoading}
+                      >
+                        Cancel Commute
+                      </Button>
+                    </ConfirmModal>
+                  </Flex>
+                )}
               </Stack>
             </AccordionPanel>
           </AccordionItem>

@@ -35,7 +35,7 @@ export const ConfirmModal: React.FC<
   message,
   onConfirm,
   confirmText,
-  confirmVariant = "@primary",
+  confirmVariant = "primary",
   cancelText,
   ...rest
 }) => {
@@ -69,7 +69,7 @@ export const ConfirmModal: React.FC<
         <Portal>
           <ModalOverlay />
           <ModalContent>
-            <ModalBody fontSize="sm">
+            <ModalBody fontSize="sm" pt={4}>
               {displayHeading && (
                 <Heading size="sm" mb={message ? 1 : 0}>
                   {displayHeading}
