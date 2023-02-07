@@ -239,7 +239,8 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
                       {!isCurrentUserDriver &&
                         (!isPassenger ||
                           passengerStatus === "CANCELED" ||
-                          passengerStatus === "REFUSED") && (
+                          passengerStatus === "REFUSED") &&
+                        dayjs().isBefore(dayjs(props.date)) && (
                           <HStack>
                             <Button
                               variant="primary"
