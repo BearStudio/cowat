@@ -261,13 +261,15 @@ export const commuteRouter = createTRPCRouter({
     return requests;
   }),
   allUpcomingCommutes: protectedProcedure.query(async ({ ctx }) => {
+    const NUMBER_OF_DAYS = 14;
+
     const commutes = await ctx.prisma.commute.findMany({
       where: {
         OR: [
           {
             date: {
               gte: dayjs().toDate(),
-              lte: dayjs().add(14, "days").endOf("day").toDate(),
+              lte: dayjs().add(NUMBER_OF_DAYS, "days").endOf("day").toDate(),
             },
           },
           {
@@ -314,8 +316,11 @@ export const commuteRouter = createTRPCRouter({
       },
     });
 
-    return groupBy(commutes, (commute) =>
-      dayjs(commute.date).format(YEAR_MONTH_DAY)
-    );
+    return {
+      commutes: groupBy(commutes, (commute) =>
+        dayjs(commute.date).format(YEAR_MONTH_DAY)
+      ),
+      numberOfDays: NUMBER_OF_DAYS,
+    };
   }),
 });

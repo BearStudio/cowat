@@ -32,8 +32,9 @@ import { useSession } from "next-auth/react";
 const Dashboard = () => {
   const commutesByDate = api.commute.allUpcomingCommutes.useQuery();
 
-  const days = Array.from({ length: 14 }, (_, i) =>
-    dayjs().add(i, "day").format(YEAR_MONTH_DAY)
+  const days = Array.from(
+    { length: commutesByDate.data?.numberOfDays ?? 0 },
+    (_, i) => dayjs().add(i, "day").format(YEAR_MONTH_DAY)
   );
 
   return (
@@ -43,13 +44,13 @@ const Dashboard = () => {
           <Spinner />
         </Center>
       )}
-      {commutesByDate.data && (
+      {commutesByDate.data?.commutes && (
         <Stack spacing="8">
           {days.map((day) => (
             <Day
               key={day}
               date={day}
-              commutes={commutesByDate.data?.[day] ?? []}
+              commutes={commutesByDate.data?.commutes?.[day] ?? []}
             />
           ))}
         </Stack>
@@ -58,9 +59,12 @@ const Dashboard = () => {
   );
 };
 
+type UpcomingCommutes =
+  RouterOutputs["commute"]["allUpcomingCommutes"]["commutes"];
+
 type DayProps = {
   date: string;
-  commutes?: RouterOutputs["commute"]["allUpcomingCommutes"][keyof RouterOutputs["commute"]["allUpcomingCommutes"]][number][];
+  commutes?: UpcomingCommutes[keyof UpcomingCommutes][number][];
 };
 
 const Day = ({ date, commutes }: DayProps) => {
@@ -149,7 +153,7 @@ const Day = ({ date, commutes }: DayProps) => {
 type CommutesModalProps = {
   date: string;
   onClose: ModalProps["onClose"];
-  commutes: RouterOutputs["commute"]["allUpcomingCommutes"][keyof RouterOutputs["commute"]["allUpcomingCommutes"]][number][];
+  commutes: UpcomingCommutes[keyof UpcomingCommutes][number][];
 };
 
 const CommutesModal = ({ onClose, commutes, date }: CommutesModalProps) => {
