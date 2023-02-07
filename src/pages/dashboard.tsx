@@ -63,7 +63,8 @@ const Day = ({ date, commutes }: DayProps) => {
         stop.passengers.some(
           (passenger) =>
             passenger.userId === session?.user?.id &&
-            passenger.requestStatus !== "CANCELED"
+            passenger.requestStatus !== "CANCELED" &&
+            passenger.requestStatus !== "REFUSED"
         )
       )
   );
