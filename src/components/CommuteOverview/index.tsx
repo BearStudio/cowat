@@ -110,7 +110,7 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
       boxShadow="card"
       overflow="hidden"
     >
-      <CardHeader pb={0} position="relative">
+      <CardHeader pb={0} zIndex={1} position="relative">
         {(isPassenger || isCurrentUserDriver) && (
           <Box
             position="absolute"
@@ -156,7 +156,7 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
           </AvatarGroup>
         </Flex>
       </CardHeader>
-      <CardBody pt={2}>
+      <CardBody pt={2} zIndex={2}>
         <Accordion allowToggle>
           <AccordionItem border="none">
             <AccordionButton
