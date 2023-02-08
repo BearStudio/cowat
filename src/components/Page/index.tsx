@@ -52,7 +52,7 @@ type PageTopBarProps = FlexProps & {
   showBack?: boolean;
 };
 
-const topBarOffsetScroll = 40;
+const topBarOffsetScroll = 80;
 
 export const PageTopBar = ({
   children,
@@ -60,37 +60,17 @@ export const PageTopBar = ({
   showBack = false,
   ...rest
 }: PageTopBarProps) => {
-  const [ref, { height }] = useMeasure();
-
-  const [isScrolled, setIsScrolled] = useState(false);
-
-  useEffect(() => {
-    const onScroll = () => {
-      if (window.scrollY > topBarOffsetScroll) {
-        setIsScrolled(true);
-      } else {
-        setIsScrolled(false);
-      }
-    };
-    onScroll();
-    window.addEventListener("scroll", onScroll);
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-    };
-  }, []);
-
   return (
     <>
       <Flex
         zIndex="2"
-        ref={ref}
         position="fixed"
         top={0}
         right={0}
         left={0}
         direction="column"
-        pt={isScrolled ? 2 : 4}
-        pb={isScrolled ? 2 : 4}
+        justifyContent="center"
+        h="12"
         boxShadow="layout"
         transition="0.2s"
         bg="white"
@@ -98,7 +78,7 @@ export const PageTopBar = ({
         {...rest}
       >
         <Box w="full" h="0" pb="safe-top" />
-        <PageContainer>
+        <PageContainer flex="none">
           <HStack spacing="4">
             {showBack && (
               <Box ms={{ base: 0, lg: "-3.5rem" }}>
@@ -114,7 +94,7 @@ export const PageTopBar = ({
           </HStack>
         </PageContainer>
       </Flex>
-      <Box h={`${height + PAGE_TOPBAR_MARGIN}px`} />
+      <Box h="12" />
     </>
   );
 };
@@ -127,7 +107,7 @@ type PageContentProps = FlexProps & {
 export const PageContent = ({ children, ...rest }: PageContentProps) => {
   const { nav } = useContext(PageContext);
   return (
-    <Flex zIndex="1" direction="column" flex="1" pb="10" {...rest}>
+    <Flex zIndex="1" direction="column" flex="1" pt="4" pb="10" {...rest}>
       <PageContainer>
         <Stack
           direction={{ base: "column", lg: "row" }}
