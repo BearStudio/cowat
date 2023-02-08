@@ -1,3 +1,4 @@
+import { ConfirmModal } from "@/components/ConfirmModal";
 import { EmptyState } from "@/components/EmptyState";
 import { Icon } from "@/components/Icon";
 import { searchOnMaps } from "@/constants/google";
@@ -10,12 +11,14 @@ import {
   CardBody,
   CardFooter,
   CardHeader,
+  Divider,
   Heading,
   HStack,
   IconButton,
   Link as ChakraLink,
   SimpleGrid,
   Stack,
+  Text,
 } from "@chakra-ui/react";
 import { ArrowLeft, ExternalLink, Plus, Trash } from "lucide-react";
 import Link from "next/link";
@@ -91,13 +94,34 @@ const LocationCard = ({ location }: LocationCardProps) => {
         >
           Maps
         </Button>
-        <IconButton
-          variant="danger"
-          aria-label="Remove this location"
-          icon={<Icon icon={Trash} />}
-          onClick={() => deleteLocation.mutate(location.id)}
-          isLoading={deleteLocation.isLoading}
-        />
+        <ConfirmModal
+          onConfirm={() => deleteLocation.mutate(location.id)}
+          title="Delete this location?"
+          message={
+            <Stack pt={2}>
+              <Divider />
+              <HStack>
+                <Text>📍</Text>
+                <Stack spacing={0}>
+                  <Text fontWeight="bold">{location.name}</Text>
+                  <Text fontSize="sm" color="gray.500">
+                    {location.address}
+                  </Text>
+                </Stack>
+              </HStack>
+              <Divider />
+            </Stack>
+          }
+          confirmText="Delete"
+          confirmVariant="danger"
+        >
+          <IconButton
+            variant="danger"
+            aria-label="Remove this location"
+            icon={<Icon icon={Trash} />}
+            isLoading={deleteLocation.isLoading}
+          />
+        </ConfirmModal>
       </CardFooter>
     </Card>
   );
