@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext } from "react";
 
 import type { FlexProps } from "@chakra-ui/react";
 import {
@@ -11,8 +11,6 @@ import {
 } from "@chakra-ui/react";
 import { FiArrowLeft } from "react-icons/fi";
 import useMeasure from "react-use-measure";
-
-const PAGE_TOPBAR_MARGIN = 24;
 
 type PageContextValue = {
   nav: React.ReactNode;
@@ -51,8 +49,6 @@ type PageTopBarProps = FlexProps & {
   onBack?(): void;
   showBack?: boolean;
 };
-
-const topBarOffsetScroll = 80;
 
 export const PageTopBar = ({
   children,
