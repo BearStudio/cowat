@@ -50,6 +50,8 @@ type PageTopBarProps = FlexProps & {
   showBack?: boolean;
 };
 
+const TOP_BAR_HEIGHT = 16;
+
 export const PageTopBar = ({
   children,
   onBack = () => undefined,
@@ -66,7 +68,7 @@ export const PageTopBar = ({
         left={0}
         direction="column"
         justifyContent="center"
-        h="12"
+        h={TOP_BAR_HEIGHT}
         boxShadow="layout"
         transition="0.2s"
         bg="white"
@@ -90,7 +92,7 @@ export const PageTopBar = ({
           </HStack>
         </PageContainer>
       </Flex>
-      <Box h="12" />
+      <Box h={TOP_BAR_HEIGHT} />
     </>
   );
 };
