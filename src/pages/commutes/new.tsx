@@ -1,5 +1,5 @@
 import type { NextPage } from "next";
-import { Formiz, useForm, useRepeater } from "@formiz/core";
+import { Formiz, useForm, useFormContext, useRepeater } from "@formiz/core";
 import { isMinNumber } from "@formiz/validations";
 import { FieldInput } from "@/components/FieldInput";
 import type { RouterInputs } from "@/utils/api";
@@ -33,9 +33,6 @@ const New: NextPage = () => {
   const router = useRouter();
 
   const form = useForm();
-  const ctx = api.useContext();
-
-  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const stops = useRepeater({
     name: "stops",
@@ -45,15 +42,6 @@ const New: NextPage = () => {
   const createCommute = api.commute.createCommute.useMutation({
     onSuccess: () => {
       router.push("/commutes");
-    },
-  });
-
-  const locations = api.location.mine.useQuery();
-
-  const location = api.location.create.useMutation({
-    onSuccess: () => {
-      ctx.location.invalidate();
-      onClose();
     },
   });
 
@@ -99,39 +87,11 @@ const New: NextPage = () => {
             required
           />
           {stops.keys.map((key, index) => (
-            <Stack key={key}>
-              <HStack align="end">
-                <FieldSelect
-                  label={`📍 Stop ${index + 1}`}
-                  name={`stops[${index}].location`}
-                  placeholder="Please select a location"
-                  options={
-                    locations.data?.map((location) => ({
-                      label: location.name,
-                      value: location.id,
-                    })) ?? []
-                  }
-                  required="Stop is required"
-                />
-                <IconButton
-                  aria-label="Add a location"
-                  icon={<Icon icon={Plus} />}
-                  onClick={onOpen}
-                />
-              </HStack>
-              <HStack align="end">
-                <FieldInput
-                  name={`stops[${index}].time`}
-                  placeholder="🕘 09:00"
-                />
-                <IconButton
-                  variant="danger"
-                  aria-label={`Remove stop ${index}`}
-                  icon={<FiTrash />}
-                  onClick={() => stops.remove(index)}
-                />
-              </HStack>
-            </Stack>
+            <Stop
+              key={key}
+              index={index}
+              onRemove={() => stops.remove(index)}
+            />
           ))}
           <AddPlaceholder onClick={() => stops.append()}>
             <Icon icon={FiPlus} /> Add Stop 📍
@@ -145,15 +105,73 @@ const New: NextPage = () => {
           </Button>
         </Stack>
       </Formiz>
+    </LayoutAuthenticated>
+  );
+};
+type StopProps = {
+  index: number;
+  onRemove: () => void;
+};
 
+const Stop = ({ index, onRemove }: StopProps) => {
+  const ctx = api.useContext();
+  const form = useFormContext();
+  const newLocationForm = useForm();
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const locations = api.location.mine.useQuery();
+
+  const createLocation = api.location.create.useMutation({
+    onSuccess: async ({ id }) => {
+      await ctx.location.invalidate();
+      form.setValues({
+        [`stops[${index}].location`]: id,
+      });
+      onClose();
+    },
+  });
+
+  return (
+    <>
+      <Stack>
+        <HStack align="end">
+          <FieldSelect
+            label={`📍 Stop ${index + 1}`}
+            name={`stops[${index}].location`}
+            placeholder="Please select a location"
+            options={
+              locations.data?.map((location) => ({
+                label: location.name,
+                value: location.id,
+              })) ?? []
+            }
+            required="Stop is required"
+          />
+          <IconButton
+            aria-label="Add a location"
+            icon={<Icon icon={Plus} />}
+            onClick={onOpen}
+          />
+        </HStack>
+        <HStack align="end">
+          <FieldInput name={`stops[${index}].time`} placeholder="🕘 09:00" />
+          <IconButton
+            variant="danger"
+            aria-label={`Remove stop ${index}`}
+            icon={<FiTrash />}
+            onClick={() => onRemove()}
+          />
+        </HStack>
+      </Stack>
       {isOpen && (
         <Modal isOpen onClose={onClose} size="sm">
           <ModalOverlay />
           <Formiz
-            autoForm
-            onValidSubmit={(values: RouterInputs["location"]["create"]) =>
-              location.mutate(values)
-            }
+            connect={newLocationForm}
+            onValidSubmit={(values: RouterInputs["location"]["create"]) => {
+              createLocation.mutate(values);
+            }}
           >
             <ModalContent>
               <ModalHeader>New location</ModalHeader>
@@ -163,7 +181,11 @@ const New: NextPage = () => {
               </ModalBody>
 
               <ModalFooter>
-                <Button variant="primary" type="submit">
+                <Button
+                  variant="primary"
+                  isLoading={createLocation.isLoading}
+                  onClick={() => newLocationForm.submit()}
+                >
                   Save
                 </Button>
               </ModalFooter>
@@ -171,7 +193,7 @@ const New: NextPage = () => {
           </Formiz>
         </Modal>
       )}
-    </LayoutAuthenticated>
+    </>
   );
 };
 
