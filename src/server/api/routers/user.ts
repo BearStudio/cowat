@@ -20,4 +20,13 @@ export const userRouter = createTRPCRouter({
 
       return user;
     }),
+  profile: protectedProcedure.query(async ({ ctx }) => {
+    return ctx.prisma.user.findFirst({
+      where: {
+        id: {
+          equals: ctx.session.user.id,
+        },
+      },
+    });
+  }),
 });
