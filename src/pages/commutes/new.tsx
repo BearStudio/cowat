@@ -155,7 +155,7 @@ const Stop = ({ index, onRemove }: StopProps) => {
           />
         </HStack>
         <HStack align="end">
-          <FieldInput name={`stops[${index}].time`} />
+          <FieldInput name={`stops[${index}].time`} placeholder="00:00" />
           <IconButton
             variant="danger"
             aria-label={`Remove stop ${index}`}
