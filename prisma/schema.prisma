@@ -106,6 +106,7 @@ model Commute {
     // If the driver is late, number of minutes of delay
     delay       Int?
     stops       Stop[]
+    comment     String?       @db.Text
 
     @@index([createdById])
 }

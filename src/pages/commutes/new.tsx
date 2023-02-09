@@ -27,6 +27,7 @@ import { FieldSelect } from "@/components/FieldSelect";
 import { Icon } from "@/components/Icon";
 import { ArrowLeft, Plus } from "lucide-react";
 import { LocationForm } from "@/components/LocationForm";
+import { FieldTextarea } from "@/components/FieldTextarea";
 
 type CreateCommuteInput = RouterInputs["commute"]["createCommute"];
 const New: NextPage = () => {
@@ -96,10 +97,11 @@ const New: NextPage = () => {
           <AddPlaceholder onClick={() => stops.append()}>
             <Icon icon={FiPlus} /> Add Stop 📍
           </AddPlaceholder>
+          <FieldTextarea label="Comment" name="comment" />
           <Button
             variant="primary"
             type="submit"
-            isDisabled={createCommute.isLoading}
+            isLoading={createCommute.isLoading}
           >
             Save
           </Button>

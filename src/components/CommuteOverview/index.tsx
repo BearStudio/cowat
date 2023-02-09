@@ -183,36 +183,39 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
                 inset: 0,
               }}
             >
-              <Flex flex="1" align="center" justify="space-between">
-                <Flex align="center">
-                  <AccordionIcon />
-                  <Text fontWeight="medium" fontSize="sm">
-                    {props.stops.length} stop{props.stops.length > 1 ? "s" : ""}{" "}
-                    · {passengers.length}/{props.seats} seat
-                    {props.seats > 1 ? "s" : ""}
-                  </Text>
+              <Stack spacing="0" w="full">
+                <Flex flex="1" align="center" justify="space-between">
+                  <Flex align="center">
+                    <AccordionIcon />
+                    <Text fontWeight="medium" fontSize="sm">
+                      {props.stops.length} stop
+                      {props.stops.length > 1 ? "s" : ""} · {passengers.length}/
+                      {props.seats} seat
+                      {props.seats > 1 ? "s" : ""}
+                    </Text>
+                  </Flex>
+                  {passengerStatus === "ACCEPTED" && (
+                    <Badge colorScheme="success" variant="solid">
+                      Passenger <Icon icon={CheckCircle2} />
+                    </Badge>
+                  )}
+                  {passengerStatus === "REQUESTED" && (
+                    <Badge colorScheme="warning" variant="solid">
+                      Passenger <Icon icon={Clock} />
+                    </Badge>
+                  )}
+                  {isCurrentUserDriver && !props.isDeleted && (
+                    <Badge colorScheme="brand" variant="solid">
+                      Driver
+                    </Badge>
+                  )}
+                  {props.isDeleted && (
+                    <Badge colorScheme="error" variant="solid">
+                      Canceled
+                    </Badge>
+                  )}
                 </Flex>
-                {passengerStatus === "ACCEPTED" && (
-                  <Badge colorScheme="success" variant="solid">
-                    Passenger <Icon icon={CheckCircle2} />
-                  </Badge>
-                )}
-                {passengerStatus === "REQUESTED" && (
-                  <Badge colorScheme="warning" variant="solid">
-                    Passenger <Icon icon={Clock} />
-                  </Badge>
-                )}
-                {isCurrentUserDriver && !props.isDeleted && (
-                  <Badge colorScheme="brand" variant="solid">
-                    Driver
-                  </Badge>
-                )}
-                {props.isDeleted && (
-                  <Badge colorScheme="error" variant="solid">
-                    Canceled
-                  </Badge>
-                )}
-              </Flex>
+              </Stack>
             </AccordionButton>
             <AccordionPanel p={0}>
               <Stack
@@ -220,6 +223,16 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
                 spacing="4"
               >
                 <StackDivider />
+                {props.comment && (
+                  <>
+                    <Text fontSize="xs" textAlign="left" color="gray.500">
+                      {props.comment}
+                    </Text>
+
+                    <StackDivider />
+                  </>
+                )}
+
                 {props.stops.map((stop) => {
                   const passengers = stop.passengers.filter(
                     (passenger) => passenger.requestStatus !== "CANCELED"

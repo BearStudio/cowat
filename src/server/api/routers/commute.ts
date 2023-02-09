@@ -18,6 +18,7 @@ export const commuteRouter = createTRPCRouter({
             time: z.string()?.nullable(),
           })
         ),
+        comment: z.string(),
       })
     )
     .mutation(async ({ input, ctx }) => {
@@ -32,6 +33,7 @@ export const commuteRouter = createTRPCRouter({
               locationId: stop.location,
             })),
           },
+          comment: input.comment,
         },
         include: {
           createdBy: {
