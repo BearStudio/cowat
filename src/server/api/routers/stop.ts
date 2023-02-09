@@ -152,13 +152,35 @@ export const stopRouter = createTRPCRouter({
         });
       }
 
-      await ctx.prisma.passengersOnStops.update({
+      const passengerOnStopUpdated = await ctx.prisma.passengersOnStops.update({
         where: {
           userId_stopId: { stopId: input.stopId, userId: input.passengerId },
         },
         data: {
           requestStatus: input.requestStatus,
         },
+        include: {
+          stop: {
+            include: {
+              commute: {
+                include: {
+                  createdBy: {
+                    include: {
+                      accounts: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
+          user: {
+            include: {
+              accounts: true,
+            },
+          },
+        },
       });
+
+      slack.request(passengerOnStopUpdated);
     }),
 });

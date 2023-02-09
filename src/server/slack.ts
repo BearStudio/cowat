@@ -2,7 +2,6 @@ import SlackNotify from "slack-notify";
 import { env } from "@/env/server.mjs";
 import type { Prisma } from "@prisma/client";
 import dayjs from "dayjs";
-import { searchOnMaps } from "@/constants/google";
 import { FULL_TEXT_DATE_WITH_TIME } from "@/constants/dates";
 
 export const notify = SlackNotify(env.SLACK_WEBHOOK_URL);
@@ -175,7 +174,70 @@ const newBookingFrom = (
   } as any);
 };
 
+const request = (
+  passengerOnStop: Prisma.PassengersOnStopsGetPayload<{
+    include: {
+      stop: {
+        include: {
+          commute: {
+            include: {
+              createdBy: {
+                include: {
+                  accounts: true;
+                };
+              };
+            };
+          };
+        };
+      };
+      user: {
+        include: {
+          accounts: true;
+        };
+      };
+    };
+  }>
+) => {
+  const driverSlackId = passengerOnStop.stop.commute?.createdBy?.accounts.find(
+    (account) => account.provider === "slack"
+  )?.providerAccountId;
+
+  const driver = driverSlackId
+    ? `<@${driverSlackId}>`
+    : passengerOnStop.stop.commute?.createdBy?.email ?? "";
+
+  const passengerSlackId = passengerOnStop.user.accounts.find(
+    (account) => account.provider === "slack"
+  )?.providerAccountId;
+
+  const passenger = passengerSlackId
+    ? `<@${passengerSlackId}>`
+    : passengerOnStop.stop.commute?.createdBy?.email ?? "";
+
+  return notify.send({
+    blocks: [
+      {
+        type: "section",
+        text: {
+          type: "mrkdwn",
+          text: `Hey ${passenger},
+${
+  passengerOnStop.requestStatus === "ACCEPTED" ? "✅" : "❌"
+} ${driver} ${passengerOnStop.requestStatus.toLocaleLowerCase()} your request for *${
+            passengerOnStop.stop.commute?.date
+              ? dayjs(passengerOnStop.stop.commute.date).format(
+                  "dddd DD MMM HH:mm"
+                )
+              : ""
+          }* commute.`,
+        },
+      },
+    ],
+  } as any);
+};
+
 export const slack = {
   newBookingFrom,
   newCommute,
+  request,
 };
