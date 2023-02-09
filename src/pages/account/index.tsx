@@ -1,7 +1,7 @@
 import { Icon } from "@/components/Icon";
 import { LayoutAuthenticated } from "@/layout/LayoutAuthenticated";
 import { Button, Heading, Stack } from "@chakra-ui/react";
-import { MapPin } from "lucide-react";
+import { MapPin, UserCogIcon } from "lucide-react";
 import { signOut } from "next-auth/react";
 import Link from "next/link";
 
@@ -20,10 +20,10 @@ const AccountPage = () => {
         <Button
           variant="default"
           as={Link}
-          href="/account/preferences"
-          isDisabled
+          href="/account/profile"
+          leftIcon={<Icon icon={UserCogIcon} />}
         >
-          Preferences
+          Profile
         </Button>
         <Button variant="link" onClick={() => signOut()}>
           Log out
