@@ -1,12 +1,20 @@
 import type { NextPage } from "next";
-import { Formiz, useForm, useFormContext, useRepeater } from "@formiz/core";
+import {
+  Formiz,
+  useForm,
+  useFormContext,
+  useFormFields,
+  useRepeater,
+} from "@formiz/core";
 import { isMinNumber } from "@formiz/validations";
 import { FieldInput } from "@/components/FieldInput";
 import type { RouterInputs } from "@/utils/api";
 import { api } from "@/utils/api";
 import { useRouter } from "next/router";
 import {
+  Box,
   Button,
+  Divider,
   Heading,
   HStack,
   IconButton,
@@ -28,6 +36,9 @@ import { Icon } from "@/components/Icon";
 import { ArrowLeft, Plus } from "lucide-react";
 import { LocationForm } from "@/components/LocationForm";
 import { FieldTextarea } from "@/components/FieldTextarea";
+import { FieldTime } from "@/components/FieldTime";
+import { Fragment } from "react";
+import dayjs from "dayjs";
 
 type CreateCommuteInput = RouterInputs["commute"]["createCommute"];
 const New: NextPage = () => {
@@ -36,7 +47,6 @@ const New: NextPage = () => {
   };
 
   const router = useRouter();
-
   const form = useForm();
 
   const stops = useRepeater({
@@ -97,13 +107,16 @@ const New: NextPage = () => {
             formatValue={(value) => new Date(value ?? "")}
             required
           />
+          <Divider />
           {stops.keys.map((key, index) => (
-            <Stop
-              key={key}
-              index={index}
-              isRemovable={stops.keys.length > 1}
-              onRemove={() => stops.remove(index)}
-            />
+            <Fragment key={key}>
+              <Stop
+                index={index}
+                isRemovable={stops.keys.length > 1}
+                onRemove={() => stops.remove(index)}
+              />
+              <Divider />
+            </Fragment>
           ))}
           <AddPlaceholder onClick={() => stops.append()}>
             <Icon icon={FiPlus} /> Add Stop 📍
@@ -148,8 +161,12 @@ const Stop = ({ index, onRemove, isRemovable }: StopProps) => {
 
   return (
     <>
-      <Stack>
-        <HStack align="end">
+      <Stack
+        align="flex-start"
+        direction={{ base: "column", md: "row" }}
+        spacing={{ base: 2, md: 6 }}
+      >
+        <HStack align="flex-start" w="full">
           <FieldSelect
             label={`📍 Stop ${index + 1}`}
             name={`stops[${index}].location`}
@@ -162,21 +179,25 @@ const Stop = ({ index, onRemove, isRemovable }: StopProps) => {
             }
             required="Stop is required"
           />
-          <IconButton
-            aria-label="Add a location"
-            icon={<Icon icon={Plus} />}
-            onClick={onOpen}
-          />
+          <Box pt={8}>
+            <IconButton
+              aria-label="Add a location"
+              icon={<Icon icon={Plus} />}
+              onClick={onOpen}
+            />
+          </Box>
         </HStack>
-        <HStack align="end">
-          <FieldInput name={`stops[${index}].time`} placeholder="00:00" />
-          <IconButton
-            variant="danger"
-            aria-label={`Remove stop ${index}`}
-            icon={<FiTrash />}
-            onClick={() => onRemove()}
-            isDisabled={!isRemovable}
-          />
+        <HStack align="flex-start" spacing={{ base: 2, md: 6 }} w="full">
+          <FieldTime label="🕑 Pick up time" name={`stops[${index}].time`} />
+          <Box pt={8}>
+            <IconButton
+              variant="danger"
+              aria-label={`Remove stop ${index}`}
+              icon={<FiTrash />}
+              onClick={() => onRemove()}
+              isDisabled={!isRemovable}
+            />
+          </Box>
         </HStack>
       </Stack>
       {isOpen && (
