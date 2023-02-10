@@ -81,19 +81,23 @@ const newCommute = async (
         type: "divider",
       },
       ...locationsSlack,
-      {
-        type: "divider",
-      },
-      {
-        type: "context",
-        elements: [
-          {
-            type: "plain_text",
-            text: commute.comment,
-            emoji: true,
-          },
-        ],
-      },
+      ...(commute.comment
+        ? [
+            {
+              type: "divider",
+            },
+            {
+              type: "context",
+              elements: [
+                {
+                  type: "plain_text",
+                  text: commute.comment,
+                  emoji: true,
+                },
+              ],
+            },
+          ]
+        : []),
     ],
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } as any);

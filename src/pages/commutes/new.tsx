@@ -35,7 +35,6 @@ import { Fragment } from "react";
 import { FieldDayPicker } from "@/components/FieldDatePicker";
 import "react-day-picker/dist/style.css";
 import dayjs, { Dayjs } from "dayjs";
-import { DAY_MONTH_YEAR } from "@/constants/dates";
 
 type CreateCommuteInput = RouterInputs["commute"]["createCommute"];
 const New: NextPage = () => {
@@ -53,8 +52,8 @@ const New: NextPage = () => {
   });
 
   const createCommute = api.commute.createCommute.useMutation({
-    onSuccess: () => {
-      router.push("/commutes");
+    onSuccess: async () => {
+      await router.push("/commutes");
     },
   });
 

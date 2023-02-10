@@ -15,10 +15,10 @@ export const commuteRouter = createTRPCRouter({
         stops: z.array(
           z.object({
             location: z.string(),
-            time: z.string()?.nullable(),
+            time: z.string()?.nullish(),
           })
         ),
-        comment: z.string(),
+        comment: z.string().nullish(),
       })
     )
     .mutation(async ({ input, ctx }) => {
