@@ -3,7 +3,14 @@ import { EmptyState } from "@/components/EmptyState";
 import { Icon } from "@/components/Icon";
 import { LayoutAuthenticated } from "@/layout/LayoutAuthenticated";
 import { api } from "@/utils/api";
-import { Heading, HStack, IconButton, Stack } from "@chakra-ui/react";
+import {
+  Center,
+  Heading,
+  HStack,
+  IconButton,
+  Spinner,
+  Stack,
+} from "@chakra-ui/react";
 import { Plus } from "lucide-react";
 import type { NextPage } from "next";
 import NextLink from "next/link";
@@ -27,6 +34,11 @@ const CommutesIndex: NextPage = () => {
         </HStack>
       }
     >
+      {commutes.isLoading && (
+        <Center flex={1}>
+          <Spinner />
+        </Center>
+      )}
       {commutes.data?.length === 0 && (
         <EmptyState>No commute available</EmptyState>
       )}

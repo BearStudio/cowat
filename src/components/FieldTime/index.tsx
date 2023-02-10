@@ -2,7 +2,6 @@ import type { FormGroupProps } from "@/components/FormGroup";
 import { FormGroup } from "@/components/FormGroup";
 import {
   HStack,
-  Input,
   Text,
   NumberInput,
   NumberInputField,
