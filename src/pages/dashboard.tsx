@@ -164,9 +164,15 @@ const CommutesModal = ({ onClose, commutes, date }: CommutesModalProps) => {
         <ModalHeader>{dayjs(date).format(FULL_TEXT_DATE)}</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
-          {commutes.map((commute) => (
-            <CommuteOverview key={commute.id} {...commute} onBooked={onClose} />
-          ))}
+          <Stack spacing="4">
+            {commutes.map((commute) => (
+              <CommuteOverview
+                key={commute.id}
+                {...commute}
+                onBooked={onClose}
+              />
+            ))}
+          </Stack>
         </ModalBody>
 
         <ModalFooter>
