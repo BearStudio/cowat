@@ -18,7 +18,7 @@ import {
   Portal,
   useDisclosure,
 } from "@chakra-ui/react";
-import type { Dayjs } from "dayjs";
+
 import dayjs from "dayjs";
 import { Icon } from "@/components/Icon";
 import { CalendarDays } from "lucide-react";
@@ -27,9 +27,10 @@ import type { FieldProps } from "@formiz/core";
 import { useField } from "@formiz/core";
 import type { FormGroupProps } from "@/components/FormGroup";
 import { FormGroup } from "@/components/FormGroup";
+import "react-day-picker/dist/style.css";
 
 export function FieldDayPicker(
-  props: FieldProps<Dayjs> &
+  props: FieldProps<string> &
     Omit<FormGroupProps, "placeholder"> &
     Pick<InputProps, "placeholder"> & {
       size?: InputGroupProps["size"];
@@ -47,7 +48,10 @@ export function FieldDayPicker(
     setValue,
     value,
     otherProps,
-  } = useField(props);
+  } = useField(props, {
+    formatValue: (v) =>
+      dayjs(v, DAY_MONTH_YEAR).isValid() ? dayjs(v, DAY_MONTH_YEAR) : null,
+  });
   const {
     label,
     placeholder,
@@ -59,7 +63,7 @@ export function FieldDayPicker(
   const { required } = props;
 
   const initialFocusRef = useRef<HTMLButtonElement>(null);
-  const [inputValue, setInputValue] = useState<string>("");
+
   const { isOpen, onOpen, onClose } = useDisclosure();
   const buttonRef = useRef<HTMLButtonElement>(null);
 
@@ -76,19 +80,13 @@ export function FieldDayPicker(
   };
 
   const handleInputChange: ChangeEventHandler<HTMLInputElement> = (e) => {
-    setInputValue(e.currentTarget.value);
-    const date = dayjs(e.currentTarget.value, DAY_MONTH_YEAR);
-
-    if (date.isValid()) {
-      setValue(date);
-    }
+    setValue(e.currentTarget.value);
   };
 
   const handleDaySelect = (date: Date | undefined) => {
-    setValue(dayjs(date));
+    setValue(dayjs(date).format(DAY_MONTH_YEAR));
 
     if (date) {
-      setInputValue(dayjs(date).format(DAY_MONTH_YEAR));
       closePopper();
     }
   };
@@ -130,8 +128,16 @@ export function FieldDayPicker(
                   <PopoverBody fontSize="sm">
                     <DayPicker
                       mode="single"
-                      defaultMonth={value?.toDate?.() ?? undefined}
-                      selected={value?.toDate?.() ?? undefined}
+                      defaultMonth={
+                        value && dayjs(value, DAY_MONTH_YEAR).isValid()
+                          ? dayjs(value, DAY_MONTH_YEAR).toDate()
+                          : undefined
+                      }
+                      selected={
+                        value && dayjs(value, DAY_MONTH_YEAR).isValid()
+                          ? dayjs(value, DAY_MONTH_YEAR).toDate()
+                          : undefined
+                      }
                       onSelect={handleDaySelect}
                       disabled={{ before: dayjs().toDate() }}
                       fromMonth={dayjs().toDate()}
@@ -146,7 +152,7 @@ export function FieldDayPicker(
           pl="12"
           type="text"
           placeholder={placeholder ?? dayjs().format(DAY_MONTH_YEAR)}
-          value={inputValue}
+          value={value ?? ""}
           onChange={handleInputChange}
           autoFocus={autoFocus}
           onFocus={() => setIsTouched(false)}

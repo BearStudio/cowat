@@ -33,18 +33,22 @@ import { FieldTextarea } from "@/components/FieldTextarea";
 import { FieldTime } from "@/components/FieldTime";
 import { Fragment } from "react";
 import { FieldDayPicker } from "@/components/FieldDatePicker";
-import "react-day-picker/dist/style.css";
 import type { Dayjs } from "dayjs";
 import dayjs from "dayjs";
+import { DAY_MONTH_YEAR } from "@/constants/dates";
 
 type CreateCommuteInput = RouterInputs["commute"]["createCommute"];
 const New: NextPage = () => {
-  const defaultValues = {
-    stops: [{}],
-  };
-
   const router = useRouter();
   const form = useForm();
+
+  const { date: dateQueryParam } = router.query;
+  const date = dayjs(dateQueryParam?.toString()).format(DAY_MONTH_YEAR);
+
+  const defaultValues = {
+    stops: [{}],
+    date,
+  };
 
   const stops = useRepeater({
     name: "stops",
@@ -107,13 +111,7 @@ const New: NextPage = () => {
           <FieldDayPicker
             label="📆 Departure Date"
             name="date"
-            required="Please provide a date"
-            validations={[
-              {
-                handler: (value: Dayjs) => value.isValid(),
-                message: "You must provide a correct date",
-              },
-            ]}
+            required="Please provide a valid date"
           />
           <FieldTime
             label="🕘 Departure Time"
