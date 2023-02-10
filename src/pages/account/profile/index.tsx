@@ -1,9 +1,20 @@
 import { FieldInput } from "@/components/FieldInput";
+import { Icon } from "@/components/Icon";
 import { LayoutAuthenticated } from "@/layout/LayoutAuthenticated";
 import type { RouterInputs } from "@/utils/api";
 import { api } from "@/utils/api";
-import { Button, Center, Heading, Spinner, Stack } from "@chakra-ui/react";
+import {
+  Button,
+  Center,
+  Heading,
+  HStack,
+  IconButton,
+  Spinner,
+  Stack,
+} from "@chakra-ui/react";
 import { Formiz } from "@formiz/core";
+import { ArrowLeft } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/router";
 
 type UpdateProfileInput = RouterInputs["user"]["updateProfile"];
@@ -16,7 +27,21 @@ const ProfilePage = () => {
   const profile = api.user.profile.useQuery();
 
   return (
-    <LayoutAuthenticated topBar={<Heading size="md">Profile</Heading>}>
+    <LayoutAuthenticated
+      hideNav
+      topBar={
+        <HStack>
+          <IconButton
+            size="sm"
+            aria-label="Go back"
+            icon={<Icon icon={ArrowLeft} />}
+            as={Link}
+            href="/account"
+          />
+          <Heading size="md">Profile</Heading>
+        </HStack>
+      }
+    >
       {profile.isLoading && (
         <Center flex={1}>
           <Spinner />
