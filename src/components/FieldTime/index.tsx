@@ -54,7 +54,9 @@ export const FieldTime = (props: FieldTimeProps) => {
           min={0}
           max={23}
           maxW={32}
-          onChange={(h) => setValue(`${h.padStart(2, "0")}:${minutes ?? "00"}`)}
+          onChange={(_, h) =>
+            setValue(`${String(h).padStart(2, "0")}:${minutes ?? "00"}`)
+          }
         >
           <NumberInputField placeholder={placeholderHours ?? ""} />
           <NumberInputStepper>
@@ -70,7 +72,9 @@ export const FieldTime = (props: FieldTimeProps) => {
           min={0}
           max={55}
           maxW={32}
-          onChange={(m) => setValue(`${hours ?? ""}:${m.padStart(2, "0")}`)}
+          onChange={(_, m) =>
+            setValue(`${hours ?? ""}:${String(m).padStart(2, "0")}`)
+          }
         >
           <NumberInputField placeholder={placeholderMinutes ?? ""} />
           <NumberInputStepper>
