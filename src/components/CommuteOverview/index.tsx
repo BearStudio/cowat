@@ -25,7 +25,8 @@ import {
   Text,
   Wrap,
 } from "@chakra-ui/react";
-import { Prisma, RequestStatus } from "@prisma/client";
+import type { Prisma } from "@prisma/client";
+import { RequestStatus } from "@prisma/client";
 import dayjs from "dayjs";
 import { CheckCircle2, Clock } from "lucide-react";
 import { useSession } from "next-auth/react";
@@ -115,6 +116,11 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
     return "gray.300";
   })();
 
+  const notYetPassengerIfInside: Array<RequestStatus> = [
+    RequestStatus.REQUESTED,
+    RequestStatus.REFUSED,
+  ];
+
   return (
     <Card
       position="relative"
@@ -165,9 +171,7 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
                 src={passenger.user.image ?? ""}
                 name={passenger.user.name ?? passenger.user.email ?? ""}
                 opacity={
-                  [RequestStatus.REQUESTED, RequestStatus.REFUSED].includes(
-                    passenger.requestStatus
-                  )
+                  notYetPassengerIfInside.includes(passenger.requestStatus)
                     ? 0.6
                     : 1
                 }
