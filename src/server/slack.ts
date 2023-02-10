@@ -127,13 +127,13 @@ const newBookingFrom = (
     };
   }>
 ) => {
-  const driverSlackId = passengerOnStop.stop.commute?.createdBy?.accounts.find(
+  const driverSlackId = passengerOnStop.stop?.commute?.createdBy?.accounts.find(
     (account) => account.provider === "slack"
   )?.providerAccountId;
 
   const driver = driverSlackId
     ? `<@${driverSlackId}>`
-    : passengerOnStop.stop.commute?.createdBy?.email ?? "";
+    : passengerOnStop.stop?.commute?.createdBy?.email ?? "";
 
   const passengerSlackId = passengerOnStop.user.accounts.find(
     (account) => account.provider === "slack"
@@ -141,7 +141,7 @@ const newBookingFrom = (
 
   const passenger = passengerSlackId
     ? `<@${passengerSlackId}>`
-    : passengerOnStop.stop.commute?.createdBy?.email ?? "";
+    : passengerOnStop.stop?.commute?.createdBy?.email ?? "";
 
   return notify.send({
     blocks: [
@@ -151,8 +151,8 @@ const newBookingFrom = (
           type: "mrkdwn",
           text: `Hey ${driver},
 🙋 ${passenger} requested a seat on your *${
-            passengerOnStop.stop.commute?.date
-              ? dayjs(passengerOnStop.stop.commute.date).format(
+            passengerOnStop.stop?.commute?.date
+              ? dayjs(passengerOnStop.stop?.commute.date).format(
                   "dddd DD MMM HH:mm"
                 )
               : ""
