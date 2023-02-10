@@ -2,6 +2,7 @@ lockfileVersion: 5.4
 
 specifiers:
   '@babel/core': 7.20.12
+  '@chakra-ui/anatomy': 2.1.1
   '@chakra-ui/cli': 2.3.0
   '@chakra-ui/react': 2.4.9
   '@chakra-ui/styled-system': 2.5.1
@@ -23,6 +24,7 @@ specifiers:
   '@types/react-dom': ^18.0.10
   '@typescript-eslint/eslint-plugin': ^5.49.0
   '@typescript-eslint/parser': ^5.49.0
+  date-fns: 2.29.3
   dayjs: 1.11.7
   eslint: ^8.32.0
   eslint-config-next: 13.1.5
@@ -34,6 +36,7 @@ specifiers:
   prettier: ^2.8.3
   prisma: ^4.9.0
   react: 18.2.0
+  react-day-picker: 8.5.1
   react-dom: 18.2.0
   react-focus-lock: 2.9.3
   react-icons: 4.7.1
@@ -45,6 +48,7 @@ specifiers:
   zod: ^3.20.2
 
 dependencies:
+  '@chakra-ui/anatomy': 2.1.1
   '@chakra-ui/react': 2.4.9_u22oa52zxqeklnr6e4grlvfqpa
   '@emotion/react': 11.10.5_yxdp3dl3eazy3vwpbmv4fq727a
   '@emotion/styled': 11.10.5_4erqsq3n444jecyuvaxwc5b3vi
@@ -58,12 +62,14 @@ dependencies:
   '@trpc/next': 10.9.0_zf4dmnjasp57goshgvidib2hkq
   '@trpc/react-query': 10.9.0_22wgxldzdfxutowffn2dykkd3i
   '@trpc/server': 10.9.0
+  date-fns: 2.29.3
   dayjs: 1.11.7
   framer-motion: 8.5.3_biqbaboplfbrettd7655fr4n2y
   lucide-react: 0.109.0_react@18.2.0
   next: 13.1.5_pjwopsidmaokadturxaafygjp4
   next-auth: 4.18.10_s6zlkfvllybxhmcq5pkr2zsuza
   react: 18.2.0
+  react-day-picker: 8.5.1_r6j3756ioqf5pjc2u22wj25rla
   react-dom: 18.2.0_react@18.2.0
   react-focus-lock: 2.9.3_3stiutgnnbnfnf3uowm5cip22i
   react-icons: 4.7.1_react@18.2.0
@@ -324,6 +330,10 @@ packages:
       '@chakra-ui/spinner': 2.0.13_ublygk26yvqigtycgan52uuiea
       '@chakra-ui/system': 2.4.0_dovxhg2tvkkxkdnqyoum6wzcxm
       react: 18.2.0
+    dev: false
+
+  /@chakra-ui/anatomy/2.1.1:
+    resolution: {integrity: sha512-LUHAoqJAgxAqmyckG5bUpBrfEo1FleEyY+1A8hkWciy58gZ+h3GoY9oBpHcdo7XdHPpy3G+3hieK/7i9NLwxAw==}
     dev: false
 
   /@chakra-ui/anatomy/2.1.2:
@@ -2801,6 +2811,11 @@ packages:
     resolution: {integrity: sha512-sdQSFB7+llfUcQHUQO3+B8ERRj0Oa4w9POWMI/puGtuf7gFywGmkaLCElnudfTiKZV+NvHqL0ifzdrI8Ro7ESA==}
     dev: true
 
+  /date-fns/2.29.3:
+    resolution: {integrity: sha512-dDCnyH2WnnKusqvZZ6+jA1O51Ibt8ZMRNkDZdyAyK4YfbDwa/cEmuztzG5pk6hqlp9aSBPYcjOlktquahGwGeA==}
+    engines: {node: '>=0.11'}
+    dev: false
+
   /dayjs/1.11.7:
     resolution: {integrity: sha512-+Yw9U6YO5TQohxLcIkrXBeY73WP3ejHWVvx8XCk3gxvQDCTEmS48ZrSZCKciI7Bhl/uCMyxYtE9UqRILmFphkQ==}
     dev: false
@@ -4679,6 +4694,16 @@ packages:
       react: ^15.3.0 || ^16.0.0 || ^17.0.0 || ^18.0.0
     dependencies:
       '@babel/runtime': 7.20.7
+      react: 18.2.0
+    dev: false
+
+  /react-day-picker/8.5.1_r6j3756ioqf5pjc2u22wj25rla:
+    resolution: {integrity: sha512-ee3+PUGAEiLHaS3als6LYO7NQW2MPw00cvDSk5oNPLk4axIE5JhXRbIr//r9eX5Zsg1S1NFQpJoeJJ5LtJ0/SA==}
+    peerDependencies:
+      date-fns: ^2.28.0
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+    dependencies:
+      date-fns: 2.29.3
       react: 18.2.0
     dev: false
 

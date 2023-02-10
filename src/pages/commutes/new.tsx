@@ -1,11 +1,5 @@
 import type { NextPage } from "next";
-import {
-  Formiz,
-  useForm,
-  useFormContext,
-  useFormFields,
-  useRepeater,
-} from "@formiz/core";
+import { Formiz, useForm, useFormContext, useRepeater } from "@formiz/core";
 import { isMinNumber } from "@formiz/validations";
 import { FieldInput } from "@/components/FieldInput";
 import type { RouterInputs } from "@/utils/api";
@@ -38,7 +32,10 @@ import { LocationForm } from "@/components/LocationForm";
 import { FieldTextarea } from "@/components/FieldTextarea";
 import { FieldTime } from "@/components/FieldTime";
 import { Fragment } from "react";
-import dayjs from "dayjs";
+import { FieldDayPicker } from "@/components/FieldDatePicker";
+import "react-day-picker/dist/style.css";
+import dayjs, { Dayjs } from "dayjs";
+import { DAY_MONTH_YEAR } from "@/constants/dates";
 
 type CreateCommuteInput = RouterInputs["commute"]["createCommute"];
 const New: NextPage = () => {
@@ -61,8 +58,15 @@ const New: NextPage = () => {
     },
   });
 
-  const handleOnValidSubmit = (values: CreateCommuteInput) => {
-    createCommute.mutate(values);
+  const handleOnValidSubmit = (
+    values: Omit<CreateCommuteInput, "date"> & { date: Dayjs; time: string }
+  ) => {
+    const { date, time, ...otherValues } = values;
+
+    createCommute.mutate({
+      ...otherValues,
+      date: dayjs(`${date.format("YYYY-MM-DD")} ${time}`).toDate(),
+    });
   };
 
   return (
@@ -91,7 +95,7 @@ const New: NextPage = () => {
             label="💺 Seats"
             name="seats"
             type="number"
-            required
+            required="Please provide the number of available seats"
             validations={[
               {
                 handler: isMinNumber(0),
@@ -100,12 +104,21 @@ const New: NextPage = () => {
             ]}
             formatValue={(value) => parseInt(value ?? "", 10)}
           />
-          <FieldInput
-            label="📆 Departure"
+          <FieldDayPicker
+            label="📆 Departure Date"
             name="date"
-            type="datetime-local"
-            formatValue={(value) => new Date(value ?? "")}
-            required
+            required="Please provide a date"
+            validations={[
+              {
+                handler: (value: Dayjs) => value.isValid(),
+                message: "You must provide a correct date",
+              },
+            ]}
+          />
+          <FieldTime
+            label="🕘 Departure Time"
+            name="time"
+            required="Please provide a departure time"
           />
           <Divider />
           {stops.keys.map((key, index) => (

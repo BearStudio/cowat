@@ -15,6 +15,7 @@
     "db:ui": "prisma studio"
   },
   "dependencies": {
+    "@chakra-ui/anatomy": "2.1.1",
     "@chakra-ui/react": "2.4.9",
     "@emotion/react": "11.10.5",
     "@emotion/styled": "11.10.5",
@@ -28,12 +29,14 @@
     "@trpc/next": "^10.9.0",
     "@trpc/react-query": "^10.9.0",
     "@trpc/server": "^10.9.0",
+    "date-fns": "2.29.3",
     "dayjs": "1.11.7",
     "framer-motion": "8.5.3",
     "lucide-react": "0.109.0",
     "next": "13.1.5",
     "next-auth": "^4.18.10",
     "react": "18.2.0",
+    "react-day-picker": "8.5.1",
     "react-dom": "18.2.0",
     "react-focus-lock": "2.9.3",
     "react-icons": "4.7.1",
