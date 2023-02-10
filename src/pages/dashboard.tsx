@@ -26,8 +26,9 @@ import {
   Text,
 } from "@chakra-ui/react";
 import dayjs from "dayjs";
-import { Car, Navigation } from "lucide-react";
+import { Car, Navigation, Plus } from "lucide-react";
 import { useSession } from "next-auth/react";
+import Link from "next/link";
 
 const Dashboard = () => {
   const commutesByDate = api.commute.allUpcomingCommutes.useQuery();
@@ -84,11 +85,22 @@ const Day = ({ date, commutes }: DayProps) => {
   );
   return (
     <Stack>
-      <Text fontSize="lg" fontWeight="bold">
-        {date === dayjs().format(YEAR_MONTH_DAY)
-          ? "Today"
-          : dayjs(date).format(FULL_TEXT_DATE)}
-      </Text>
+      <HStack justifyContent="space-between">
+        <Text fontSize="lg" fontWeight="bold">
+          {date === dayjs().format(YEAR_MONTH_DAY)
+            ? "Today"
+            : dayjs(date).format(FULL_TEXT_DATE)}
+        </Text>
+        <Button
+          as={Link}
+          href={`/commutes/new?date=${dayjs(date).format("YYYY-MM-DD")}`}
+          size="sm"
+          leftIcon={<Plus size="1em" />}
+          variant="link"
+        >
+          New Commute
+        </Button>
+      </HStack>
       {!myCommutes?.length && (
         <EmptyState
           as={!!commutes?.length ? "button" : undefined}
@@ -136,7 +148,7 @@ const Day = ({ date, commutes }: DayProps) => {
       {myCommutes?.map((commute) => (
         <CommuteOverview key={commute.id} {...commute} />
       ))}
-      {date === dayjs().format(YEAR_MONTH_DAY) && (
+      {date === dayjs().format(YEAR_MONTH_DAY) && !!myCommutes?.length && (
         <Button
           variant="primary"
           size="lg"
