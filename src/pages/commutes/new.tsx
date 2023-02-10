@@ -31,6 +31,10 @@ import { FieldTextarea } from "@/components/FieldTextarea";
 
 type CreateCommuteInput = RouterInputs["commute"]["createCommute"];
 const New: NextPage = () => {
+  const defaultValues = {
+    stops: [{}],
+  };
+
   const router = useRouter();
 
   const form = useForm();
@@ -38,6 +42,7 @@ const New: NextPage = () => {
   const stops = useRepeater({
     name: "stops",
     connect: form,
+    initialValues: defaultValues.stops,
   });
 
   const createCommute = api.commute.createCommute.useMutation({
@@ -65,7 +70,12 @@ const New: NextPage = () => {
         </HStack>
       }
     >
-      <Formiz onValidSubmit={handleOnValidSubmit} autoForm connect={form}>
+      <Formiz
+        onValidSubmit={handleOnValidSubmit}
+        autoForm
+        connect={form}
+        initialValues={defaultValues}
+      >
         <Stack bg="white" rounded="lg" boxShadow="card" p="8" spacing="4">
           <FieldInput
             label="💺 Seats"
@@ -91,6 +101,7 @@ const New: NextPage = () => {
             <Stop
               key={key}
               index={index}
+              isRemovable={stops.keys.length > 1}
               onRemove={() => stops.remove(index)}
             />
           ))}
@@ -112,10 +123,11 @@ const New: NextPage = () => {
 };
 type StopProps = {
   index: number;
+  isRemovable?: boolean;
   onRemove: () => void;
 };
 
-const Stop = ({ index, onRemove }: StopProps) => {
+const Stop = ({ index, onRemove, isRemovable }: StopProps) => {
   const ctx = api.useContext();
   const form = useFormContext();
   const newLocationForm = useForm();
@@ -163,6 +175,7 @@ const Stop = ({ index, onRemove }: StopProps) => {
             aria-label={`Remove stop ${index}`}
             icon={<FiTrash />}
             onClick={() => onRemove()}
+            isDisabled={!isRemovable}
           />
         </HStack>
       </Stack>
