@@ -83,6 +83,10 @@ const Day = ({ date, commutes }: DayProps) => {
         )
       )
   );
+  const otherCommutes = commutes?.filter(
+    (commute) => !myCommutes?.map((c) => c.id).includes(commute.id)
+  );
+
   return (
     <Stack>
       <HStack justifyContent="space-between">
@@ -103,12 +107,12 @@ const Day = ({ date, commutes }: DayProps) => {
       </HStack>
       {!myCommutes?.length && (
         <EmptyState
-          as={!!commutes?.length ? "button" : undefined}
+          as={!!otherCommutes?.length ? "button" : undefined}
           p={4}
-          onClick={!!commutes?.length ? onOpen : undefined}
+          onClick={!!otherCommutes?.length ? onOpen : undefined}
         >
-          {!commutes?.length && <>No commute for this day</>}
-          {!!commutes?.length && (
+          {!otherCommutes?.length && <>No commute for this day</>}
+          {!!otherCommutes?.length && (
             <>
               <HStack justifyContent="space-between">
                 <Button
@@ -116,11 +120,11 @@ const Day = ({ date, commutes }: DayProps) => {
                   variant="link"
                   leftIcon={<Car size="1.2em" />}
                 >
-                  See {commutes?.length} commute
-                  {commutes?.length > 1 ? "s" : ""}
+                  See {otherCommutes?.length} commute
+                  {otherCommutes?.length > 1 ? "s" : ""}
                 </Button>
                 <AvatarGroup max={5} size="sm" spacing={-2}>
-                  {commutes.map((commute) => (
+                  {otherCommutes.map((commute) => (
                     <Avatar
                       key={commute.id}
                       borderRadius="md"
@@ -134,13 +138,6 @@ const Day = ({ date, commutes }: DayProps) => {
                   ))}
                 </AvatarGroup>
               </HStack>
-              {isOpen && (
-                <CommutesModal
-                  onClose={onClose}
-                  commutes={commutes}
-                  date={date}
-                />
-              )}
             </>
           )}
         </EmptyState>
@@ -157,6 +154,21 @@ const Day = ({ date, commutes }: DayProps) => {
         >
           Open commute&apos;s view
         </Button>
+      )}
+      {!!otherCommutes?.length && !!myCommutes?.length && (
+        <Button
+          onClick={onOpen}
+          size="sm"
+          variant="link"
+          pt={2}
+          leftIcon={<Car size="1.2em" />}
+        >
+          See {otherCommutes?.length} other commute
+          {otherCommutes?.length > 1 ? "s" : ""}
+        </Button>
+      )}
+      {isOpen && !!otherCommutes?.length && (
+        <CommutesModal onClose={onClose} commutes={otherCommutes} date={date} />
       )}
     </Stack>
   );
