@@ -34,7 +34,8 @@ import { FieldTime } from "@/components/FieldTime";
 import { Fragment } from "react";
 import { FieldDayPicker } from "@/components/FieldDatePicker";
 import "react-day-picker/dist/style.css";
-import dayjs, { Dayjs } from "dayjs";
+import type { Dayjs } from "dayjs";
+import dayjs from "dayjs";
 
 type CreateCommuteInput = RouterInputs["commute"]["createCommute"];
 const New: NextPage = () => {
