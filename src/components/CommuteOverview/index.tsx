@@ -25,7 +25,7 @@ import {
   Text,
   Wrap,
 } from "@chakra-ui/react";
-import type { Prisma } from "@prisma/client";
+import { Prisma, RequestStatus } from "@prisma/client";
 import dayjs from "dayjs";
 import { CheckCircle2, Clock } from "lucide-react";
 import { useSession } from "next-auth/react";
@@ -161,9 +161,16 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
           <AvatarGroup size="sm" max={3}>
             {passengers.map((passenger) => (
               <Avatar
-                key={passenger.id}
-                src={passenger.image ?? ""}
-                name={passenger.name ?? passenger.email ?? ""}
+                key={passenger.user.id}
+                src={passenger.user.image ?? ""}
+                name={passenger.user.name ?? passenger.user.email ?? ""}
+                opacity={
+                  [RequestStatus.REQUESTED, RequestStatus.REFUSED].includes(
+                    passenger.requestStatus
+                  )
+                    ? 0.6
+                    : 1
+                }
                 border="2px solid white"
               />
             ))}
@@ -190,8 +197,13 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
                     <AccordionIcon />
                     <Text fontWeight="medium" fontSize="sm">
                       {props.stops.length} stop
-                      {props.stops.length > 1 ? "s" : ""} · {passengers.length}/
-                      {props.seats} seat
+                      {props.stops.length > 1 ? "s" : ""} ·{" "}
+                      {
+                        passengers.filter(
+                          (passenger) => passenger.requestStatus !== "REFUSED"
+                        ).length
+                      }
+                      /{props.seats} seat
                       {props.seats > 1 ? "s" : ""}
                     </Text>
                   </Flex>

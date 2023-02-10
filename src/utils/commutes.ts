@@ -11,6 +11,6 @@ export const getPassengers = (
   return stops.flatMap((stop) =>
     stop.passengers
       .filter((passenger) => passenger.requestStatus !== "CANCELED")
-      .map((passenger) => passenger.user)
+      .map((passenger) => passenger)
   );
 };
