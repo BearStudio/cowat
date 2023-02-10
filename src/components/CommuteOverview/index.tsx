@@ -153,7 +153,8 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
                 </Text>
               </HStack>
               <Text fontSize="sm">
-                {props.createdBy?.name ?? props.createdBy?.email}
+                {props.createdBy?.name ?? props.createdBy?.email}{" "}
+                {!!props.createdBy?.phone && <>· {props.createdBy?.phone}</>}
               </Text>
             </Stack>
           </HStack>
