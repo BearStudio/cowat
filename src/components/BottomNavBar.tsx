@@ -1,7 +1,8 @@
 import type { FC } from "react";
 import { Bell, Car, LayoutDashboard, User } from "lucide-react";
 import type { FlexProps, StackProps } from "@chakra-ui/react";
-import { HStack, Flex, Text } from "@chakra-ui/react";
+import { Box } from "@chakra-ui/react";
+import { HStack, Flex } from "@chakra-ui/react";
 import Link from "next/link";
 import { Icon } from "@/components/Icon";
 import { useIsActive } from "@/hooks/useIsActive";
@@ -84,14 +85,14 @@ export const NavBarItem: FC<NavBarItemProps> = ({
         icon={icon}
         color={isActive ? "black" : "gray.400"}
       />
-      <Text
+      <Box
         fontSize="0.55rem"
         fontWeight={isActive ? "bold" : "semibold"}
         textTransform="uppercase"
         mt="1"
       >
         {children}
-      </Text>
+      </Box>
     </Flex>
   );
 };
