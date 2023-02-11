@@ -13,6 +13,7 @@ export const stopRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
+      let passengerOnStop;
       const doesExist = await ctx.prisma.passengersOnStops.findUnique({
         where: {
           userId_stopId: { stopId: input.stopId, userId: ctx.session.user.id },
@@ -32,7 +33,7 @@ export const stopRouter = createTRPCRouter({
 
       // If passenger on stop exists, then update the data
       if (doesExist) {
-        const passengerOnStop = await ctx.prisma.passengersOnStops.update({
+        passengerOnStop = await ctx.prisma.passengersOnStops.update({
           where: {
             userId_stopId: {
               stopId: input.stopId,
@@ -63,50 +64,46 @@ export const stopRouter = createTRPCRouter({
             },
           },
         });
-
-        slack.newBookingFrom(passengerOnStop);
-
-        return passengerOnStop;
-      }
-
-      const passengerOnStop = await ctx.prisma.passengersOnStops.create({
-        data: {
-          user: {
-            connect: {
-              id: ctx.session.user.id,
+      } else {
+        passengerOnStop = await ctx.prisma.passengersOnStops.create({
+          data: {
+            user: {
+              connect: {
+                id: ctx.session.user.id,
+              },
+            },
+            stop: {
+              connect: {
+                id: input.stopId,
+              },
             },
           },
-          stop: {
-            connect: {
-              id: input.stopId,
-            },
-          },
-        },
-        include: {
-          stop: {
-            include: {
-              commute: {
-                include: {
-                  createdBy: {
-                    include: {
-                      accounts: true,
+          include: {
+            stop: {
+              include: {
+                commute: {
+                  include: {
+                    createdBy: {
+                      include: {
+                        accounts: true,
+                      },
                     },
                   },
                 },
               },
             },
-          },
-          user: {
-            include: {
-              accounts: true,
+            user: {
+              include: {
+                accounts: true,
+              },
             },
           },
-        },
-      });
+        });
+      }
 
-      slack.newBookingFrom(passengerOnStop);
+      await slack.newBookingFrom(passengerOnStop);
 
-      return stop;
+      return passengerOnStop;
     }),
   requestStatus: protectedProcedure
     .input(
@@ -181,6 +178,6 @@ export const stopRouter = createTRPCRouter({
         },
       });
 
-      slack.request(passengerOnStopUpdated);
+      await slack.request(passengerOnStopUpdated);
     }),
 });

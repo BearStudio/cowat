@@ -152,7 +152,7 @@ const newBookingFrom = (
           text: `Hey ${driver},
 🙋 ${passenger} requested a seat on your *${
             passengerOnStop.stop?.commute?.date
-              ? dayjs(passengerOnStop.stop?.commute.date).format(
+              ? dayjs(passengerOnStop?.stop?.commute?.date).format(
                   "dddd DD MMM HH:mm"
                 )
               : ""
