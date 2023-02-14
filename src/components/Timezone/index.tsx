@@ -1,7 +1,8 @@
 import { dayjsTz, dayjsTzConfig } from "@/utils/dayjs";
 import { useEffect, useState } from "react";
-import { Select, Stack } from "@chakra-ui/react";
+import { Stack } from "@chakra-ui/react";
 import { FormGroup } from "@/components/FormGroup";
+import { Select } from "@/components/Select";
 
 export const useTimezone = () => {
   const [tz, setTz] = useState<string | null>(null);
@@ -36,10 +37,6 @@ export const useTimezone = () => {
 export const TimezoneSelect = () => {
   const { timezone, setTimezone } = useTimezone();
 
-  const changeTimezone = (newTimezone: string) => {
-    setTimezone(newTimezone);
-  };
-
   const timezoneList: string[] =
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (Intl as any).supportedValuesOf?.("timeZone") ?? [];
@@ -51,16 +48,20 @@ export const TimezoneSelect = () => {
         helper={dayjsTz().format("ddd DD MMM YYYY, HH:mm (YYY)")}
       >
         <Select
-          value={timezone ?? ""}
+          value={
+            timezone ? { value: timezone, label: timezone } : null
+          }
           placeholder={`Auto (${dayjsTzConfig.guess()})`}
-          onChange={(e) => changeTimezone(e.target.value)}
-        >
-          {timezoneList.map((tz) => (
-            <option value={tz} key={tz}>
-              {tz}
-            </option>
-          ))}
-        </Select>
+          isClearable
+          onChange={(newValue) => {
+            if (newValue && "value" in newValue) {
+              setTimezone(newValue.value);
+            } else {
+              setTimezone("");
+            }
+          }}
+          options={timezoneList.map((tz) => ({ value: tz, label: tz }))}
+        />
       </FormGroup>
     </Stack>
   );

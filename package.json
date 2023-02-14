@@ -40,6 +40,7 @@
     "react-dom": "18.2.0",
     "react-focus-lock": "2.9.3",
     "react-icons": "4.7.1",
+    "react-select": "5.7.0",
     "react-use-measure": "2.1.1",
     "remeda": "1.6.1",
     "slack-notify": "2.0.6",
