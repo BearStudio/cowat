@@ -25,6 +25,7 @@ export const locationRouter = createTRPCRouter({
     const locations = await ctx.prisma.location.findMany({
       where: {
         createdById: ctx.session.user.id,
+        isDeleted: false,
       },
     });
 

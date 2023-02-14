@@ -17,3 +17,26 @@ export const prisma =
 if (env.NODE_ENV !== "production") {
   global.prisma = prisma;
 }
+
+prisma.$use(async (params, next) => {
+  // Check incoming query type
+  if (params.model == "Location") {
+    if (params.action === "delete") {
+      // Delete queries
+      // Change action to an update
+      params.action = "update";
+      params.args["data"] = { isDeleted: true };
+    }
+
+    if (params.action == "deleteMany") {
+      // Delete many queries
+      params.action = "updateMany";
+      if (params.args.data !== undefined) {
+        params.args.data["isDeleted"] = true;
+      } else {
+        params.args["data"] = { isDeleted: true };
+      }
+    }
+  }
+  return next(params);
+});
