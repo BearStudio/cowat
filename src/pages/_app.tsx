@@ -7,11 +7,13 @@ import "@/config/dayjs";
 import { api } from "../utils/api";
 
 import { ChakraProvider } from "@chakra-ui/react";
+import { useTimezone } from "@/components/Timezone";
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
   pageProps: { session, ...pageProps },
 }) => {
+  useTimezone();
   return (
     <SessionProvider session={session}>
       <ChakraProvider theme={theme}>

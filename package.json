@@ -6,7 +6,7 @@
     "build": "next build",
     "dev": "pnpm ssl:proxy & next dev",
     "postinstall": "prisma generate && yarn theme:generate-typing",
-    "lint": "next lint",
+    "lint": "tsc --noEmit & next lint",
     "start": "next start",
     "ssl:generate": "mkcert localhost",
     "ssl:proxy": "npx local-ssl-proxy --key localhost-key.pem --cert localhost.pem --source 3001 --target 3000",

@@ -1,6 +1,9 @@
 import { Icon } from "@/components/Icon";
+import { TimezoneSelect } from "@/components/Timezone";
+
 import { LayoutAuthenticated } from "@/layout/LayoutAuthenticated";
-import { Button, Heading, Stack } from "@chakra-ui/react";
+import { Button, Divider, Heading, Stack } from "@chakra-ui/react";
+
 import { MapPin, UserCogIcon } from "lucide-react";
 import { signOut } from "next-auth/react";
 import Link from "next/link";
@@ -9,6 +12,8 @@ const AccountPage = () => {
   return (
     <LayoutAuthenticated topBar={<Heading size="md">Account</Heading>}>
       <Stack spacing="4">
+        <TimezoneSelect />
+        <Divider />
         <Button
           variant="default"
           as={Link}
@@ -25,6 +30,7 @@ const AccountPage = () => {
         >
           Profile
         </Button>
+        <Divider />
         <Button variant="link" onClick={() => signOut()}>
           Log out
         </Button>
