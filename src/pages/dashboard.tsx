@@ -25,7 +25,7 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
-import dayjs from "dayjs";
+import { dayjsTz } from "@/utils/dayjs";
 import { Car, Navigation, Plus } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
@@ -35,7 +35,7 @@ const Dashboard = () => {
 
   const days = Array.from(
     { length: commutesByDate.data?.numberOfDays ?? 0 },
-    (_, i) => dayjs().add(i, "day").format(YEAR_MONTH_DAY)
+    (_, i) => dayjsTz().add(i, "day").format(YEAR_MONTH_DAY)
   );
 
   return (
@@ -91,13 +91,13 @@ const Day = ({ date, commutes }: DayProps) => {
     <Stack>
       <HStack justifyContent="space-between">
         <Text fontSize="lg" fontWeight="bold">
-          {date === dayjs().format(YEAR_MONTH_DAY)
+          {date === dayjsTz().format(YEAR_MONTH_DAY)
             ? "Today"
-            : dayjs(date).format(FULL_TEXT_DATE)}
+            : dayjsTz(date).format(FULL_TEXT_DATE)}
         </Text>
         <Button
           as={Link}
-          href={`/commutes/new?date=${dayjs(date).format("YYYY-MM-DD")}`}
+          href={`/commutes/new?date=${dayjsTz(date).format("YYYY-MM-DD")}`}
           size="sm"
           leftIcon={<Plus size="1em" />}
           variant="link"
@@ -145,7 +145,7 @@ const Day = ({ date, commutes }: DayProps) => {
       {myCommutes?.map((commute) => (
         <CommuteOverview key={commute.id} {...commute} />
       ))}
-      {date === dayjs().format(YEAR_MONTH_DAY) && !!myCommutes?.length && (
+      {date === dayjsTz().format(YEAR_MONTH_DAY) && !!myCommutes?.length && (
         <Button
           variant="primary"
           size="lg"
@@ -185,7 +185,7 @@ const CommutesModal = ({ onClose, commutes, date }: CommutesModalProps) => {
     <Modal isOpen={true} onClose={onClose}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>{dayjs(date).format(FULL_TEXT_DATE)}</ModalHeader>
+        <ModalHeader>{dayjsTz(date).format(FULL_TEXT_DATE)}</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
           <Stack spacing="4">

@@ -19,7 +19,7 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 
-import dayjs from "dayjs";
+import { dayjsTz } from "@/utils/dayjs";
 import { Icon } from "@/components/Icon";
 import { CalendarDays } from "lucide-react";
 import { DAY_MONTH_YEAR } from "@/constants/dates";
@@ -50,7 +50,7 @@ export function FieldDayPicker(
     otherProps,
   } = useField(props, {
     formatValue: (v) =>
-      dayjs(v, DAY_MONTH_YEAR).isValid() ? dayjs(v, DAY_MONTH_YEAR) : null,
+      dayjsTz(v, DAY_MONTH_YEAR).isValid() ? dayjsTz(v, DAY_MONTH_YEAR) : null,
   });
   const {
     label,
@@ -84,7 +84,7 @@ export function FieldDayPicker(
   };
 
   const handleDaySelect = (date: Date | undefined) => {
-    setValue(dayjs(date).format(DAY_MONTH_YEAR));
+    setValue(dayjsTz(date).format(DAY_MONTH_YEAR));
 
     if (date) {
       closePopper();
@@ -129,18 +129,18 @@ export function FieldDayPicker(
                     <DayPicker
                       mode="single"
                       defaultMonth={
-                        value && dayjs(value, DAY_MONTH_YEAR).isValid()
-                          ? dayjs(value, DAY_MONTH_YEAR).toDate()
+                        value && dayjsTz(value, DAY_MONTH_YEAR).isValid()
+                          ? dayjsTz(value, DAY_MONTH_YEAR).toDate()
                           : undefined
                       }
                       selected={
-                        value && dayjs(value, DAY_MONTH_YEAR).isValid()
-                          ? dayjs(value, DAY_MONTH_YEAR).toDate()
+                        value && dayjsTz(value, DAY_MONTH_YEAR).isValid()
+                          ? dayjsTz(value, DAY_MONTH_YEAR).toDate()
                           : undefined
                       }
                       onSelect={handleDaySelect}
-                      disabled={{ before: dayjs().toDate() }}
-                      fromMonth={dayjs().toDate()}
+                      disabled={{ before: dayjsTz().toDate() }}
+                      fromMonth={dayjsTz().toDate()}
                     />
                   </PopoverBody>
                 </FocusLock>
@@ -151,7 +151,7 @@ export function FieldDayPicker(
         <Input
           pl="12"
           type="text"
-          placeholder={placeholder ?? dayjs().format(DAY_MONTH_YEAR)}
+          placeholder={placeholder ?? dayjsTz().format(DAY_MONTH_YEAR)}
           value={value ?? ""}
           onChange={handleInputChange}
           autoFocus={autoFocus}

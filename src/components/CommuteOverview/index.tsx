@@ -27,7 +27,7 @@ import {
 } from "@chakra-ui/react";
 import type { Prisma } from "@prisma/client";
 import { RequestStatus } from "@prisma/client";
-import dayjs from "dayjs";
+import { dayjsTz } from "@/utils/dayjs";
 import { CheckCircle2, Clock } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { ConfirmModal } from "../ConfirmModal";
@@ -155,7 +155,7 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
             <Stack spacing={0}>
               <HStack>
                 <Text fontSize="sm" fontWeight="bold">
-                  {dayjs(props.date).format(FULL_TEXT_DATE_WITH_TIME)}
+                  {dayjsTz(props.date).format(FULL_TEXT_DATE_WITH_TIME)}
                 </Text>
               </HStack>
               <Text fontSize="sm">
@@ -288,7 +288,7 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
                         (!isPassenger ||
                           passengerStatus === "CANCELED" ||
                           passengerStatus === "REFUSED") &&
-                        dayjs().isBefore(dayjs(props.date)) && (
+                        dayjsTz().isBefore(dayjsTz(props.date)) && (
                           <HStack>
                             <Button
                               variant="primary"
@@ -337,7 +337,9 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
                       message={
                         <>
                           <strong>
-                            {dayjs(props.date).format(FULL_TEXT_DATE_WITH_TIME)}
+                            {dayjsTz(props.date).format(
+                              FULL_TEXT_DATE_WITH_TIME
+                            )}
                           </strong>{" "}
                           commute
                           <br />
