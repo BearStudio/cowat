@@ -1,5 +1,4 @@
 {
-  "overrides": [],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "project": "./tsconfig.json"
@@ -7,6 +6,30 @@
   "plugins": ["@typescript-eslint"],
   "extends": ["next/core-web-vitals", "plugin:@typescript-eslint/recommended"],
   "rules": {
-    "@typescript-eslint/consistent-type-imports": "warn"
-  }
+    "@typescript-eslint/consistent-type-imports": "warn",
+    "no-restricted-imports": [
+      "error",
+      {
+        "paths": [
+          {
+            "name": "dayjs",
+            "importNames": ["default"],
+            "message": "Please use `import { dayjsTz } from @/utils/dayjs` instead."
+          }
+        ]
+      }
+    ]
+  },
+  "overrides": [
+    {
+      "files": [
+        "./src/config/dayjs.ts",
+        "./src/utils/dayjs.ts",
+        "./src/server/**/*"
+      ],
+      "rules": {
+        "no-restricted-imports": "off"
+      }
+    }
+  ]
 }
