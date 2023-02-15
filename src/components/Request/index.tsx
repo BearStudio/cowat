@@ -10,7 +10,7 @@ import type {
   User,
 } from "@prisma/client";
 import { RequestStatus } from "@prisma/client";
-import { dayjsTz } from "@/utils/dayjs";
+import dayjs from "dayjs";
 import { Check, X } from "lucide-react";
 
 type RequestProps = {
@@ -44,7 +44,7 @@ export const Request = ({ request }: RequestProps) => {
             <>
               For{" "}
               <Text as="span" fontWeight="bold">
-                {dayjsTz(request.stop.commute?.date).format(
+                {dayjs(request.stop.commute?.date).format(
                   FULL_TEXT_DATE_WITH_TIME
                 )}
               </Text>{" "}

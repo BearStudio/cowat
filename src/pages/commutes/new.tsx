@@ -34,7 +34,7 @@ import { FieldTime } from "@/components/FieldTime";
 import { Fragment } from "react";
 import { FieldDayPicker } from "@/components/FieldDatePicker";
 import type { Dayjs } from "dayjs";
-import { dayjsTz } from "@/utils/dayjs";
+import dayjs from "dayjs";
 import { DAY_MONTH_YEAR } from "@/constants/dates";
 
 type CreateCommuteInput = RouterInputs["commute"]["createCommute"];
@@ -43,7 +43,7 @@ const New: NextPage = () => {
   const form = useForm();
 
   const { date: dateQueryParam } = router.query;
-  const date = dayjsTz(dateQueryParam?.toString()).format(DAY_MONTH_YEAR);
+  const date = dayjs(dateQueryParam?.toString()).format(DAY_MONTH_YEAR);
 
   const defaultValues = {
     stops: [{}],
@@ -69,7 +69,7 @@ const New: NextPage = () => {
 
     createCommute.mutate({
       ...otherValues,
-      date: dayjsTz(`${date.format("YYYY-MM-DD")} ${time}`).toDate(),
+      date: dayjs(`${date.format("YYYY-MM-DD")} ${time}`).toDate(),
     });
   };
 

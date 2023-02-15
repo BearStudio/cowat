@@ -48,9 +48,7 @@ export const TimezoneSelect = () => {
         helper={dayjsTz().format("ddd DD MMM YYYY, HH:mm (YYY)")}
       >
         <Select
-          value={
-            timezone ? { value: timezone, label: timezone } : null
-          }
+          value={timezone ? { value: timezone, label: timezone } : null}
           placeholder={`Auto (${dayjsTzConfig.guess()})`}
           isClearable
           onChange={(newValue) => {
