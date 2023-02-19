@@ -59,9 +59,11 @@ const newCommute = async (
         type: "section",
         text: {
           type: "mrkdwn",
-          text: `A new commute for *${dayjs(commute.date).format(
-            FULL_TEXT_DATE_WITH_TIME
-          )}* has been created by ${createdBy} (💺 ${
+          text: `A new commute for *${dayjs(commute.date)
+            .tz("Europe/Paris")
+            .format(
+              FULL_TEXT_DATE_WITH_TIME
+            )}* has been created by ${createdBy} (💺 ${
             commute.seats
           } seats available) @here`,
         },
