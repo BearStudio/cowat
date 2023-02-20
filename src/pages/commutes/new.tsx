@@ -1,60 +1,83 @@
 import type { NextPage } from "next";
-import { Formiz, useForm, useFormContext, useRepeater } from "@formiz/core";
-import { isMinNumber } from "@formiz/validations";
-import { FieldInput } from "@/components/FieldInput";
+import { Formiz, useForm } from "@formiz/core";
 import type { RouterInputs } from "@/utils/api";
 import { api } from "@/utils/api";
 import { useRouter } from "next/router";
 import {
   Box,
   Button,
-  Divider,
+  Card,
+  CardBody,
+  Center,
   Heading,
   HStack,
   IconButton,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
+  Spinner,
   Stack,
-  useDisclosure,
+  Text,
 } from "@chakra-ui/react";
 import { LayoutAuthenticated } from "@/layout/LayoutAuthenticated";
-import { AddPlaceholder } from "@/components/AddPlaceholder";
-import { FiPlus, FiTrash } from "react-icons/fi";
-import { FieldSelect } from "@/components/FieldSelect";
 import { Icon } from "@/components/Icon";
-import { ArrowLeft, Plus } from "lucide-react";
-import { LocationForm } from "@/components/LocationForm";
+import { ArrowLeft } from "lucide-react";
 import { FieldTextarea } from "@/components/FieldTextarea";
-import { FieldTime } from "@/components/FieldTime";
-import { Fragment } from "react";
-import { FieldDayPicker } from "@/components/FieldDatePicker";
 import type { Dayjs } from "dayjs";
 import dayjs from "dayjs";
 import { DAY_MONTH_YEAR } from "@/constants/dates";
+import { CommuteForm } from "@/components/CommuteForm";
+import { useEffect, useState } from "react";
+import { CommuteTemplateOverview } from "@/components/CommuteTemplateOverview";
 
 type CreateCommuteInput = RouterInputs["commute"]["createCommute"];
+
+const FROM_SCRATCH = "FROM_SCRATCH";
+
 const New: NextPage = () => {
   const router = useRouter();
+  const { date: dateQueryParam, template: templateQueryParam } = router.query;
+
+  const [selectedTemplate, setSelectedTemplate] = useState<
+    string | undefined | typeof FROM_SCRATCH
+  >(undefined);
+
+  // Need to react to the params changes.
+  useEffect(() => {
+    setSelectedTemplate(templateQueryParam?.toString());
+  }, [templateQueryParam]);
+
   const form = useForm();
 
-  const { date: dateQueryParam } = router.query;
+  const commuteTemplates = api.template.myCommuteTemplates.useQuery(undefined, {
+    onSuccess: (data) => {
+      // If the user doesn't have any commute template, set the form to "FROM_SCRATCH" mode
+      if (data.length === 0) {
+        setSelectedTemplate(FROM_SCRATCH);
+      }
+    },
+    // We don't want any caching here, too much rules to handle already. This might be optimized later.
+    cacheTime: 0,
+  });
+
   const date = dayjs(dateQueryParam?.toString()).format(DAY_MONTH_YEAR);
 
+  const fromTemplate = api.template.get.useQuery(
+    { id: selectedTemplate ?? "" },
+    {
+      enabled: !!selectedTemplate && selectedTemplate !== FROM_SCRATCH,
+    }
+  );
+
+  const stops = fromTemplate.data
+    ? fromTemplate.data.stops.map((stop) => ({
+        ...stop,
+        location: stop.location?.id,
+      }))
+    : [{}];
+
   const defaultValues = {
-    stops: [{}],
+    ...fromTemplate.data,
+    stops,
     date,
   };
-
-  const stops = useRepeater({
-    name: "stops",
-    connect: form,
-    initialValues: defaultValues.stops,
-  });
 
   const createCommute = api.commute.createCommute.useMutation({
     onSuccess: async () => {
@@ -73,6 +96,10 @@ const New: NextPage = () => {
     });
   };
 
+  const showForm =
+    !!selectedTemplate &&
+    (selectedTemplate === FROM_SCRATCH || !fromTemplate.isLoading);
+
   return (
     <LayoutAuthenticated
       hideNav
@@ -88,159 +115,55 @@ const New: NextPage = () => {
         </HStack>
       }
     >
-      <Formiz
-        onValidSubmit={handleOnValidSubmit}
-        autoForm
-        connect={form}
-        initialValues={defaultValues}
-      >
-        <Stack bg="white" rounded="lg" boxShadow="card" p="8" spacing="4">
-          <FieldInput
-            label="💺 Seats"
-            name="seats"
-            type="number"
-            required="Please provide the number of available seats"
-            validations={[
-              {
-                handler: isMinNumber(0),
-                message: "Should be a number over 10",
-              },
-            ]}
-            formatValue={(value) => parseInt(value ?? "", 10)}
-          />
-          <FieldDayPicker
-            label="📆 Departure Date"
-            name="date"
-            required="Please provide a valid date"
-          />
-          <FieldTime
-            label="🕘 Departure Time"
-            name="time"
-            required="Please provide a departure time"
-          />
-          <Divider />
-          {stops.keys.map((key, index) => (
-            <Fragment key={key}>
-              <Stop
-                index={index}
-                isRemovable={stops.keys.length > 1}
-                onRemove={() => stops.remove(index)}
-              />
-              <Divider />
-            </Fragment>
+      {commuteTemplates.isLoading && (
+        <Center flex={1}>
+          <Spinner />
+        </Center>
+      )}
+      {!selectedTemplate && !commuteTemplates.isLoading && (
+        <Stack spacing="4">
+          <Heading size="lg">Select a template</Heading>
+          {commuteTemplates.data?.map((template) => (
+            <Card
+              boxShadow="card"
+              key={template.id}
+              onClick={() => setSelectedTemplate(template.id)}
+            >
+              <CardBody>
+                <CommuteTemplateOverview {...template} />
+              </CardBody>
+            </Card>
           ))}
-          <AddPlaceholder onClick={() => stops.append()}>
-            <Icon icon={FiPlus} /> Add Stop 📍
-          </AddPlaceholder>
-          <FieldTextarea label="Comment" name="comment" />
           <Button
-            variant="primary"
-            type="submit"
-            isLoading={createCommute.isLoading}
+            onClick={() => setSelectedTemplate(FROM_SCRATCH)}
+            fontWeight="bold"
+            variant="outline"
           >
-            Save
+            Start a commute from scratch
           </Button>
         </Stack>
-      </Formiz>
-    </LayoutAuthenticated>
-  );
-};
-type StopProps = {
-  index: number;
-  isRemovable?: boolean;
-  onRemove: () => void;
-};
-
-const Stop = ({ index, onRemove, isRemovable }: StopProps) => {
-  const ctx = api.useContext();
-  const form = useFormContext();
-  const newLocationForm = useForm();
-
-  const { isOpen, onOpen, onClose } = useDisclosure();
-
-  const locations = api.location.mine.useQuery();
-
-  const createLocation = api.location.create.useMutation({
-    onSuccess: async ({ id }) => {
-      await ctx.location.invalidate();
-      form.setValues({
-        [`stops[${index}].location`]: id,
-      });
-      onClose();
-    },
-  });
-
-  return (
-    <>
-      <Stack
-        align="flex-start"
-        direction={{ base: "column", md: "row" }}
-        spacing={{ base: 2, md: 6 }}
-      >
-        <HStack align="flex-start" w="full">
-          <FieldSelect
-            label={`📍 Stop ${index + 1}`}
-            name={`stops[${index}].location`}
-            placeholder="Please select a location"
-            options={
-              locations.data?.map((location) => ({
-                label: location.name,
-                value: location.id,
-              })) ?? []
-            }
-            required="Stop is required"
-          />
-          <Box pt={8}>
-            <IconButton
-              aria-label="Add a location"
-              icon={<Icon icon={Plus} />}
-              onClick={onOpen}
-            />
-          </Box>
-        </HStack>
-        <HStack align="flex-start" spacing={{ base: 2, md: 6 }} w="full">
-          <FieldTime label="🕑 Pick up time" name={`stops[${index}].time`} />
-          <Box pt={8}>
-            <IconButton
-              variant="danger"
-              aria-label={`Remove stop ${index}`}
-              icon={<FiTrash />}
-              onClick={() => onRemove()}
-              isDisabled={!isRemovable}
-            />
-          </Box>
-        </HStack>
-      </Stack>
-      {isOpen && (
-        <Modal isOpen onClose={onClose} size="sm">
-          <ModalOverlay />
-          <Formiz
-            connect={newLocationForm}
-            onValidSubmit={(values: RouterInputs["location"]["create"]) => {
-              createLocation.mutate(values);
-            }}
-          >
-            <ModalContent>
-              <ModalHeader>New location</ModalHeader>
-              <ModalCloseButton />
-              <ModalBody>
-                <LocationForm />
-              </ModalBody>
-
-              <ModalFooter>
-                <Button
-                  variant="primary"
-                  isLoading={createLocation.isLoading}
-                  onClick={() => newLocationForm.submit()}
-                >
-                  Save
-                </Button>
-              </ModalFooter>
-            </ModalContent>
-          </Formiz>
-        </Modal>
       )}
-    </>
+      {showForm && (
+        <Formiz
+          onValidSubmit={handleOnValidSubmit}
+          autoForm
+          connect={form}
+          initialValues={defaultValues}
+        >
+          <Stack bg="white" rounded="lg" boxShadow="card" p="8" spacing="4">
+            <CommuteForm repeaterInitialValues={defaultValues.stops} />
+            <FieldTextarea label="Comment" name="comment" />
+            <Button
+              variant="primary"
+              type="submit"
+              isLoading={createCommute.isLoading}
+            >
+              Save
+            </Button>
+          </Stack>
+        </Formiz>
+      )}
+    </LayoutAuthenticated>
   );
 };
 
