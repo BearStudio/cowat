@@ -24,11 +24,13 @@ import {
   Tag,
   Text,
   Wrap,
+  IconButton,
+  Spacer,
 } from "@chakra-ui/react";
 import type { Prisma } from "@prisma/client";
 import { RequestStatus } from "@prisma/client";
 import dayjs from "dayjs";
-import { CheckCircle2, Clock } from "lucide-react";
+import { CheckCircle2, Clock, Phone } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { ConfirmModal } from "../ConfirmModal";
 
@@ -159,8 +161,7 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
                 </Text>
               </HStack>
               <Text fontSize="sm">
-                {props.createdBy?.name ?? props.createdBy?.email}{" "}
-                {!!props.createdBy?.phone && <>· {props.createdBy?.phone}</>}
+                {props.createdBy?.name ?? props.createdBy?.email}
               </Text>
             </Stack>
           </HStack>
@@ -324,8 +325,8 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
                     </HStack>
                   );
                 })}
-                {isCurrentUserDriver && !props.isDeleted && (
-                  <Flex>
+                <Flex>
+                  {isCurrentUserDriver && !props.isDeleted && (
                     <ConfirmModal
                       onConfirm={() => {
                         cancelCommute.mutate({ id: props.id });
@@ -363,8 +364,20 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
                         Cancel Commute
                       </Button>
                     </ConfirmModal>
-                  </Flex>
-                )}
+                  )}
+                  <Spacer />
+                  {props.createdBy?.phone && (
+                    <IconButton
+                      variant="primary"
+                      aria-label={`Call ${
+                        props.createdBy.name || props.createdBy.email
+                      }`}
+                      as="a"
+                      href={`tel:${props.createdBy?.phone}`}
+                      icon={<Icon icon={Phone} />}
+                    />
+                  )}
+                </Flex>
               </Stack>
             </AccordionPanel>
           </AccordionItem>

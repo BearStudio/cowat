@@ -4,7 +4,7 @@ import { TimezoneSelect } from "@/components/Timezone";
 import { LayoutAuthenticated } from "@/layout/LayoutAuthenticated";
 import { Button, Divider, Heading, Stack } from "@chakra-ui/react";
 
-import { MapPin, UserCogIcon } from "lucide-react";
+import { Car, MapPin, UserCogIcon } from "lucide-react";
 import { signOut } from "next-auth/react";
 import Link from "next/link";
 
@@ -21,6 +21,14 @@ const AccountPage = () => {
           leftIcon={<Icon icon={MapPin} />}
         >
           Locations
+        </Button>
+        <Button
+          variant="default"
+          as={Link}
+          href="/account/commute-templates"
+          leftIcon={<Icon icon={Car} />}
+        >
+          Commute Templates
         </Button>
         <Button
           variant="default"

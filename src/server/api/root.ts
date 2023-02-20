@@ -3,6 +3,7 @@ import { stopRouter } from "./routers/stop";
 import { commuteRouter } from "./routers/commute";
 import { locationRouter } from "./routers/locations";
 import { userRouter } from "@/server/api/routers/user";
+import { templateRouter } from "@/server/api/routers/templates";
 
 /**
  * This is the primary router for your server.
@@ -14,6 +15,7 @@ export const appRouter = createTRPCRouter({
   commute: commuteRouter,
   location: locationRouter,
   user: userRouter,
+  template: templateRouter,
 });
 
 // export type definition of API
