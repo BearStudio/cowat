@@ -55,7 +55,11 @@ const NewCommuteTemplates: NextPage = () => {
         <Formiz autoForm onValidSubmit={handleOnValidSubmit}>
           <Stack>
             <CommuteForm repeaterInitialValues={[{}]} mode="TEMPLATE" />
-            <Button variant="primary" type="submit">
+            <Button
+              variant="primary"
+              type="submit"
+              isLoading={commuteTemplateMutation.isLoading}
+            >
               Save
             </Button>
           </Stack>

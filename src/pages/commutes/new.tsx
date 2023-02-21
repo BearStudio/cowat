@@ -4,7 +4,6 @@ import type { RouterInputs } from "@/utils/api";
 import { api } from "@/utils/api";
 import { useRouter } from "next/router";
 import {
-  Box,
   Button,
   Card,
   CardBody,
@@ -14,7 +13,6 @@ import {
   IconButton,
   Spinner,
   Stack,
-  Text,
 } from "@chakra-ui/react";
 import { LayoutAuthenticated } from "@/layout/LayoutAuthenticated";
 import { Icon } from "@/components/Icon";
