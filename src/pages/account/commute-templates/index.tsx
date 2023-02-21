@@ -16,6 +16,7 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
+import type { Prisma } from "@prisma/client";
 import { ArrowLeft, Car, Pencil, Plus, Trash } from "lucide-react";
 import Link from "next/link";
 
@@ -54,43 +55,11 @@ const Commutes = () => {
         )}
         <SimpleGrid columns={{ base: 1, md: 2 }} spacing="4">
           {commuteTemplates.data?.map((template, index) => (
-            <Card key={template.id}>
-              <CardHeader>
-                <Text fontSize="lg" fontWeight="bold">
-                  Commute {index + 1}
-                </Text>
-              </CardHeader>
-              <CardBody>
-                <CommuteTemplateOverview {...template} />
-              </CardBody>
-              <CardFooter gap="2">
-                <Button
-                  variant="primary"
-                  leftIcon={<Icon icon={Car} />}
-                  as={Link}
-                  href={`/commutes/new?template=${template.id}`}
-                  flex="1"
-                >
-                  New
-                </Button>
-                <Button
-                  isDisabled
-                  variant="default"
-                  leftIcon={<Icon icon={Pencil} />}
-                  flex="1"
-                >
-                  Edit
-                </Button>
-                <Button
-                  isDisabled
-                  variant="danger"
-                  leftIcon={<Icon icon={Trash} />}
-                  flex="1"
-                >
-                  Delete
-                </Button>
-              </CardFooter>
-            </Card>
+            <CommuteTemplateCard
+              key={template.id}
+              template={template}
+              index={index}
+            />
           ))}
         </SimpleGrid>
       </Stack>
@@ -99,3 +68,69 @@ const Commutes = () => {
 };
 
 export default Commutes;
+
+type CommuteTemplateCardProps = {
+  template: Prisma.CommuteTemplateGetPayload<{
+    include: {
+      stops: {
+        select: {
+          id: true;
+          location: true;
+          time: true;
+        };
+      };
+    };
+  }>;
+  index: number;
+};
+
+const CommuteTemplateCard = ({ template, index }: CommuteTemplateCardProps) => {
+  const ctx = api.useContext();
+
+  const removeCommuteTemplate = api.template.remove.useMutation({
+    onSuccess: () => {
+      ctx.template.myCommuteTemplates.invalidate();
+    },
+  });
+
+  return (
+    <Card shadow="card">
+      <CardHeader>
+        <Text fontSize="lg" fontWeight="bold">
+          Commute {index + 1}
+        </Text>
+      </CardHeader>
+      <CardBody>
+        <CommuteTemplateOverview {...template} />
+      </CardBody>
+      <CardFooter gap="2">
+        <Button
+          variant="primary"
+          leftIcon={<Icon icon={Car} />}
+          as={Link}
+          href={`/commutes/new?template=${template.id}`}
+          flex="1"
+        >
+          New
+        </Button>
+        <Button
+          isDisabled
+          variant="default"
+          leftIcon={<Icon icon={Pencil} />}
+          flex="1"
+        >
+          Edit
+        </Button>
+        <Button
+          variant="danger"
+          leftIcon={<Icon icon={Trash} />}
+          flex="1"
+          onClick={() => removeCommuteTemplate.mutate({ id: template.id })}
+          isLoading={removeCommuteTemplate.isLoading}
+        >
+          Delete
+        </Button>
+      </CardFooter>
+    </Card>
+  );
+};

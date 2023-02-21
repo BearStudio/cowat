@@ -99,4 +99,16 @@ export const templateRouter = createTRPCRouter({
 
       return template;
     }),
+  remove: protectedProcedure
+    .input(z.object({ id: z.string().cuid() }))
+    .mutation(async ({ ctx, input }) => {
+      return ctx.prisma.commuteTemplate.update({
+        where: {
+          id: input.id,
+        },
+        data: {
+          isDeleted: true,
+        },
+      });
+    }),
 });
