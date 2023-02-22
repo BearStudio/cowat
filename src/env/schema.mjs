@@ -22,6 +22,8 @@ export const serverSchema = z.object({
   SLACK_WEBHOOK_URL: z.string().url(),
   SLACK_CLIENT_ID: z.string(),
   SLACK_CLIENT_SECRET: z.string(),
+  SLACK_SIGNING_SECRET: z.string(),
+  SLACK_BOT_TOKEN: z.string(),
 });
 
 /**
@@ -37,6 +39,8 @@ export const serverEnv = {
   SLACK_WEBHOOK_URL: process.env.SLACK_WEBHOOK_URL,
   SLACK_CLIENT_ID: process.env.SLACK_CLIENT_ID,
   SLACK_CLIENT_SECRET: process.env.SLACK_CLIENT_SECRET,
+  SLACK_SIGNING_SECRET: process.env.SLACK_SIGNING_SECRET,
+  SLACK_BOT_TOKEN: process.env.SLACK_BOT_TOKEN,
 };
 
 /**

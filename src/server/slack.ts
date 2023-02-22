@@ -3,8 +3,15 @@ import { env } from "@/env/server.mjs";
 import type { Prisma } from "@prisma/client";
 import dayjs from "dayjs";
 import { FULL_TEXT_DATE_WITH_TIME } from "@/constants/dates";
+import { App, LogLevel } from "@slack/bolt";
 
 export const notify = SlackNotify(env.SLACK_WEBHOOK_URL);
+
+const app = new App({
+  token: env.SLACK_BOT_TOKEN,
+  signingSecret: env.SLACK_SIGNING_SECRET,
+  logLevel: env.NODE_ENV === "development" ? LogLevel.DEBUG : LogLevel.WARN,
+});
 
 const newCommute = async (
   commute: Prisma.CommuteGetPayload<{
@@ -105,7 +112,7 @@ const newCommute = async (
   } as any);
 };
 
-const newBookingFrom = (
+const newBookingFrom = async (
   passengerOnStop: Prisma.PassengersOnStopsGetPayload<{
     include: {
       stop: {
@@ -133,10 +140,6 @@ const newBookingFrom = (
     (account) => account.provider === "slack"
   )?.providerAccountId;
 
-  const driver = driverSlackId
-    ? `<@${driverSlackId}>`
-    : passengerOnStop.stop?.commute?.createdBy?.email ?? "";
-
   const passengerSlackId = passengerOnStop.user.accounts.find(
     (account) => account.provider === "slack"
   )?.providerAccountId;
@@ -145,55 +148,36 @@ const newBookingFrom = (
     ? `<@${passengerSlackId}>`
     : passengerOnStop.stop?.commute?.createdBy?.email ?? "";
 
-  return notify.send({
-    blocks: [
-      {
-        type: "section",
-        text: {
-          type: "mrkdwn",
-          text: `Hey ${driver},
-🙋 ${passenger} requested a seat on your *${
-            passengerOnStop.stop?.commute?.date
-              ? dayjs(passengerOnStop?.stop?.commute?.date).format(
-                  "dddd DD MMM HH:mm"
-                )
-              : ""
-          }* commute.`,
+  try {
+    // Call the chat.postMessage method using the WebClient
+    const result = await app.client.chat.postMessage({
+      channel: driverSlackId ?? "",
+      blocks: [
+        {
+          type: "section",
+          text: {
+            type: "mrkdwn",
+            text: `Hey, 🙋 ${passenger} requested a seat on your *${
+              passengerOnStop.stop?.commute?.date
+                ? dayjs(passengerOnStop?.stop?.commute?.date).format(
+                    "dddd DD MMM HH:mm"
+                  )
+                : ""
+            }* commute.`,
+          },
         },
-      },
-      // TODO: coming later, action to accept or refuse from slack
-      // {
-      //   type: "actions",
-      //   elements: [
-      //     {
-      //       type: "button",
-      //       text: {
-      //         type: "plain_text",
-      //         emoji: true,
-      //         text: "Approve",
-      //       },
-      //       style: "primary",
-      //       value: "click_me_123",
-      //     },
-      //     {
-      //       type: "button",
-      //       text: {
-      //         type: "plain_text",
-      //         emoji: true,
-      //         text: "Deny",
-      //       },
-      //       style: "danger",
-      //       value: "click_me_123",
-      //     },
-      //   ],
-      // },
-    ],
+      ],
+    });
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } as any);
+    // TODO: handle result not OK with some logsnag or else
+    console.log(result);
+  } catch (error) {
+    // TODO: handle with some tool to store errors
+    console.error(error);
+  }
 };
 
-const request = (
+const request = async (
   passengerOnStop: Prisma.PassengersOnStopsGetPayload<{
     include: {
       stop: {
@@ -233,26 +217,35 @@ const request = (
     ? `<@${passengerSlackId}>`
     : passengerOnStop.stop.commute?.createdBy?.email ?? "";
 
-  return notify.send({
-    blocks: [
-      {
-        type: "section",
-        text: {
-          type: "mrkdwn",
-          text: `Hey ${passenger},
-${
-  passengerOnStop.requestStatus === "ACCEPTED" ? "✅" : "❌"
-} ${driver} ${passengerOnStop.requestStatus.toLocaleLowerCase()} your request for *${
-            passengerOnStop.stop.commute?.date
-              ? dayjs(passengerOnStop.stop.commute.date).format(
-                  "dddd DD MMM HH:mm"
-                )
-              : ""
-          }* commute.`,
+  try {
+    const result = await app.client.chat.postMessage({
+      channel: passengerSlackId ?? "",
+      blocks: [
+        {
+          type: "section",
+          text: {
+            type: "mrkdwn",
+            text: `Hey ${passenger},
+    ${
+      passengerOnStop.requestStatus === "ACCEPTED" ? "✅" : "❌"
+    } ${driver} ${passengerOnStop.requestStatus.toLocaleLowerCase()} your request for *${
+              passengerOnStop.stop.commute?.date
+                ? dayjs(passengerOnStop.stop.commute.date).format(
+                    "dddd DD MMM HH:mm"
+                  )
+                : ""
+            }* commute.`,
+          },
         },
-      },
-    ],
-  } as any);
+      ],
+    });
+
+    // TODO: handle result not OK with some logsnag or else
+    console.log(result);
+  } catch (error) {
+    // TODO: handle with some tool to store errors
+    console.error(error);
+  }
 };
 
 export const slack = {
