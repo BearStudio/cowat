@@ -9,10 +9,12 @@ import {
   CardBody,
   CardFooter,
   CardHeader,
+  Center,
   Heading,
   HStack,
   IconButton,
   SimpleGrid,
+  Spinner,
   Stack,
   Text,
 } from "@chakra-ui/react";
@@ -49,6 +51,11 @@ const Commutes = () => {
         </HStack>
       }
     >
+      {commuteTemplates.isLoading && (
+        <Center flex="1">
+          <Spinner />
+        </Center>
+      )}
       <Stack spacing="4" as="main">
         {commuteTemplates.data?.length === 0 && (
           <EmptyState>You have no commute template at the moment.</EmptyState>
