@@ -72,7 +72,7 @@ const newCommute = async (
               FULL_TEXT_DATE_WITH_TIME
             )}* has been created by ${createdBy} (💺 ${
             commute.seats
-          } seats available) @here`,
+          } seats available)`,
         },
         // accessory: {
         //   type: "button",
