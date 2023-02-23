@@ -178,6 +178,15 @@ export const stopRouter = createTRPCRouter({
         },
       });
 
-      await slack.request(passengerOnStopUpdated);
+      if (input.requestStatus === "CANCELED") {
+        await slack.bookingCanceled(passengerOnStopUpdated);
+      }
+
+      if (
+        input.requestStatus === "ACCEPTED" ||
+        input.requestStatus === "REFUSED"
+      ) {
+        await slack.request(passengerOnStopUpdated);
+      }
     }),
 });
