@@ -78,12 +78,13 @@ export const NavBarItem: FC<NavBarItemProps> = ({
       py="2"
       pt="3"
       textAlign="center"
+      _dark={{ color: isActive ? "white" : "gray.500" }}
       {...rest}
     >
       <Icon
         fontSize="1.2rem"
         icon={icon}
-        color={isActive ? "black" : "gray.400"}
+        color={isActive ? "currentColor" : "gray.400"}
       />
       <Box
         fontSize="0.55rem"

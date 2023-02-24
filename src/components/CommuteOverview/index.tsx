@@ -100,22 +100,22 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
   const passengers = getPassengers(props.stops);
   const commuteColor = (() => {
     if (props.isDeleted) {
-      return "error.500";
+      return { light: "error.500", dark: "error.600" } as const;
     }
 
     if (isCurrentUserDriver) {
-      return "brand.500";
+      return { light: "brand.500", dark: "brand.600" } as const;
     }
 
     if (passengerStatus === "ACCEPTED") {
-      return "success.500";
+      return { light: "success.500", dark: "success.600" } as const;
     }
 
     if (passengerStatus === "REQUESTED") {
-      return "warning.500";
+      return { light: "warning.500", dark: "warning.600" } as const;
     }
 
-    return "gray.300";
+    return { light: "gray.300", dark: "gray.500" } as const;
   })();
 
   const notYetPassengerIfInside: Array<RequestStatus> = [
@@ -127,9 +127,10 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
     <Card
       position="relative"
       borderStart="6px solid"
-      borderColor={commuteColor}
+      borderColor={commuteColor.light}
       boxShadow="card"
       overflow="hidden"
+      _dark={{ borderColor: commuteColor.dark }}
     >
       <CardHeader pb={0} zIndex={1} position="relative">
         {(isPassenger || isCurrentUserDriver) && (
@@ -140,10 +141,13 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
             borderRadius="full"
             w={32}
             h={32}
-            bg={commuteColor}
+            bg={commuteColor.light}
             opacity={0.6}
             filter="blur(80px)"
             blendMode="multiply"
+            _dark={{
+              bg: commuteColor.dark,
+            }}
           />
         )}
         <Flex justify="space-between">
@@ -243,7 +247,12 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
                 <StackDivider />
                 {props.comment && (
                   <>
-                    <Text fontSize="xs" textAlign="left" color="gray.500">
+                    <Text
+                      fontSize="sm"
+                      textAlign="left"
+                      color="gray.600"
+                      _dark={{ color: "gray.300" }}
+                    >
                       {props.comment}
                     </Text>
 
@@ -262,7 +271,11 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
                           📍 {!!stop.time && `${stop.time} · `}
                           {stop?.location?.name}{" "}
                         </Text>
-                        <Text fontSize="sm" color="gray.600">
+                        <Text
+                          fontSize="sm"
+                          color="gray.600"
+                          _dark={{ color: "gray.300" }}
+                        >
                           {stop?.location?.address}
                         </Text>
                         {!!passengers.length && (

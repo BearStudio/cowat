@@ -13,6 +13,11 @@ export const EmptyState = (props: BoxProps) => {
       p="8"
       textAlign="center"
       fontWeight="medium"
+      _dark={{
+        bg: "gray.800",
+        color: "gray.300",
+        borderColor: "gray.600",
+      }}
       {...props}
     />
   );

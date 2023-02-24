@@ -148,7 +148,14 @@ const New: NextPage = () => {
           connect={form}
           initialValues={defaultValues}
         >
-          <Stack bg="white" rounded="lg" boxShadow="card" p="8" spacing="4">
+          <Stack
+            bg="white"
+            rounded="lg"
+            boxShadow="card"
+            p="8"
+            spacing="4"
+            _dark={{ bg: "gray.800" }}
+          >
             <CommuteForm repeaterInitialValues={defaultValues.stops} />
             <FieldTextarea label="Comment" name="comment" />
             <Button

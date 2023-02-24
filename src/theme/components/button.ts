@@ -8,6 +8,15 @@ const primary = defineStyle({
       bg: "gray.900",
     },
   },
+  _dark: {
+    bg: "gray.100",
+    color: "gray.900",
+    _hover: {
+      _disabled: {
+        bg: "gray.100",
+      },
+    },
+  },
 });
 
 const danger = defineStyle({
@@ -21,6 +30,23 @@ const danger = defineStyle({
   _focusVisible: {
     ringColor: "error.700",
   },
+  _disabled: {
+    color: "inherit",
+  },
+  _dark: {
+    bg: "gray.800",
+    color: "error.500",
+    borderColor: "gray.900",
+    _hover: {
+      bg: "gray.900",
+    },
+    _disabled: {
+      color: "inherit",
+      _hover: {
+        bg: "gray.800",
+      },
+    },
+  },
 });
 
 const defaultButton = defineStyle({
@@ -31,6 +57,14 @@ const defaultButton = defineStyle({
   _hover: {
     bg: "whiteAlpha.300",
     color: "gray.700",
+  },
+  _dark: {
+    bg: "gray.800",
+    color: "white",
+    borderColor: "gray.900",
+    _hover: {
+      bg: "gray.900",
+    },
   },
 });
 

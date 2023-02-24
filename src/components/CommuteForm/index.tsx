@@ -155,7 +155,7 @@ const Stop = ({ index, onRemove, isRemovable }: StopProps) => {
             <IconButton
               variant="danger"
               aria-label={`Remove stop ${index}`}
-              icon={<Trash />}
+              icon={<Icon icon={Trash} />}
               onClick={() => onRemove()}
               isDisabled={!isRemovable}
             />

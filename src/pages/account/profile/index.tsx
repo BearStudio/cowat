@@ -55,6 +55,9 @@ const ProfilePage = () => {
           p="4"
           bg="white"
           rounded="md"
+          _dark={{
+            bg: "gray.800",
+          }}
         >
           <Formiz
             autoForm
@@ -72,7 +75,7 @@ const ProfilePage = () => {
               <FieldInput
                 name="phone"
                 label="Phone number"
-                placeholder="0600112233"
+                placeholder="0600000000"
               />
               <Button
                 variant="primary"

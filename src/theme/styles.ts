@@ -12,6 +12,10 @@ export const styles: Theme["styles"] = {
       color: "gray.900",
       bg: "gray.50",
       WebkitTapHighlightColor: "transparent",
+      _dark: {
+        bg: "gray.900",
+        color: "white",
+      },
     },
     "#__next": {
       display: "flex",

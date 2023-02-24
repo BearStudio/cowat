@@ -72,7 +72,7 @@ export const PageTopBar = ({
         boxShadow="layout"
         transition="0.2s"
         bg="white"
-        _dark={{ bg: "black" }}
+        _dark={{ bg: "gray.800" }}
         {...rest}
       >
         <Box w="full" h="0" pb="safe-top" />
@@ -144,7 +144,7 @@ export const PageBottomBar = ({ children, ...rest }: FlexProps) => {
         insetEnd="0"
         py="0"
         bg="white"
-        _dark={{ bg: "gray.900" }}
+        _dark={{ bg: "gray.800" }}
         {...rest}
       >
         <PageContainer>{children}</PageContainer>

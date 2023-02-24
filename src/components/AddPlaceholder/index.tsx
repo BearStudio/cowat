@@ -22,6 +22,7 @@ export const AddPlaceholder: FC<ButtonProps> = ({ children, ...props }) => {
       _dark={{
         bg: "gray.900",
         borderColor: "gray.700",
+        color: "gray.300",
         _hover: { borderColor: "gray.600" },
         _active: { bg: "gray.800" },
       }}
