@@ -1,3 +1,4 @@
+import { ColorModeSelect } from "@/components/ColorModeSelect";
 import { Icon } from "@/components/Icon";
 import { TimezoneSelect } from "@/components/Timezone";
 
@@ -13,7 +14,9 @@ const AccountPage = () => {
     <LayoutAuthenticated topBar={<Heading size="md">Account</Heading>}>
       <Stack spacing="4">
         <TimezoneSelect />
+        <ColorModeSelect />
         <Divider />
+
         <Button
           variant="default"
           as={Link}
