@@ -2,7 +2,7 @@ import tailwindColors from "./tailwindColors";
 
 export const colors = {
   brand: tailwindColors.blue,
-  gray: tailwindColors.blueGray,
+  gray: tailwindColors.gray,
 
   success: tailwindColors.lime,
   green: tailwindColors.lime,
