@@ -28,6 +28,7 @@ import {
 import dayjs from "dayjs";
 import { Car, Navigation, Plus } from "lucide-react";
 import { useSession } from "next-auth/react";
+import Head from "next/head";
 import Link from "next/link";
 
 const Dashboard = () => {
@@ -40,6 +41,9 @@ const Dashboard = () => {
 
   return (
     <LayoutAuthenticated topBar={<Heading size="md">Cowat</Heading>}>
+      <Head>
+        <title>Cowat - Dashboard</title>
+      </Head>
       {commutesByDate.isLoading && (
         <Center flex={1}>
           <Spinner />

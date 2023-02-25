@@ -8,6 +8,7 @@ import { Button, Heading, HStack, IconButton, Stack } from "@chakra-ui/react";
 import { Formiz } from "@formiz/core";
 import { ArrowLeft } from "lucide-react";
 import type { NextPage } from "next";
+import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
@@ -40,10 +41,13 @@ const NewCommuteTemplates: NextPage = () => {
             as={Link}
             href="/account/commute-templates"
           />
-          <Heading size="md">New commute template</Heading>
+          <Heading size="md">New Commute Template</Heading>
         </HStack>
       }
     >
+      <Head>
+        <title>Cowat - New Commute Template</title>
+      </Head>
       <Stack
         spacing="4"
         as="main"

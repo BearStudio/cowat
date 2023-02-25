@@ -21,6 +21,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { ArrowLeft, ExternalLink, Plus, Trash } from "lucide-react";
+import Head from "next/head";
 import Link from "next/link";
 
 const LocationsPage = () => {
@@ -52,6 +53,9 @@ const LocationsPage = () => {
         </HStack>
       }
     >
+      <Head>
+        <title>Cowat - Locations</title>
+      </Head>
       <Stack spacing="4" as="main">
         {myLocations.data?.length === 0 && (
           <EmptyState>You have no locations at the moment.</EmptyState>

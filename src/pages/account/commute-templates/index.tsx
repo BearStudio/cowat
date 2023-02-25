@@ -20,6 +20,7 @@ import {
 } from "@chakra-ui/react";
 import type { Prisma } from "@prisma/client";
 import { ArrowLeft, Car, Pencil, Plus, Trash } from "lucide-react";
+import Head from "next/head";
 import Link from "next/link";
 
 const Commutes = () => {
@@ -38,7 +39,7 @@ const Commutes = () => {
             href="/account"
           />
           <Heading size="md" flex={1}>
-            Commute templates
+            Commute Templates
           </Heading>
           <IconButton
             size="sm"
@@ -51,6 +52,9 @@ const Commutes = () => {
         </HStack>
       }
     >
+      <Head>
+        <title>Cowat - Commute Templates</title>
+      </Head>
       {commuteTemplates.isLoading && (
         <Center flex="1">
           <Spinner />

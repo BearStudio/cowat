@@ -7,11 +7,15 @@ import { Button, Divider, Heading, Stack } from "@chakra-ui/react";
 
 import { Car, MapPin, UserCogIcon } from "lucide-react";
 import { signOut } from "next-auth/react";
+import Head from "next/head";
 import Link from "next/link";
 
 const AccountPage = () => {
   return (
     <LayoutAuthenticated topBar={<Heading size="md">Account</Heading>}>
+      <Head>
+        <title>Cowat - Account</title>
+      </Head>
       <Stack spacing="4">
         <TimezoneSelect />
         <ColorModeSelect />

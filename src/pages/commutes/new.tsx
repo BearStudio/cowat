@@ -24,6 +24,7 @@ import { DAY_MONTH_YEAR } from "@/constants/dates";
 import { CommuteForm } from "@/components/CommuteForm";
 import { useEffect, useState } from "react";
 import { CommuteTemplateOverview } from "@/components/CommuteTemplateOverview";
+import Head from "next/head";
 
 type CreateCommuteInput = RouterInputs["commute"]["createCommute"];
 
@@ -109,10 +110,13 @@ const New: NextPage = () => {
             icon={<Icon icon={ArrowLeft} />}
             onClick={() => router.back()}
           />
-          <Heading size="md">New commute</Heading>
+          <Heading size="md">New Commute</Heading>
         </HStack>
       }
     >
+      <Head>
+        <title>Cowat - New Commute</title>
+      </Head>
       {commuteTemplates.isLoading && (
         <Center flex={1}>
           <Spinner />

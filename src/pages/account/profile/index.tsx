@@ -14,6 +14,7 @@ import {
 } from "@chakra-ui/react";
 import { Formiz } from "@formiz/core";
 import { ArrowLeft } from "lucide-react";
+import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
@@ -42,6 +43,9 @@ const ProfilePage = () => {
         </HStack>
       }
     >
+      <Head>
+        <title>Cowat - Profile</title>
+      </Head>
       {profile.isLoading && (
         <Center flex={1}>
           <Spinner />

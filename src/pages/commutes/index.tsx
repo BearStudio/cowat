@@ -13,6 +13,7 @@ import {
 } from "@chakra-ui/react";
 import { Plus } from "lucide-react";
 import type { NextPage } from "next";
+import Head from "next/head";
 import NextLink from "next/link";
 
 const CommutesIndex: NextPage = () => {
@@ -34,6 +35,9 @@ const CommutesIndex: NextPage = () => {
         </HStack>
       }
     >
+      <Head>
+        <title>Cowat - My commute</title>
+      </Head>
       {commutes.isLoading && (
         <Center flex={1}>
           <Spinner />
