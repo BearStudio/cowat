@@ -7,7 +7,7 @@
     "dev": "pnpm ssl:proxy & next dev",
     "postinstall": "prisma generate && pnpm theme:generate-typing",
     "lint": "tsc --noEmit & next lint",
-    "start": "next start",
+    "start": "pnpm ssl:proxy & next start",
     "ssl:generate": "mkcert localhost",
     "ssl:proxy": "npx local-ssl-proxy --key localhost-key.pem --cert localhost.pem --source 3001 --target 3000",
     "theme:generate-typing": "chakra-cli tokens ./src/theme/theme.ts",

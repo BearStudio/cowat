@@ -78,7 +78,7 @@ export const NavBarItem: FC<NavBarItemProps> = ({
       py="2"
       pt="3"
       textAlign="center"
-      _dark={{ color: isActive ? "white" : "gray.500" }}
+      _dark={{ color: isActive ? "white" : "gray.400" }}
       {...rest}
     >
       <Icon

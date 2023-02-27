@@ -10,6 +10,7 @@ export const ColorModeSelect = () => {
       <FormGroup label="Color Mode" textTransform="capitalize">
         <Select
           value={{ value: colorMode, label: colorMode }}
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           onChange={(newValue: any) => {
             setColorMode(newValue?.value);
           }}
