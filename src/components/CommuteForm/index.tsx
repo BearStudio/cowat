@@ -46,7 +46,7 @@ export const CommuteForm = ({
   });
 
   return (
-    <Stack>
+    <>
       <FieldInput
         label="💺 Seats"
         name="seats"
@@ -92,7 +92,7 @@ export const CommuteForm = ({
       <AddPlaceholder onClick={() => stops.append()}>
         <Icon icon={Plus} /> Add Stop 📍
       </AddPlaceholder>
-    </Stack>
+    </>
   );
 };
 

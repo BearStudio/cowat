@@ -25,6 +25,7 @@ import { CommuteForm } from "@/components/CommuteForm";
 import { useEffect, useState } from "react";
 import { CommuteTemplateOverview } from "@/components/CommuteTemplateOverview";
 import Head from "next/head";
+import { SimpleCard } from "@/components/SimpleCard";
 
 type CreateCommuteInput = RouterInputs["commute"]["createCommute"];
 
@@ -152,14 +153,7 @@ const New: NextPage = () => {
           connect={form}
           initialValues={defaultValues}
         >
-          <Stack
-            bg="white"
-            rounded="lg"
-            boxShadow="card"
-            p="8"
-            spacing="4"
-            _dark={{ bg: "gray.800" }}
-          >
+          <SimpleCard>
             <CommuteForm repeaterInitialValues={defaultValues.stops} />
             <FieldTextarea label="Comment" name="comment" />
             <Button
@@ -169,7 +163,7 @@ const New: NextPage = () => {
             >
               Save
             </Button>
-          </Stack>
+          </SimpleCard>
         </Formiz>
       )}
     </LayoutAuthenticated>

@@ -2,7 +2,7 @@ import { FieldInput } from "@/components/FieldInput";
 import { FieldTextarea } from "@/components/FieldTextarea";
 import { Icon } from "@/components/Icon";
 import { searchOnMaps } from "@/constants/google";
-import { Button, Link, Stack } from "@chakra-ui/react";
+import { Button, Link } from "@chakra-ui/react";
 import { useFormFields } from "@formiz/core";
 import { ExternalLink } from "lucide-react";
 
@@ -10,7 +10,7 @@ export const LocationForm = () => {
   const fields = useFormFields();
 
   return (
-    <Stack>
+    <>
       <FieldInput label="Name" name="name" required="Please provide a name" />
       <FieldTextarea
         label="Address"
@@ -27,6 +27,6 @@ export const LocationForm = () => {
       >
         Maps
       </Button>
-    </Stack>
+    </>
   );
 };
