@@ -55,6 +55,7 @@ const NewCommuteTemplates: NextPage = () => {
         p="4"
         bg="white"
         rounded="md"
+        _dark={{ bg: "gray.800" }}
       >
         <Formiz autoForm onValidSubmit={handleOnValidSubmit}>
           <Stack>
