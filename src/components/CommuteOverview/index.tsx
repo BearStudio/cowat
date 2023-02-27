@@ -98,6 +98,8 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
   };
 
   const passengers = getPassengers(props.stops);
+  const isFull = passengers.length === props.seats;
+
   const commuteColor = (() => {
     if (props.isDeleted) {
       return { light: "error.500", dark: "error.600" } as const;
@@ -302,6 +304,7 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
                         (!isPassenger ||
                           passengerStatus === "CANCELED" ||
                           passengerStatus === "REFUSED") &&
+                        !isFull &&
                         dayjs().isBefore(dayjs(props.date)) && (
                           <HStack>
                             <Button
