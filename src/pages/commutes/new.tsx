@@ -17,7 +17,6 @@ import {
 import { LayoutAuthenticated } from "@/layout/LayoutAuthenticated";
 import { Icon } from "@/components/Icon";
 import { ArrowLeft } from "lucide-react";
-import { FieldTextarea } from "@/components/FieldTextarea";
 import type { Dayjs } from "dayjs";
 import dayjs from "dayjs";
 import { DAY_MONTH_YEAR } from "@/constants/dates";
@@ -155,7 +154,6 @@ const New: NextPage = () => {
         >
           <SimpleCard>
             <CommuteForm repeaterInitialValues={defaultValues.stops} />
-            <FieldTextarea label="Comment" name="comment" />
             <Button
               variant="primary"
               type="submit"

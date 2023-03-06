@@ -2,6 +2,7 @@ import { AddPlaceholder } from "@/components/AddPlaceholder";
 import { FieldDayPicker } from "@/components/FieldDatePicker";
 import { FieldInput } from "@/components/FieldInput";
 import { FieldSelect } from "@/components/FieldSelect";
+import { FieldTextarea } from "@/components/FieldTextarea";
 import { FieldTime } from "@/components/FieldTime";
 import { Icon } from "@/components/Icon";
 import { LocationForm } from "@/components/LocationForm";
@@ -92,6 +93,7 @@ export const CommuteForm = ({
       <AddPlaceholder onClick={() => stops.append()}>
         <Icon icon={Plus} /> Add Stop 📍
       </AddPlaceholder>
+      <FieldTextarea label="Comment" name="comment" />
     </>
   );
 };

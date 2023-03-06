@@ -83,6 +83,7 @@ model CommuteTemplate {
     createdBy   User?    @relation(fields: [createdById], references: [id])
     stops       Stop[]
     seats       Int?
+    comment     String?  @db.Text
 
     @@index([createdById])
 }

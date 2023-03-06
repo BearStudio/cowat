@@ -28,6 +28,7 @@ export const templateRouter = createTRPCRouter({
             })),
           },
           seats: input.seats,
+          comment: input.comment,
         },
         include: {
           createdBy: {

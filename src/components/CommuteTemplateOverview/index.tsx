@@ -29,11 +29,25 @@ export const CommuteTemplateOverview = (
             📍 {!!stop.time && `${stop.time} · `}
             {stop?.location?.name}{" "}
           </Text>
-          <Text fontSize="sm" color="gray.600">
+          <Text fontSize="sm" color="gray.600" _dark={{ color: "gray.400" }}>
             {stop?.location?.address}
           </Text>
         </Stack>
       ))}
+      {props.comment && (
+        <>
+          <Text
+            fontSize="sm"
+            textAlign="left"
+            color="gray.600"
+            _dark={{ color: "gray.300" }}
+          >
+            {props.comment}
+          </Text>
+
+          <StackDivider />
+        </>
+      )}
     </Stack>
   );
 };
