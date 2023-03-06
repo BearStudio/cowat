@@ -112,4 +112,60 @@ export const templateRouter = createTRPCRouter({
         },
       });
     }),
+  edit: protectedProcedure
+    .input(
+      z.object({
+        id: z.string().cuid(),
+        seats: z.number().min(1),
+        stops: z.array(
+          z.object({
+            location: z.string(),
+            time: z.string()?.nullish(),
+          })
+        ),
+        comment: z.string().nullish(),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      // Deleting all the stops so we can recreate them
+      // This is a quick win, we should probably do it another way like update
+      await ctx.prisma.stop.deleteMany({
+        where: {
+          commuteTemplateId: input.id,
+        },
+      });
+
+      const commute = await ctx.prisma.commuteTemplate.update({
+        data: {
+          createdById: ctx.session.user.id,
+          stops: {
+            create: input.stops.map((stop) => ({
+              time: stop.time,
+              locationId: stop.location,
+            })),
+          },
+          seats: input.seats,
+          comment: input.comment,
+        },
+        where: {
+          id: input.id,
+        },
+        include: {
+          createdBy: {
+            select: {
+              accounts: true,
+              email: true,
+            },
+          },
+          stops: {
+            select: {
+              location: true,
+              time: true,
+            },
+          },
+        },
+      });
+
+      return commute;
+    }),
 });

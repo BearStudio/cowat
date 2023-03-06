@@ -125,9 +125,10 @@ const CommuteTemplateCard = ({ template, index }: CommuteTemplateCardProps) => {
           New
         </Button>
         <Button
-          isDisabled
           variant="default"
           leftIcon={<Icon icon={Pencil} />}
+          as={Link}
+          href={`/account/commute-templates/${template.id}`}
           flex="1"
         >
           Edit

@@ -1,6 +1,5 @@
 import type { ReactNode } from "react";
 
-import { Center, Spinner } from "@chakra-ui/react";
 import type { UserRole } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
@@ -13,6 +12,7 @@ import {
 import type { PageProps } from "@/components/Page";
 import { ErrorPage } from "@/components/ErrorPage";
 import { BottomNavBar } from "@/components/BottomNavBar";
+import { Loader } from "@/components/Loader";
 
 export const LayoutAuthenticated = ({
   access = "USER",
@@ -31,11 +31,7 @@ export const LayoutAuthenticated = ({
   const { status, data: session } = useSession();
 
   if (status === "loading") {
-    return (
-      <Center flex={1}>
-        <Spinner />
-      </Center>
-    );
+    return <Loader />;
   }
 
   if (status === "unauthenticated") {
