@@ -85,13 +85,15 @@ const New: NextPage = () => {
   });
 
   const handleOnValidSubmit = (
-    values: Omit<CreateCommuteInput, "date"> & { date: Dayjs; time: string }
+    values: Omit<CreateCommuteInput, "date"> & { date: Dayjs }
   ) => {
-    const { date, time, ...otherValues } = values;
+    const { date, ...otherValues } = values;
 
     createCommute.mutate({
       ...otherValues,
-      date: dayjs(`${date.format("YYYY-MM-DD")} ${time}`).toDate(),
+      date: dayjs(
+        `${date.format("YYYY-MM-DD")} ${otherValues.stops[0]?.time}`
+      ).toDate(),
     });
   };
 

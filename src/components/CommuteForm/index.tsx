@@ -72,11 +72,6 @@ export const CommuteForm = ({
             name="date"
             required="Please provide a valid date"
           />
-          <FieldTime
-            label="🕘 Departure Time"
-            name="time"
-            required="Please provide a departure time"
-          />
         </>
       )}
       <Divider />
@@ -152,7 +147,13 @@ const Stop = ({ index, onRemove, isRemovable }: StopProps) => {
           </Box>
         </HStack>
         <HStack align="flex-start" spacing={{ base: 2, md: 6 }} w="full">
-          <FieldTime label="🕑 Pick up time" name={`stops[${index}].time`} />
+          <FieldTime
+            label="🕑 Pick up time"
+            name={`stops[${index}].time`}
+            required={
+              index === 0 ? "The first pick up time is required" : false
+            }
+          />
           <Box pt={8}>
             <IconButton
               variant="danger"
