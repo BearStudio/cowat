@@ -44,6 +44,7 @@ export const commuteRouter = createTRPCRouter({
           },
           stops: {
             select: {
+              id: true,
               location: true,
               time: true,
             },

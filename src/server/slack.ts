@@ -28,6 +28,8 @@ type PassengerOnStopNotification = Prisma.PassengersOnStopsGetPayload<{
   };
 }>;
 
+export const BOOK_ACTION_ID = "book";
+
 export const notify = SlackNotify(env.SLACK_WEBHOOK_URL);
 
 const app = new App({
@@ -47,6 +49,7 @@ const newCommute = async (
       };
       stops: {
         select: {
+          id: true;
           location: true;
           time: true;
         };
@@ -69,6 +72,16 @@ const newCommute = async (
       text: `📍 *${stop.location?.name}${
         stop.time ? ` - ${stop.time}` : ""
       }*\n${stop.location?.address}`,
+    },
+    accessory: {
+      type: "button",
+      text: {
+        type: "plain_text",
+        text: "Book",
+        emoji: true,
+      },
+      value: stop.id,
+      action_id: "book",
     },
   }));
 

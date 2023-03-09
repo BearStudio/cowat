@@ -1,110 +1,121 @@
 import { slack } from "@/server/slack";
 import { isValidRequestStatusTransition } from "@/utils/requestStatus";
+import type { PrismaClient, User } from "@prisma/client";
 import { RequestStatus } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 
-export const stopRouter = createTRPCRouter({
-  book: protectedProcedure
-    .input(
-      z.object({
-        stopId: z.string(),
-      })
-    )
-    .mutation(async ({ ctx, input }) => {
-      let passengerOnStop;
-      const doesExist = await ctx.prisma.passengersOnStops.findUnique({
-        where: {
-          userId_stopId: { stopId: input.stopId, userId: ctx.session.user.id },
-        },
+const bookInput = z.object({
+  stopId: z.string(),
+});
+
+export async function book({
+  userId,
+  input,
+  prisma,
+}: {
+  userId: User["id"];
+  input: z.infer<typeof bookInput>;
+  prisma: PrismaClient;
+}) {
+  let passengerOnStop;
+  const doesExist = await prisma.passengersOnStops.findUnique({
+    where: {
+      userId_stopId: { stopId: input.stopId, userId },
+    },
+    include: {
+      stop: {
         include: {
-          stop: {
-            include: {
-              commute: {
-                select: {
-                  createdBy: true,
+          commute: {
+            select: {
+              createdBy: true,
+            },
+          },
+        },
+      },
+    },
+  });
+
+  // If passenger on stop exists, then update the data
+  if (doesExist) {
+    passengerOnStop = await prisma.passengersOnStops.update({
+      where: {
+        userId_stopId: {
+          stopId: input.stopId,
+          userId,
+        },
+      },
+      data: {
+        requestStatus: "REQUESTED",
+      },
+      include: {
+        stop: {
+          include: {
+            commute: {
+              include: {
+                createdBy: {
+                  include: {
+                    accounts: true,
+                  },
                 },
               },
             },
           },
         },
-      });
-
-      // If passenger on stop exists, then update the data
-      if (doesExist) {
-        passengerOnStop = await ctx.prisma.passengersOnStops.update({
-          where: {
-            userId_stopId: {
-              stopId: input.stopId,
-              userId: ctx.session.user.id,
-            },
-          },
-          data: {
-            requestStatus: "REQUESTED",
-          },
+        user: {
           include: {
-            stop: {
+            accounts: true,
+          },
+        },
+      },
+    });
+  } else {
+    passengerOnStop = await prisma.passengersOnStops.create({
+      data: {
+        user: {
+          connect: {
+            id: userId,
+          },
+        },
+        stop: {
+          connect: {
+            id: input.stopId,
+          },
+        },
+      },
+      include: {
+        stop: {
+          include: {
+            commute: {
               include: {
-                commute: {
+                createdBy: {
                   include: {
-                    createdBy: {
-                      include: {
-                        accounts: true,
-                      },
-                    },
+                    accounts: true,
                   },
                 },
               },
             },
-            user: {
-              include: {
-                accounts: true,
-              },
-            },
           },
-        });
-      } else {
-        passengerOnStop = await ctx.prisma.passengersOnStops.create({
-          data: {
-            user: {
-              connect: {
-                id: ctx.session.user.id,
-              },
-            },
-            stop: {
-              connect: {
-                id: input.stopId,
-              },
-            },
-          },
+        },
+        user: {
           include: {
-            stop: {
-              include: {
-                commute: {
-                  include: {
-                    createdBy: {
-                      include: {
-                        accounts: true,
-                      },
-                    },
-                  },
-                },
-              },
-            },
-            user: {
-              include: {
-                accounts: true,
-              },
-            },
+            accounts: true,
           },
-        });
-      }
+        },
+      },
+    });
+  }
 
-      await slack.newBookingFrom(passengerOnStop);
+  await slack.newBookingFrom(passengerOnStop);
 
-      return passengerOnStop;
-    }),
+  return passengerOnStop;
+}
+
+export const stopRouter = createTRPCRouter({
+  book: protectedProcedure.input(bookInput).mutation(({ ctx, input }) => {
+    return book({ userId: ctx.session.user.id, prisma: ctx.prisma, input });
+  }),
   requestStatus: protectedProcedure
     .input(
       z.object({
