@@ -1,7 +1,15 @@
 import { Icon } from "@/components/Icon";
 import { FULL_TEXT_DATE_WITH_TIME } from "@/constants/dates";
 import { api } from "@/utils/api";
-import { Avatar, Button, Flex, Stack, Text } from "@chakra-ui/react";
+import {
+  Avatar,
+  Button,
+  Card,
+  CardBody,
+  Flex,
+  Stack,
+  Text,
+} from "@chakra-ui/react";
 import type {
   Commute,
   Location,
@@ -34,64 +42,68 @@ export const Request = ({ request }: RequestProps) => {
   });
 
   return (
-    <Stack shadow="lg" bg="white" rounded="md" p="4">
-      <Flex justify="space-between" align="center">
-        <Stack spacing="0">
-          <Text color="gray.900" fontWeight="bold">
-            Request from {request.user.name ?? request.user.email}
-          </Text>
-          <Text fontSize="sm">
-            <>
-              For{" "}
-              <Text as="span" fontWeight="bold">
-                {dayjs(request.stop.commute?.date).format(
-                  FULL_TEXT_DATE_WITH_TIME
-                )}
-              </Text>{" "}
-              commute
-            </>
-          </Text>
-          <Text fontSize="xs">
-            📍 {request.stop.time} · {request.stop.location?.name}
-          </Text>
+    <Card>
+      <CardBody>
+        <Stack>
+          <Flex justify="space-between" align="center">
+            <Stack spacing="1">
+              <Text fontWeight="bold">
+                Request from {request.user.name ?? request.user.email}
+              </Text>
+              <Text fontSize="sm">
+                <>
+                  For{" "}
+                  <Text as="span" fontWeight="bold">
+                    {dayjs(request.stop.commute?.date).format(
+                      FULL_TEXT_DATE_WITH_TIME
+                    )}
+                  </Text>{" "}
+                  commute
+                </>
+              </Text>
+              <Text fontSize="xs">
+                📍 {request.stop.time} · {request.stop.location?.name}
+              </Text>
+            </Stack>
+            <Avatar
+              src={request.user.image ?? ""}
+              name={request.user.name ?? request.user.email ?? ""}
+            />
+          </Flex>
+          <Flex gap="3">
+            <Button
+              w="full"
+              variant="primary"
+              leftIcon={<Icon icon={Check} />}
+              isLoading={updateRequestStatus.isLoading}
+              onClick={() =>
+                updateRequestStatus.mutate({
+                  passengerId: request.userId,
+                  requestStatus: RequestStatus.ACCEPTED,
+                  stopId: request.stopId,
+                })
+              }
+            >
+              Accept
+            </Button>
+            <Button
+              w="full"
+              variant="danger"
+              leftIcon={<Icon icon={X} />}
+              isLoading={updateRequestStatus.isLoading}
+              onClick={() =>
+                updateRequestStatus.mutate({
+                  passengerId: request.userId,
+                  requestStatus: RequestStatus.REFUSED,
+                  stopId: request.stopId,
+                })
+              }
+            >
+              Refuse
+            </Button>
+          </Flex>
         </Stack>
-        <Avatar
-          src={request.user.image ?? ""}
-          name={request.user.name ?? request.user.email ?? ""}
-        />
-      </Flex>
-      <Flex gap="3">
-        <Button
-          w="full"
-          variant="primary"
-          leftIcon={<Icon icon={Check} />}
-          isLoading={updateRequestStatus.isLoading}
-          onClick={() =>
-            updateRequestStatus.mutate({
-              passengerId: request.userId,
-              requestStatus: RequestStatus.ACCEPTED,
-              stopId: request.stopId,
-            })
-          }
-        >
-          Accept
-        </Button>
-        <Button
-          w="full"
-          variant="danger"
-          leftIcon={<Icon icon={X} />}
-          isLoading={updateRequestStatus.isLoading}
-          onClick={() =>
-            updateRequestStatus.mutate({
-              passengerId: request.userId,
-              requestStatus: RequestStatus.REFUSED,
-              stopId: request.stopId,
-            })
-          }
-        >
-          Refuse
-        </Button>
-      </Flex>
-    </Stack>
+      </CardBody>
+    </Card>
   );
 };
