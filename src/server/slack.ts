@@ -32,7 +32,7 @@ export const BOOK_ACTION_ID = "book";
 
 export const notify = SlackNotify(env.SLACK_WEBHOOK_URL);
 
-const app = new App({
+export const slackApp = new App({
   token: env.SLACK_BOT_TOKEN,
   signingSecret: env.SLACK_SIGNING_SECRET,
   logLevel: env.NODE_ENV === "development" ? LogLevel.DEBUG : LogLevel.WARN,
@@ -141,7 +141,7 @@ const newBookingFrom = async (passengerOnStop: PassengerOnStopNotification) => {
 
   try {
     // Call the chat.postMessage method using the WebClient
-    const result = await app.client.chat.postMessage({
+    const result = await slackApp.client.chat.postMessage({
       channel: driverSlackId ?? "",
       blocks: [
         {
@@ -186,7 +186,7 @@ const request = async (passengerOnStop: PassengerOnStopNotification) => {
     : passengerOnStop.stop.commute?.createdBy?.email ?? "";
 
   try {
-    const result = await app.client.chat.postMessage({
+    const result = await slackApp.client.chat.postMessage({
       channel: passengerSlackId ?? "",
       blocks: [
         {
@@ -228,7 +228,7 @@ const bookingCanceled = async (
   )?.providerAccountId;
 
   try {
-    const result = await app.client.chat.postMessage({
+    const result = await slackApp.client.chat.postMessage({
       channel: driverSlackId ?? "",
       blocks: [
         {
