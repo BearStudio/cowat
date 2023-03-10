@@ -1,4 +1,5 @@
 import { slack } from "@/server/slack";
+import { getPassengers } from "@/utils/commutes";
 import { isValidRequestStatusTransition } from "@/utils/requestStatus";
 import type { PrismaClient, User } from "@prisma/client";
 import { RequestStatus } from "@prisma/client";
@@ -19,6 +20,61 @@ export async function book({
   input: z.infer<typeof bookInput>;
   prisma: PrismaClient;
 }) {
+  const relatedCommute = await prisma.stop.findFirst({
+    where: {
+      id: input.stopId,
+    },
+    include: {
+      commute: {
+        include: {
+          stops: {
+            include: {
+              passengers: {
+                include: {
+                  user: true,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  });
+
+  const passengers = getPassengers(relatedCommute?.commute?.stops ?? []);
+
+  // The commute is deleted / canceled
+  if (relatedCommute?.commute?.isDeleted) {
+    throw new TRPCError({
+      code: "NOT_FOUND",
+      message: "This commute doesn't exists (anymore)",
+    });
+  }
+
+  // Checking if the commute is complete
+  if (relatedCommute?.commute?.seats === passengers.length) {
+    throw new TRPCError({
+      code: "BAD_REQUEST",
+      message: "This commute is complete, booking aren't allowed anymore",
+    });
+  }
+
+  // The driver can't book their own commute
+  if (relatedCommute?.commute?.createdById === userId) {
+    throw new TRPCError({
+      code: "BAD_REQUEST",
+      message: "You can't book your own commute",
+    });
+  }
+
+  // The user can't book the same commute twice
+  if (!!passengers?.find((passenger) => passenger.userId === userId)) {
+    throw new TRPCError({
+      code: "BAD_REQUEST",
+      message: "You can't book the same commute twice",
+    });
+  }
+
   let passengerOnStop;
   const doesExist = await prisma.passengersOnStops.findUnique({
     where: {
@@ -27,17 +83,14 @@ export async function book({
     include: {
       stop: {
         include: {
-          commute: {
-            select: {
-              createdBy: true,
-            },
-          },
+          commute: true,
         },
       },
     },
   });
 
-  // If passenger on stop exists, then update the data
+  // If passenger on stop exists, then update the data. If it exist it means the
+  // user did cancel the request.
   if (doesExist) {
     passengerOnStop = await prisma.passengersOnStops.update({
       where: {
