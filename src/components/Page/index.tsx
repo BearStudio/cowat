@@ -145,6 +145,7 @@ export const PageBottomBar = ({ children, ...rest }: FlexProps) => {
         py="0"
         bg="white"
         _dark={{ bg: "gray.800" }}
+        pb="safe-bottom"
         {...rest}
       >
         <PageContainer>{children}</PageContainer>
