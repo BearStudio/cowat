@@ -16,14 +16,19 @@ import { RiEyeCloseLine, RiEyeLine } from "react-icons/ri";
 import type { FormGroupProps } from "@/components/FormGroup";
 import { FormGroup } from "@/components/FormGroup";
 
-export type FieldInputProps = FieldProps<string> &
+export type FieldInputProps<FormattedValue> = FieldProps<
+  string,
+  FormattedValue
+> &
   Omit<FormGroupProps, "placeholder"> &
   Pick<InputProps, "type" | "placeholder"> & {
     size?: "sm" | "md" | "lg";
     autoFocus?: boolean;
   };
 
-export const FieldInput = (props: FieldInputProps) => {
+export const FieldInput = <FormattedValue = string,>(
+  props: FieldInputProps<FormattedValue>
+) => {
   const {
     errorMessage,
     id,

@@ -48,7 +48,7 @@ export const CommuteForm = ({
 
   return (
     <>
-      <FieldInput
+      <FieldInput<number>
         label="💺 Seats"
         name="seats"
         type="number"
