@@ -3,6 +3,7 @@ import type { BlockAction, ButtonAction } from "@slack/bolt";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "@/server/db";
 import { TRPCError } from "@trpc/server";
+import { BOOK_ACTION_ID } from "@/server/slack";
 
 type SlackPayload = BlockAction<ButtonAction>;
 
@@ -65,7 +66,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
   if (payload.actions?.length > 0) {
     await Promise.all(
-      payload.actions.map((action) => bookHandler(action, payload))
+      payload.actions.map((action) => {
+        if (action.action_id === BOOK_ACTION_ID) {
+          bookHandler(action, payload);
+        }
+      })
     );
   }
 
