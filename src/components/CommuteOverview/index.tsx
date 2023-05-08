@@ -2,6 +2,7 @@ import { Icon } from "@/components/Icon";
 import { FULL_TEXT_DATE_WITH_TIME } from "@/constants/dates";
 import { api } from "@/utils/api";
 import { getPassengers } from "@/utils/commutes";
+import { NOT_YET_PASSENGER_IF_INSIDE } from "@/utils/passengers";
 import {
   chakra,
   Accordion,
@@ -120,11 +121,6 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
     return { light: "gray.300", dark: "gray.500" } as const;
   })();
 
-  const notYetPassengerIfInside: Array<RequestStatus> = [
-    RequestStatus.REQUESTED,
-    RequestStatus.REFUSED,
-  ];
-
   return (
     <Card
       position="relative"
@@ -178,7 +174,7 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
                 src={passenger.user.image ?? ""}
                 name={passenger.user.name ?? passenger.user.email ?? ""}
                 opacity={
-                  notYetPassengerIfInside.includes(passenger.requestStatus)
+                  NOT_YET_PASSENGER_IF_INSIDE.includes(passenger.requestStatus)
                     ? 0.6
                     : 1
                 }

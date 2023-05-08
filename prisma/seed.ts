@@ -69,15 +69,22 @@ async function main() {
   const newCommuteFromYoann = await prisma.commute.create({
     data: {
       seats: 3,
-      date: dayjs().add(4, "days").toDate(),
+      date: dayjs().toDate(),
       stops: {
         create: {
           locationId: yoannLocations[0]?.id,
+          time: "08:30",
         },
       },
       createdById: yoann?.id,
     },
+    include: {
+      stops: {
+        select: { id: true },
+      },
+    },
   });
+
   // Deleted one to make sure it doesn't show in the interface
   const newDeletedFromYoann = await prisma.commute.create({
     data: {
@@ -92,7 +99,21 @@ async function main() {
       isDeleted: true,
     },
   });
-  console.log({ newCommuteFromIvan, newCommuteFromYoann, newDeletedFromYoann });
+
+  // Request from Ivan on Yoann's commute
+  const ivanRequestOnYoannCommute = await prisma.passengersOnStops.create({
+    data: {
+      stopId: newCommuteFromYoann.stops[0]?.id ?? "",
+      userId: ivan?.id ?? "",
+    },
+  });
+
+  console.log({
+    newCommuteFromIvan,
+    newCommuteFromYoann,
+    newDeletedFromYoann,
+    ivanRequestOnYoannCommute,
+  });
 }
 
 main()
