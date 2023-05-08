@@ -214,4 +214,27 @@ export const commuteRouter = createTRPCRouter({
       });
       // TODO send notification to passengers
     }),
+  commuteById: protectedProcedure
+    .input(z.object({ id: z.string().cuid() }))
+    .query(async ({ ctx, input }) => {
+      return ctx.prisma.commute.findFirstOrThrow({
+        where: {
+          id: input.id,
+          createdById: ctx.session.user.id,
+          isDeleted: false,
+        },
+        include: {
+          stops: {
+            include: {
+              location: true,
+              passengers: {
+                include: {
+                  user: true,
+                },
+              },
+            },
+          },
+        },
+      });
+    }),
 });

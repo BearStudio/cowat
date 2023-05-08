@@ -30,6 +30,7 @@ import { Car, Navigation, Plus } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Head from "next/head";
 import Link from "next/link";
+import { Fragment } from "react";
 
 const Dashboard = () => {
   const commutesByDate = api.commute.allUpcomingCommutes.useQuery();
@@ -147,18 +148,22 @@ const Day = ({ date, commutes }: DayProps) => {
         </EmptyState>
       )}
       {myCommutes?.map((commute) => (
-        <CommuteOverview key={commute.id} {...commute} />
+        <Fragment key={commute.id}>
+          <CommuteOverview {...commute} />
+          {date === dayjs().format(YEAR_MONTH_DAY) && (
+            <Button
+              variant="primary"
+              size="lg"
+              leftIcon={<Icon icon={Navigation} />}
+              as={Link}
+              href={`/dashboard/driver/${commute.id}`}
+            >
+              Open commute&apos;s view
+            </Button>
+          )}
+        </Fragment>
       ))}
-      {date === dayjs().format(YEAR_MONTH_DAY) && !!myCommutes?.length && (
-        <Button
-          variant="primary"
-          size="lg"
-          leftIcon={<Icon icon={Navigation} />}
-          isDisabled
-        >
-          Open commute&apos;s view
-        </Button>
-      )}
+
       {!!otherCommutes?.length && !!myCommutes?.length && (
         <Button
           onClick={onOpen}

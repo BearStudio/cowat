@@ -29,6 +29,13 @@ model Location {
     @@index([createdById])
 }
 
+enum DriverStopStatus {
+    // Default status
+    UNKNOWN
+    // To let know driver is on stop.
+    HERE
+}
+
 model Stop {
     id                String              @id @default(cuid())
     locationId        String?
@@ -39,6 +46,7 @@ model Stop {
     commuteTemplate   CommuteTemplate?    @relation(fields: [commuteTemplateId], references: [id])
     commuteTemplateId String?
     passengers        PassengersOnStops[]
+    driverStatus      DriverStopStatus    @default(UNKNOWN)
 
     @@index([locationId])
     @@index([commuteId])

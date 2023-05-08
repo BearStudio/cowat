@@ -7,6 +7,7 @@ const { definePartsStyle, defineMultiStyleConfig } =
 
 const baseStyle = definePartsStyle({
   container: {
+    shadow: "lg",
     _dark: {
       bg: "gray.800",
     },
