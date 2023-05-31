@@ -1,18 +1,19 @@
 import type { FC } from "react";
-import { Bell, Car, LayoutDashboard, User } from "lucide-react";
+import { Bell, Car, LayoutDashboard, User, Lock } from "lucide-react";
 import type { FlexProps, StackProps } from "@chakra-ui/react";
-import { Box } from "@chakra-ui/react";
-import { HStack, Flex } from "@chakra-ui/react";
+import { Box, HStack, Flex } from "@chakra-ui/react";
 import Link from "next/link";
 import { Icon } from "@/components/Icon";
 import { useIsActive } from "@/hooks/useIsActive";
 import { api } from "@/utils/api";
 import type { IconType } from "react-icons";
+import { useSession } from "next-auth/react";
 
 export const BottomNavBar = (props: StackProps) => {
   const requests = api.commute.allRequestsForMyCommute.useQuery(undefined, {
     refetchInterval: 30_000,
   });
+  const { data: session } = useSession();
 
   return (
     <HStack as="nav" {...props}>
@@ -46,6 +47,11 @@ export const BottomNavBar = (props: StackProps) => {
       <NavBarItem icon={User} href="/account">
         Account
       </NavBarItem>
+      {session?.user?.role === "ADMIN" && (
+        <NavBarItem icon={Lock} href="/admin">
+          Admin
+        </NavBarItem>
+      )}
     </HStack>
   );
 };

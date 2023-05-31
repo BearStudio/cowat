@@ -4,6 +4,7 @@ import { commuteRouter } from "./routers/commute";
 import { locationRouter } from "./routers/locations";
 import { userRouter } from "@/server/api/routers/user";
 import { templateRouter } from "@/server/api/routers/templates";
+import { adminRouter } from "@/server/api/routers/admin";
 import { driverRouter } from "@/server/api/routers/driver";
 
 /**
@@ -17,6 +18,7 @@ export const appRouter = createTRPCRouter({
   location: locationRouter,
   user: userRouter,
   template: templateRouter,
+  admin: adminRouter,
   driver: driverRouter,
 });
 

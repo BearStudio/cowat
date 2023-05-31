@@ -1,3 +1,4 @@
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { type AppType } from "next/app";
 import { type Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
@@ -18,6 +19,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
     <SessionProvider session={session}>
       <ChakraProvider theme={theme}>
         <Component {...pageProps} />
+        <ReactQueryDevtools initialIsOpen={false} />
       </ChakraProvider>
     </SessionProvider>
   );
