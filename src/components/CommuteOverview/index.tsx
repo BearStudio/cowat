@@ -29,10 +29,10 @@ import {
   Spacer,
 } from "@chakra-ui/react";
 import type { Prisma } from "@prisma/client";
-import { RequestStatus } from "@prisma/client";
 import dayjs from "dayjs";
-import { CheckCircle2, Clock, Phone } from "lucide-react";
+import { CheckCircle2, Clock, Navigation, Phone } from "lucide-react";
 import { useSession } from "next-auth/react";
+import Link from "next/link";
 import { ConfirmModal } from "../ConfirmModal";
 
 export type CommuteOverviewProps = Prisma.CommuteGetPayload<{
@@ -337,7 +337,17 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
                     </HStack>
                   );
                 })}
-                <Flex>
+                <Flex gap="4">
+                  {isCurrentUserDriver && !props.isDeleted && (
+                    <Button
+                      variant="outline"
+                      leftIcon={<Icon icon={Navigation} />}
+                      as={Link}
+                      href={`/dashboard/driver/${props.id}`}
+                    >
+                      Open commute&apos;s view
+                    </Button>
+                  )}
                   {isCurrentUserDriver && !props.isDeleted && (
                     <ConfirmModal
                       onConfirm={() => {
