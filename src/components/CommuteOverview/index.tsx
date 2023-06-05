@@ -20,20 +20,21 @@ import {
   CardHeader,
   Flex,
   HStack,
+  IconButton,
   Stack,
   StackDivider,
   Tag,
   Text,
   Wrap,
-  IconButton,
   Spacer,
+  useBreakpointValue,
 } from "@chakra-ui/react";
 import type { Prisma } from "@prisma/client";
 import dayjs from "dayjs";
 import { CheckCircle2, Clock, Navigation, Phone } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import { ConfirmModal } from "../ConfirmModal";
+import { ConfirmModal } from "@/components/ConfirmModal";
 
 export type CommuteOverviewProps = Prisma.CommuteGetPayload<{
   include: {
@@ -49,6 +50,8 @@ export type CommuteOverviewProps = Prisma.CommuteGetPayload<{
 export const CommuteOverview = (props: CommuteOverviewProps) => {
   const { data: session } = useSession();
   const ctx = api.useContext();
+
+  const isMobile = useBreakpointValue({ base: true, md: false });
 
   const bookCommute = api.stop.book.useMutation({
     onSuccess: async () => {
@@ -339,14 +342,26 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
                 })}
                 <Flex gap="4">
                   {isCurrentUserDriver && !props.isDeleted && (
-                    <Button
-                      variant="outline"
-                      leftIcon={<Icon icon={Navigation} />}
-                      as={Link}
-                      href={`/dashboard/driver/${props.id}`}
-                    >
-                      Open commute&apos;s view
-                    </Button>
+                    <>
+                      {isMobile && (
+                        <IconButton
+                          aria-label="Open commute's view"
+                          icon={<Icon icon={Navigation} />}
+                          as={Link}
+                          href={`/dashboard/driver/${props.id}`}
+                        />
+                      )}
+                      {!isMobile && (
+                        <Button
+                          variant="outline"
+                          leftIcon={<Icon icon={Navigation} />}
+                          as={Link}
+                          href={`/dashboard/driver/${props.id}`}
+                        >
+                          Open commute&apos;s view
+                        </Button>
+                      )}
+                    </>
                   )}
                   {isCurrentUserDriver && !props.isDeleted && (
                     <ConfirmModal
