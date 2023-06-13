@@ -29,6 +29,7 @@ const AdminPage = () => {
     <LayoutAuthenticated
       topBar={<Heading size="md">Admin</Heading>}
       access="ADMIN"
+      containerSize="full"
     >
       {stats.isLoading && (
         <Center flex="1">
@@ -49,26 +50,51 @@ const AdminPage = () => {
                     <StatNumber>{stats.data.numberOfCommutesTotal}</StatNumber>
                     <StatHelpText>All time</StatHelpText>
                   </Stat>
-                  <TableContainer>
-                    <Table>
-                      <Thead>
-                        <Tr>
-                          <Th>Name</Th>
-                          <Th isNumeric>Number of commutes</Th>
-                        </Tr>
-                        {stats.data.numberOfCommutePerUsers.map(
-                          (numberOfCommutePerUser) => (
-                            <Tr key={numberOfCommutePerUser.id}>
-                              <Td>{numberOfCommutePerUser.name}</Td>
-                              <Td isNumeric>
-                                {numberOfCommutePerUser._count.commutes}
-                              </Td>
-                            </Tr>
-                          )
-                        )}
-                      </Thead>
-                    </Table>
-                  </TableContainer>
+                  <Stack direction={{ base: "column", md: "row" }}>
+                    <TableContainer>
+                      <Table>
+                        <Thead>
+                          <Tr>
+                            <Th>Name</Th>
+                            <Th isNumeric>Commutes as Driver</Th>
+                          </Tr>
+                          {stats.data.numberOfCommuteAsDriverPerUsers.map(
+                            (numberOfCommutePerUser) => (
+                              <Tr key={numberOfCommutePerUser.id}>
+                                <Td>{numberOfCommutePerUser.name}</Td>
+                                <Td isNumeric>
+                                  {numberOfCommutePerUser._count.commutes}
+                                </Td>
+                              </Tr>
+                            )
+                          )}
+                        </Thead>
+                      </Table>
+                    </TableContainer>
+                    <TableContainer>
+                      <Table>
+                        <Thead>
+                          <Tr>
+                            <Th>Name</Th>
+                            <Th isNumeric>Commutes as Passenger</Th>
+                          </Tr>
+                          {stats.data.numberOfCommuteAsPassengerPerUsers.map(
+                            (numberOfCommuteAsPassengerPerUser) => (
+                              <Tr key={numberOfCommuteAsPassengerPerUser.id}>
+                                <Td>
+                                  {numberOfCommuteAsPassengerPerUser.name}
+                                </Td>
+                                <Td isNumeric>
+                                  {numberOfCommuteAsPassengerPerUser.countPassenger?.toString() ??
+                                    0}
+                                </Td>
+                              </Tr>
+                            )
+                          )}
+                        </Thead>
+                      </Table>
+                    </TableContainer>
+                  </Stack>
                 </Stack>
               </CardBody>
             </Card>
@@ -78,5 +104,7 @@ const AdminPage = () => {
     </LayoutAuthenticated>
   );
 };
+
+// numberOfCommuteAsPassengerPerUsers
 
 export default AdminPage;
