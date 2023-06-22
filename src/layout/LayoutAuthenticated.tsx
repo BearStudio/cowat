@@ -39,6 +39,10 @@ export const LayoutAuthenticated = ({
     return null;
   }
 
+  if (!session?.user?.slackMemberId && router.pathname !== "/account/profile") {
+    router.replace("/account/profile");
+  }
+
   return (
     <Page containerSize={containerSize}>
       {topBar && <PageTopBar>{topBar}</PageTopBar>}

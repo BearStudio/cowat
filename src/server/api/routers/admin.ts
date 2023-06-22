@@ -1,5 +1,5 @@
 import { adminProcedure, createTRPCRouter } from "@/server/api/trpc";
-import { User } from "@prisma/client";
+import type { User } from "@prisma/client";
 
 export const adminRouter = createTRPCRouter({
   getStats: adminProcedure.query(async ({ ctx }) => {

@@ -173,6 +173,9 @@ model User {
     commutes         Commute[]
     role             UserRole?           @default(USER)
     passengerOn      PassengersOnStops[]
+    slackMemberId    String?
+
+    @@unique([slackMemberId])
 }
 
 model VerificationToken {

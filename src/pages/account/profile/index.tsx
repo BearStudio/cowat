@@ -14,6 +14,7 @@ import {
 } from "@chakra-ui/react";
 import { Formiz } from "@formiz/core";
 import { ArrowLeft } from "lucide-react";
+import { useSession } from "next-auth/react";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -23,6 +24,7 @@ type UpdateProfileInput = RouterInputs["user"]["updateProfile"];
 const ProfilePage = () => {
   const ctx = api.useContext();
   const router = useRouter();
+  const { update } = useSession();
 
   const profileMutation = api.user.updateProfile.useMutation();
   const profile = api.user.profile.useQuery();
@@ -68,6 +70,7 @@ const ProfilePage = () => {
             onValidSubmit={(values: UpdateProfileInput) =>
               profileMutation.mutate(values, {
                 onSuccess: () => {
+                  update();
                   ctx.user.profile.invalidate();
                   router.push("/account");
                 },
@@ -77,10 +80,12 @@ const ProfilePage = () => {
           >
             <Stack>
               <FieldInput
-                name="phone"
-                label="Phone number"
-                placeholder="0600000000"
+                name="slackMemberId"
+                label="Slack Member Id"
+                required="The Slack member id is required if you want to use Cowat"
+                helper="Member id can be copied on your Slack profile"
               />
+              <FieldInput name="phone" label="Phone number" />
               <Button
                 variant="primary"
                 type="submit"

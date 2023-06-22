@@ -1,12 +1,7 @@
 import type { ThemeTypings } from "@chakra-ui/styled-system";
 import type { StopStatus } from "@prisma/client";
-import {
-  CheckCircle,
-  Clock,
-  Hourglass,
-  LucideIcon,
-  XCircle,
-} from "lucide-react";
+import type { LucideIcon } from "lucide-react";
+import { CheckCircle, Clock, Hourglass, XCircle } from "lucide-react";
 import type { ReactNode } from "react";
 
 export const PASSENGER_STATUS: Record<

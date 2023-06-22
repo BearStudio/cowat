@@ -41,8 +41,11 @@ export default function SignIn() {
                 </Heading>
               </Stack>
 
-              <Button colorScheme="brand" onClick={() => signIn("slack")}>
+              <Button onClick={() => signIn("slack")}>
                 Sign in with Slack
+              </Button>
+              <Button variant="link" size="xs" onClick={() => signIn("google")}>
+                Sign in with Google
               </Button>
             </Stack>
           </Center>

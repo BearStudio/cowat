@@ -24,6 +24,9 @@ export const serverSchema = z.object({
   SLACK_CLIENT_SECRET: z.string(),
   SLACK_SIGNING_SECRET: z.string(),
   SLACK_BOT_TOKEN: z.string(),
+  GOOGLE_CLIENT_ID: z.string(),
+  GOOGLE_CLIENT_SECRET: z.string(),
+  GOOGLE_AUTHORIZED_DOMAIN: z.string(),
 });
 
 /**
@@ -41,6 +44,9 @@ export const serverEnv = {
   SLACK_CLIENT_SECRET: process.env.SLACK_CLIENT_SECRET,
   SLACK_SIGNING_SECRET: process.env.SLACK_SIGNING_SECRET,
   SLACK_BOT_TOKEN: process.env.SLACK_BOT_TOKEN,
+  GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
+  GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
+  GOOGLE_AUTHORIZED_DOMAIN: process.env.GOOGLE_AUTHORIZED_DOMAIN,
 };
 
 /**

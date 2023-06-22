@@ -38,7 +38,7 @@ export const commuteRouter = createTRPCRouter({
         include: {
           createdBy: {
             select: {
-              accounts: true,
+              slackMemberId: true,
               email: true,
             },
           },

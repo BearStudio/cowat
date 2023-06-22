@@ -43,7 +43,7 @@ const newCommute = async (
     include: {
       createdBy: {
         select: {
-          accounts: true;
+          slackMemberId: true;
           email: true;
         };
       };
@@ -57,9 +57,7 @@ const newCommute = async (
     };
   }>
 ) => {
-  const slackUserId = commute.createdBy?.accounts.find(
-    (account) => account.provider === "slack"
-  )?.providerAccountId;
+  const slackUserId = commute.createdBy?.slackMemberId;
 
   const createdBy = slackUserId
     ? `<@${slackUserId}>`
@@ -127,13 +125,9 @@ const newCommute = async (
 };
 
 const newBookingFrom = async (passengerOnStop: PassengerOnStopNotification) => {
-  const driverSlackId = passengerOnStop.stop?.commute?.createdBy?.accounts.find(
-    (account) => account.provider === "slack"
-  )?.providerAccountId;
+  const driverSlackId = passengerOnStop.stop?.commute?.createdBy?.slackMemberId;
 
-  const passengerSlackId = passengerOnStop.user.accounts.find(
-    (account) => account.provider === "slack"
-  )?.providerAccountId;
+  const passengerSlackId = passengerOnStop.user.slackMemberId;
 
   const passenger = passengerSlackId
     ? `<@${passengerSlackId}>`
@@ -169,17 +163,13 @@ const newBookingFrom = async (passengerOnStop: PassengerOnStopNotification) => {
 };
 
 const request = async (passengerOnStop: PassengerOnStopNotification) => {
-  const driverSlackId = passengerOnStop.stop.commute?.createdBy?.accounts.find(
-    (account) => account.provider === "slack"
-  )?.providerAccountId;
+  const driverSlackId = passengerOnStop.stop.commute?.createdBy?.slackMemberId;
 
   const driver = driverSlackId
     ? `<@${driverSlackId}>`
     : passengerOnStop.stop.commute?.createdBy?.email ?? "";
 
-  const passengerSlackId = passengerOnStop.user.accounts.find(
-    (account) => account.provider === "slack"
-  )?.providerAccountId;
+  const passengerSlackId = passengerOnStop.user.slackMemberId;
 
   const passenger = passengerSlackId
     ? `<@${passengerSlackId}>`
@@ -219,13 +209,9 @@ const request = async (passengerOnStop: PassengerOnStopNotification) => {
 const bookingCanceled = async (
   passengerOnStop: PassengerOnStopNotification
 ) => {
-  const driverSlackId = passengerOnStop.stop.commute?.createdBy?.accounts.find(
-    (account) => account.provider === "slack"
-  )?.providerAccountId;
+  const driverSlackId = passengerOnStop.stop.commute?.createdBy?.slackMemberId;
 
-  const passengerSlackId = passengerOnStop.user.accounts.find(
-    (account) => account.provider === "slack"
-  )?.providerAccountId;
+  const passengerSlackId = passengerOnStop.user.slackMemberId;
 
   try {
     const result = await slackApp.client.chat.postMessage({

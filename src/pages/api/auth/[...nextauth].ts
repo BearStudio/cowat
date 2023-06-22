@@ -1,5 +1,6 @@
 import NextAuth, { type NextAuthOptions } from "next-auth";
 import SlackProvider from "next-auth/providers/slack";
+import GoogleProvider from "next-auth/providers/google";
 // Prisma adapter for NextAuth, optional and can be removed
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 
@@ -17,13 +18,36 @@ export const authOptions: NextAuthOptions = {
           },
           select: {
             role: true,
+            slackMemberId: true,
           },
         });
 
         session.user.id = user.id;
         session.user.role = u?.role;
+        session.user.slackMemberId = u?.slackMemberId;
       }
       return session;
+    },
+    async signIn({ account, profile, user }) {
+      if (account?.provider === "google") {
+        return (
+          profile?.email_verified &&
+          profile.email?.endsWith(env.GOOGLE_AUTHORIZED_DOMAIN)
+        );
+      }
+
+      if (account?.provider === "slack") {
+        await prisma.user.update({
+          where: {
+            id: user.id,
+          },
+          data: {
+            slackMemberId: account.providerAccountId,
+          },
+        });
+      }
+
+      return true;
     },
   },
   // Configure one or more authentication providers
@@ -32,6 +56,10 @@ export const authOptions: NextAuthOptions = {
     SlackProvider({
       clientId: env.SLACK_CLIENT_ID,
       clientSecret: env.SLACK_CLIENT_SECRET,
+    }),
+    GoogleProvider({
+      clientId: env.GOOGLE_CLIENT_ID,
+      clientSecret: env.GOOGLE_CLIENT_SECRET,
     }),
     /**
      * ...add more providers here
