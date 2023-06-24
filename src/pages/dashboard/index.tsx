@@ -156,7 +156,11 @@ const Day = ({ date, commutes }: DayProps) => {
               size="lg"
               leftIcon={<Icon icon={Navigation} />}
               as={Link}
-              href={`/dashboard/driver/${commute.id}`}
+              href={`/dashboard/${
+                commute.createdById === session?.user?.id
+                  ? "driver"
+                  : "passenger"
+              }/${commute.id}`}
             >
               Open commute&apos;s view
             </Button>

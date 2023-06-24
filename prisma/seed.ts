@@ -66,6 +66,23 @@ async function main() {
       createdById: ivan?.id,
     },
   });
+  const newTodayCommuteFromIvan = await prisma.commute.create({
+    data: {
+      seats: 2,
+      date: dayjs().toDate(),
+      stops: {
+        create: {
+          locationId: ivanLocations[0]?.id,
+        },
+      },
+      createdById: ivan?.id,
+    },
+    include: {
+      stops: {
+        select: { id: true },
+      },
+    },
+  });
   const newCommuteFromYoann = await prisma.commute.create({
     data: {
       seats: 3,
@@ -107,12 +124,21 @@ async function main() {
       userId: ivan?.id ?? "",
     },
   });
+  // Request from Ivan on Yoann's commute
+  const yoannRequestOnIvanTodayCommute = await prisma.passengersOnStops.create({
+    data: {
+      stopId: newTodayCommuteFromIvan.stops[0]?.id ?? "",
+      userId: yoann?.id ?? "",
+    },
+  });
 
   console.log({
     newCommuteFromIvan,
+    newTodayCommuteFromIvan,
     newCommuteFromYoann,
     newDeletedFromYoann,
     ivanRequestOnYoannCommute,
+    yoannRequestOnIvanTodayCommute,
   });
 }
 

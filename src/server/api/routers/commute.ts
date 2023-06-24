@@ -220,10 +220,31 @@ export const commuteRouter = createTRPCRouter({
       return ctx.prisma.commute.findFirstOrThrow({
         where: {
           id: input.id,
-          createdById: ctx.session.user.id,
           isDeleted: false,
+          OR: [
+            {
+              createdById: ctx.session.user.id,
+            },
+            {
+              stops: {
+                some: {
+                  passengers: {
+                    some: {
+                      userId: ctx.session.user.id,
+                    },
+                  },
+                },
+              },
+            },
+          ],
         },
         include: {
+          createdBy: {
+            select: {
+              name: true,
+              image: true,
+            },
+          },
           stops: {
             include: {
               location: true,
