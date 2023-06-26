@@ -6,7 +6,7 @@ import { getPassengers, havePassengerOnStop } from "@/utils/commutes";
 import { DRIVER_STATUS } from "@/utils/driverStatus";
 import { NOT_YET_PASSENGER_IF_INSIDE } from "@/utils/passengers";
 import { PASSENGER_STATUS } from "@/utils/passengerStatus";
-import type { ModalProps } from "@chakra-ui/react";
+import { ModalProps, StackDivider } from "@chakra-ui/react";
 import {
   Avatar,
   Badge,
@@ -31,12 +31,13 @@ import {
   ModalContent,
   ModalOverlay,
 } from "@chakra-ui/react";
-import type { Commute } from "@prisma/client";
+import { Commute, DriverStopStatus } from "@prisma/client";
 import dayjs from "dayjs";
 import { ArrowLeft, Clock, ExternalLink } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { FiCheckCircle } from "react-icons/fi";
 
 type LateModalProps = Omit<ModalProps, "isOpen" | "children"> & {
   /** The commute id */
@@ -102,7 +103,7 @@ const Passenger = () => {
     {
       id: commuteId,
     },
-    { enabled: !!commuteId }
+    { enabled: !!commuteId, refetchInterval: 30_000 }
   );
 
   const ctx = api.useContext();
@@ -159,27 +160,33 @@ const Passenger = () => {
             <Divider color="gray.200" _dark={{ color: "gray.700" }} />
             <CardBody p="2">
               <Stack spacing="1">
-                <HStack>
-                  <Avatar
-                    borderRadius="md"
-                    src={commute.data.createdBy?.image ?? ""}
-                    size="sm"
-                    name={commute.data.createdBy?.name ?? ""}
-                  />
-                  {commute.data.createdBy?.name && (
-                    <Text fontSize="sm">{commute.data.createdBy?.name}</Text>
-                  )}
-                  <Tag
-                    colorScheme={DRIVER_STATUS[commute.data.status].colorScheme}
-                  >
-                    {DRIVER_STATUS[commute.data.status].text}{" "}
-                    {commute.data.delay} {!!commute.data.delay && " minutes"}
-                    <Icon
-                      ml="2"
-                      icon={DRIVER_STATUS[commute.data.status].icon}
+                <Flex justify="space-between">
+                  <HStack>
+                    <Avatar
+                      borderRadius="md"
+                      src={commute.data.createdBy?.image ?? ""}
+                      size="sm"
+                      name={commute.data.createdBy?.name ?? ""}
                     />
-                  </Tag>
-                </HStack>
+                    {commute.data.createdBy?.name && (
+                      <Text fontSize="sm">{commute.data.createdBy?.name}</Text>
+                    )}
+                  </HStack>
+                  <HStack>
+                    <Tag
+                      colorScheme={
+                        DRIVER_STATUS[commute.data.status].colorScheme
+                      }
+                    >
+                      {DRIVER_STATUS[commute.data.status].text}{" "}
+                      {commute.data.delay} {!!commute.data.delay && " minutes"}
+                      <Icon
+                        ml="2"
+                        icon={DRIVER_STATUS[commute.data.status].icon}
+                      />
+                    </Tag>
+                  </HStack>
+                </Flex>
                 <Text
                   fontSize="sm"
                   color="gray.600"
@@ -197,37 +204,47 @@ const Passenger = () => {
           {commute.data?.stops.map((stop) => (
             <Card key={stop.id}>
               <CardHeader p="2">
-                <Flex justify="space-between">
-                  <Stack>
-                    <Text fontWeight="bold" fontSize="sm">
-                      📍{stop.location?.name} {!!stop.time && `at ${stop.time}`}
-                    </Text>
-                    <Text
-                      fontSize="xs"
-                      color="gray.600"
-                      _dark={{ color: "gray.300" }}
-                    >
-                      {stop.location?.address}
-                    </Text>
-                  </Stack>
-                  {!!stop.passengers.find(
-                    (passenger) => passenger.userId === session?.user?.id
-                  ) && (
-                    <>
-                      <Button
-                        onClick={() => modal.onOpen()}
-                        size="sm"
-                        variant="danger"
-                        leftIcon={<Icon icon={Clock} />}
+                <Stack divider={<StackDivider />}>
+                  <Flex justify="space-between">
+                    <Stack>
+                      <Text fontWeight="bold" fontSize="sm">
+                        📍{stop.location?.name}{" "}
+                        {!!stop.time && `at ${stop.time}`}
+                      </Text>
+                      <Text
+                        fontSize="xs"
+                        color="gray.600"
+                        _dark={{ color: "gray.300" }}
                       >
-                        I&apos;m late
-                      </Button>
-                      {modal.isOpen && (
-                        <LateModal onClose={modal.onClose} id={stop.id} />
-                      )}
-                    </>
+                        {stop.location?.address}
+                      </Text>
+                    </Stack>
+                    {!!stop.passengers.find(
+                      (passenger) => passenger.userId === session?.user?.id
+                    ) && (
+                      <>
+                        <Button
+                          onClick={() => modal.onOpen()}
+                          size="sm"
+                          variant="danger"
+                          leftIcon={<Icon icon={Clock} />}
+                        >
+                          I&apos;m late
+                        </Button>
+
+                        {modal.isOpen && (
+                          <LateModal onClose={modal.onClose} id={stop.id} />
+                        )}
+                      </>
+                    )}
+                  </Flex>
+                  {stop.driverStatus === DriverStopStatus.HERE && (
+                    <Text color="green.700" fontSize="xs" fontWeight="medium">
+                      {commute.data.createdBy?.name} checked this stop
+                      <Icon icon={FiCheckCircle} ml="2" />
+                    </Text>
                   )}
-                </Flex>
+                </Stack>
               </CardHeader>
               <Divider color="gray.200" _dark={{ color: "gray.700" }} />
               {havePassengerOnStop(stop) && (

@@ -100,7 +100,7 @@ const Driver = () => {
     {
       id: commuteId,
     },
-    { enabled: !!commuteId }
+    { enabled: !!commuteId, refetchInterval: 30_000 }
   );
 
   const ctx = api.useContext();
