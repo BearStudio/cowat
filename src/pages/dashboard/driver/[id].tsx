@@ -1,11 +1,11 @@
 import { Icon } from "@/components/Icon";
+import { LateModal } from "@/components/LateModal";
 import { Loader } from "@/components/Loader";
 import { LayoutAuthenticated } from "@/layout/LayoutAuthenticated";
 import { api } from "@/utils/api";
 import { getPassengers, havePassengerOnStop } from "@/utils/commutes";
 import { NOT_YET_PASSENGER_IF_INSIDE } from "@/utils/passengers";
 import { PASSENGER_STATUS } from "@/utils/passengerStatus";
-import type { ModalProps } from "@chakra-ui/react";
 import {
   Avatar,
   Badge,
@@ -20,74 +20,17 @@ import {
   HStack,
   IconButton,
   Link as ChakraLink,
-  Modal,
-  ModalHeader,
   Stack,
   Tag,
   Text,
   useDisclosure,
-  ModalBody,
-  ModalContent,
-  ModalOverlay,
 } from "@chakra-ui/react";
-import type { Commute } from "@prisma/client";
+
 import dayjs from "dayjs";
 import { ArrowLeft, CheckCircle, Clock, ExternalLink } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { isNumber } from "remeda";
-
-type LateModalProps = Omit<ModalProps, "isOpen" | "children"> & {
-  /** The commute id */
-  id: Commute["id"];
-};
-
-const LateModal = ({ id, ...props }: LateModalProps) => {
-  const ctx = api.useContext();
-
-  const iAmLate = api.driver.iAmLate.useMutation();
-
-  const handleClick = (minutes: number | null) => {
-    iAmLate.mutate(
-      { delay: minutes, id },
-      {
-        onSuccess: () => {
-          props.onClose();
-          ctx.commute.invalidate();
-        },
-      }
-    );
-  };
-
-  return (
-    <Modal isOpen size="xs" {...props}>
-      <ModalOverlay />
-      <ModalContent>
-        <ModalHeader shadow="layout">
-          <Text fontWeight="bold" fontSize="lg">
-            I&apos;m late
-          </Text>
-        </ModalHeader>
-        <ModalBody p="4">
-          <Stack>
-            <Button variant="danger" onClick={() => handleClick(5)}>
-              5 minutes
-            </Button>
-            <Button variant="danger" onClick={() => handleClick(10)}>
-              10 minutes
-            </Button>
-            <Button variant="danger" onClick={() => handleClick(15)}>
-              15 minutes
-            </Button>
-            <Button variant="danger" onClick={() => handleClick(null)}>
-              No idea
-            </Button>
-          </Stack>
-        </ModalBody>
-      </ModalContent>
-    </Modal>
-  );
-};
 
 const Driver = () => {
   const router = useRouter();
@@ -117,6 +60,20 @@ const Driver = () => {
       ctx.stop.invalidate();
     },
   });
+
+  const iAmLate = api.driver.iAmLate.useMutation();
+
+  const handleOnLateModalClick = (minutes: number | null) => {
+    iAmLate.mutate(
+      { delay: minutes, id: commuteId },
+      {
+        onSuccess: () => {
+          modal.onClose();
+          ctx.commute.invalidate();
+        },
+      }
+    );
+  };
 
   return (
     <LayoutAuthenticated
@@ -148,7 +105,9 @@ const Driver = () => {
         </Flex>
       }
     >
-      {modal.isOpen && <LateModal onClose={modal.onClose} id={commuteId} />}
+      {modal.isOpen && (
+        <LateModal onClose={modal.onClose} onClick={handleOnLateModalClick} />
+      )}
       {commute.isLoading && <Loader />}
       {!commute.isLoading && commute.data && (
         <Stack spacing="4">

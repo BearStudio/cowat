@@ -1,4 +1,5 @@
 import { Icon } from "@/components/Icon";
+import { LateModal } from "@/components/LateModal";
 import { Loader } from "@/components/Loader";
 import { LayoutAuthenticated } from "@/layout/LayoutAuthenticated";
 import { api } from "@/utils/api";
@@ -6,7 +7,6 @@ import { getPassengers, havePassengerOnStop } from "@/utils/commutes";
 import { DRIVER_STATUS } from "@/utils/driverStatus";
 import { NOT_YET_PASSENGER_IF_INSIDE } from "@/utils/passengers";
 import { PASSENGER_STATUS } from "@/utils/passengerStatus";
-import { ModalProps, StackDivider } from "@chakra-ui/react";
 import {
   Avatar,
   Badge,
@@ -21,75 +21,20 @@ import {
   HStack,
   IconButton,
   Link as ChakraLink,
-  Modal,
-  ModalHeader,
   Stack,
   Tag,
   Text,
   useDisclosure,
-  ModalBody,
-  ModalContent,
-  ModalOverlay,
+  StackDivider,
 } from "@chakra-ui/react";
-import { Commute, DriverStopStatus } from "@prisma/client";
+import type { Stop } from "@prisma/client";
+import { DriverStopStatus } from "@prisma/client";
 import dayjs from "dayjs";
 import { ArrowLeft, Clock, ExternalLink } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { FiCheckCircle } from "react-icons/fi";
-
-type LateModalProps = Omit<ModalProps, "isOpen" | "children"> & {
-  /** The commute id */
-  id: Commute["id"];
-};
-
-const LateModal = ({ id, ...props }: LateModalProps) => {
-  const ctx = api.useContext();
-
-  const iAmLate = api.passenger.iAmLate.useMutation();
-
-  const handleClick = (minutes: number | null) => {
-    iAmLate.mutate(
-      { delay: minutes, id },
-      {
-        onSuccess: () => {
-          props.onClose();
-          ctx.commute.invalidate();
-        },
-      }
-    );
-  };
-
-  return (
-    <Modal isOpen size="xs" {...props}>
-      <ModalOverlay />
-      <ModalContent>
-        <ModalHeader shadow="layout">
-          <Text fontWeight="bold" fontSize="lg">
-            I&apos;m late
-          </Text>
-        </ModalHeader>
-        <ModalBody p="4">
-          <Stack>
-            <Button variant="danger" onClick={() => handleClick(5)}>
-              5 minutes
-            </Button>
-            <Button variant="danger" onClick={() => handleClick(10)}>
-              10 minutes
-            </Button>
-            <Button variant="danger" onClick={() => handleClick(15)}>
-              15 minutes
-            </Button>
-            <Button variant="danger" onClick={() => handleClick(null)}>
-              No idea
-            </Button>
-          </Stack>
-        </ModalBody>
-      </ModalContent>
-    </Modal>
-  );
-};
 
 const Passenger = () => {
   const router = useRouter();
@@ -114,6 +59,20 @@ const Passenger = () => {
       ctx.stop.invalidate();
     },
   });
+
+  const iAmLate = api.passenger.iAmLate.useMutation();
+
+  const handleOnLateModalClick = (delay: number | null, id: Stop["id"]) => {
+    iAmLate.mutate(
+      { delay, id },
+      {
+        onSuccess: () => {
+          modal.onClose();
+          ctx.commute.invalidate();
+        },
+      }
+    );
+  };
 
   return (
     <LayoutAuthenticated
@@ -233,7 +192,12 @@ const Passenger = () => {
                         </Button>
 
                         {modal.isOpen && (
-                          <LateModal onClose={modal.onClose} id={stop.id} />
+                          <LateModal
+                            onClick={(delay) =>
+                              handleOnLateModalClick(delay, stop.id)
+                            }
+                            onClose={modal.onClose}
+                          />
                         )}
                       </>
                     )}
