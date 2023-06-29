@@ -31,10 +31,11 @@ import {
 } from "@chakra-ui/react";
 import type { Prisma } from "@prisma/client";
 import dayjs from "dayjs";
-import { CheckCircle2, Clock, Navigation, Phone } from "lucide-react";
+import { CheckCircle2, Clock, Navigation, Pencil, Phone } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { ConfirmModal } from "@/components/ConfirmModal";
+import { FiEdit, FiEdit2 } from "react-icons/fi";
 
 export type CommuteOverviewProps = Prisma.CommuteGetPayload<{
   include: {
@@ -85,7 +86,7 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
   const passengerStatus = passengerStop?.passengers.find(
     (passenger) => passenger.userId === session?.user?.id
   )?.requestStatus;
-  const isCurrentUserDriver =
+  const isCurrentUserCreator =
     !!session?.user?.id && props.createdBy?.id === session?.user?.id;
 
   const getIsPassengerOnStop = (
@@ -109,7 +110,7 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
       return { light: "error.500", dark: "error.600" } as const;
     }
 
-    if (isCurrentUserDriver) {
+    if (isCurrentUserCreator) {
       return { light: "brand.500", dark: "brand.600" } as const;
     }
 
@@ -134,7 +135,7 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
       _dark={{ borderColor: commuteColor.dark }}
     >
       <CardHeader pb={0} zIndex={1} position="relative">
-        {(isPassenger || isCurrentUserDriver) && (
+        {(isPassenger || isCurrentUserCreator) && (
           <Box
             position="absolute"
             top={12}
@@ -227,7 +228,7 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
                       Passenger <Icon icon={Clock} />
                     </Badge>
                   )}
-                  {isCurrentUserDriver && !props.isDeleted && (
+                  {isCurrentUserCreator && !props.isDeleted && (
                     <Badge colorScheme="brand" variant="solid">
                       Driver
                     </Badge>
@@ -299,7 +300,7 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
                           </Wrap>
                         )}
                       </Stack>
-                      {!isCurrentUserDriver &&
+                      {!isCurrentUserCreator &&
                         (!isPassenger ||
                           passengerStatus === "CANCELED" ||
                           passengerStatus === "REFUSED") &&
@@ -341,8 +342,14 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
                   );
                 })}
                 <Flex gap="4">
-                  {isCurrentUserDriver && !props.isDeleted && (
+                  {isCurrentUserCreator && !props.isDeleted && (
                     <>
+                      <IconButton
+                        aria-label="Edit commute"
+                        icon={<Icon icon={Pencil} />}
+                        as={Link}
+                        href={`/commutes/${props.id}`}
+                      />
                       {isMobile && (
                         <IconButton
                           aria-label="Open commute's view"
@@ -363,7 +370,7 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
                       )}
                     </>
                   )}
-                  {isCurrentUserDriver && !props.isDeleted && (
+                  {isCurrentUserCreator && !props.isDeleted && (
                     <ConfirmModal
                       onConfirm={() => {
                         cancelCommute.mutate({ id: props.id });

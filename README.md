@@ -2,6 +2,12 @@
 
 This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
 
+## Dependencies installation
+
+```sh
+pnpm install
+```
+
 ## Usage with Slack
 
 1. Update `.env` file with the `SLACK_CLIENT_ID` and `SLACK_CLIENT_SECRET` values form the [Slack App Credentials page](https://api.slack.com/apps/A04L6MV7BUH)
