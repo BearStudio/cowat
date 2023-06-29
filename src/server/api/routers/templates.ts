@@ -74,7 +74,7 @@ export const templateRouter = createTRPCRouter({
       })
     )
     .query(async ({ ctx, input }) => {
-      const template = ctx.prisma.commuteTemplate.findFirst({
+      const template = await ctx.prisma.commuteTemplate.findFirst({
         where: {
           id: input.id,
           isDeleted: {

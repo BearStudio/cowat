@@ -52,7 +52,11 @@ export const commuteRouter = createTRPCRouter({
         },
       });
 
-      await slack.newCommute(commute);
+      try {
+        await slack.newCommute(commute);
+      } catch {
+        console.error("Can't send the Slack notification");
+      }
 
       return commute;
     }),
@@ -257,5 +261,70 @@ export const commuteRouter = createTRPCRouter({
           },
         },
       });
+    }),
+  edit: protectedProcedure
+    .input(
+      z.object({
+        id: z.string().cuid(),
+        seats: z.number().min(1),
+        stops: z
+          .array(
+            z.object({
+              location: z.string(),
+              time: z.string()?.nullish(),
+            })
+          )
+          ?.nullish(),
+        comment: z.string().nullish(),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      // Deleting all the stops so we can recreate them
+      // This is a quick win, we should probably do it another way like update
+
+      if (input.stops) {
+        await ctx.prisma.stop.deleteMany({
+          where: {
+            commuteId: input.id,
+          },
+        });
+      }
+
+      const commute = await ctx.prisma.commute.update({
+        data: {
+          ...(input.stops
+            ? {
+                stops: {
+                  create: input.stops.map((stop) => ({
+                    time: stop.time,
+                    locationId: stop.location,
+                  })),
+                },
+              }
+            : {}),
+          seats: input.seats,
+          comment: input.comment,
+        },
+        where: {
+          createdById: ctx.session.user.id,
+          id: input.id,
+        },
+        include: {
+          createdBy: {
+            select: {
+              accounts: true,
+              email: true,
+            },
+          },
+          stops: {
+            select: {
+              location: true,
+              time: true,
+            },
+          },
+        },
+      });
+
+      return commute;
     }),
 });

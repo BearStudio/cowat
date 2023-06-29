@@ -8,7 +8,12 @@ import { Icon } from "@/components/Icon";
 import { LocationForm } from "@/components/LocationForm";
 import type { RouterInputs } from "@/utils/api";
 import { api } from "@/utils/api";
+import { getPassengers } from "@/utils/commutes";
 import {
+  Alert,
+  AlertDescription,
+  AlertIcon,
+  AlertTitle,
   Box,
   Button,
   Divider,
@@ -27,17 +32,32 @@ import {
 import { Formiz, useForm, useFormContext, useRepeater } from "@formiz/core";
 import { isMaxNumber, isMinNumber } from "@formiz/validations";
 import { Plus, Trash } from "lucide-react";
+import { useRouter } from "next/router";
 import { Fragment } from "react";
 
 type CommuteFormProps = {
   repeaterInitialValues: Array<object>;
-  mode?: "TEMPLATE" | "CREATE";
+  /**
+   * Defines which mode the form should have. TEMPLATE and EDIT doesn't include
+   * the date selection.
+   */
+  mode?: "TEMPLATE" | "CREATE" | "EDIT";
 };
 
 export const CommuteForm = ({
   repeaterInitialValues: initialValues,
   mode = "CREATE",
 }: CommuteFormProps) => {
+  const router = useRouter();
+  const { id } = router.query;
+
+  const commute = api.commute.commuteById.useQuery(
+    { id: id?.toString() ?? "" },
+    {
+      enabled: !!id,
+    }
+  );
+
   const form = useForm();
 
   const stops = useRepeater({
@@ -45,6 +65,12 @@ export const CommuteForm = ({
     connect: form,
     initialValues,
   });
+
+  const arePassengersOnStop = commute.data?.stops.some(
+    (stop) => stop.passengers.length !== 0
+  );
+
+  const numberOfPassengers = getPassengers(commute.data?.stops ?? []).length;
 
   return (
     <>
@@ -55,8 +81,8 @@ export const CommuteForm = ({
         required="Please provide the number of available seats"
         validations={[
           {
-            handler: isMinNumber(0),
-            message: "Should be a number over 0",
+            handler: isMinNumber(numberOfPassengers ?? 0),
+            message: `Should be a number over ${numberOfPassengers}`,
           },
           {
             handler: isMaxNumber(10),
@@ -75,19 +101,35 @@ export const CommuteForm = ({
         </>
       )}
       <Divider />
-      {stops.keys.map((key, index) => (
-        <Fragment key={key}>
-          <Stop
-            index={index}
-            isRemovable={stops.keys.length > 1}
-            onRemove={() => stops.remove(index)}
-          />
-          <Divider />
-        </Fragment>
-      ))}
-      <AddPlaceholder onClick={() => stops.append()}>
-        <Icon icon={Plus} /> Add Stop 📍
-      </AddPlaceholder>
+      {arePassengersOnStop && (
+        <Alert status="info" fontSize="sm" borderRadius="md">
+          <AlertIcon />
+          <Box>
+            <AlertTitle>Stops are not editable at the moment.</AlertTitle>
+            <AlertDescription>
+              When users made request to be on your commute, you can&apos;t edit
+              them at the moment
+            </AlertDescription>
+          </Box>
+        </Alert>
+      )}
+      {!arePassengersOnStop && (
+        <>
+          {stops.keys.map((key, index) => (
+            <Fragment key={key}>
+              <Stop
+                index={index}
+                isRemovable={stops.keys.length > 1}
+                onRemove={() => stops.remove(index)}
+              />
+              <Divider />
+            </Fragment>
+          ))}
+          <AddPlaceholder onClick={() => stops.append()}>
+            <Icon icon={Plus} /> Add Stop 📍
+          </AddPlaceholder>
+        </>
+      )}
       <FieldTextarea label="Comment" name="comment" />
     </>
   );
