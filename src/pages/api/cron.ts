@@ -39,7 +39,7 @@ export default async function handler(
             },
             where: {
               requestStatus: {
-                not: "REFUSED",
+                notIn: ["REFUSED", "CANCELED"],
               },
             },
           },
