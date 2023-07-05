@@ -37,14 +37,22 @@ export const authOptions: NextAuthOptions = {
       }
 
       if (account?.provider === "slack") {
-        await prisma.user.update({
+        const exists = await prisma.user.findFirst({
           where: {
             id: user.id,
           },
-          data: {
-            slackMemberId: account.providerAccountId,
-          },
         });
+
+        if (exists) {
+          await prisma.user.update({
+            where: {
+              id: user.id,
+            },
+            data: {
+              slackMemberId: account.providerAccountId,
+            },
+          });
+        }
       }
 
       return true;
