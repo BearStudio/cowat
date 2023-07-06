@@ -9,6 +9,7 @@ import { api } from "../utils/api";
 
 import { ChakraProvider } from "@chakra-ui/react";
 import { useTimezone } from "@/components/Timezone";
+import { EnvDevHint } from "@/components/EnvDevHint";
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
@@ -18,6 +19,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
   return (
     <SessionProvider session={session}>
       <ChakraProvider theme={theme}>
+        <EnvDevHint />
         <Component {...pageProps} />
         <ReactQueryDevtools initialIsOpen={false} />
       </ChakraProvider>
