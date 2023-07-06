@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import dayjs from "dayjs";
+import { faker } from "@faker-js/faker";
 
 const prisma = new PrismaClient();
 async function main() {
@@ -129,6 +130,25 @@ async function main() {
     data: {
       stopId: newTodayCommuteFromIvan.stops[0]?.id ?? "",
       userId: yoann?.id ?? "",
+    },
+  });
+
+  // Anonymize data if we are using a dump from the production.
+  await prisma.location.updateMany({
+    data: {
+      address: faker.location.streetAddress(true),
+      name: faker.company.name(),
+    },
+  });
+
+  await prisma.commute.updateMany({
+    where: {
+      comment: {
+        not: null,
+      },
+    },
+    data: {
+      comment: faker.lorem.lines(),
     },
   });
 

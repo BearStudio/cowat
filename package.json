@@ -55,6 +55,7 @@
     "@babel/core": "7.21.0",
     "@chakra-ui/cli": "2.3.0",
     "@chakra-ui/styled-system": "2.6.1",
+    "@faker-js/faker": "8.0.2",
     "@types/node": "18.14.1",
     "@types/prettier": "2.7.2",
     "@types/react": "18.0.28",
