@@ -12,7 +12,7 @@ import {
   Spinner,
   Stack,
 } from "@chakra-ui/react";
-import { Formiz } from "@formiz/core";
+import { Formiz, useForm } from "@formiz/core";
 import { ArrowLeft } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Head from "next/head";
@@ -28,6 +28,23 @@ const ProfilePage = () => {
 
   const profileMutation = api.user.updateProfile.useMutation();
   const profile = api.user.profile.useQuery();
+
+  const handleOnValidSubmit = (values: UpdateProfileInput) =>
+    profileMutation.mutate(values, {
+      onSuccess: () => {
+        update();
+        ctx.user.profile.invalidate();
+        router.push("/account");
+      },
+    });
+
+  const form = useForm({
+    onValidSubmit: handleOnValidSubmit,
+    initialValues: {
+      ...profile.data,
+      slackMemberId: profile.data?.slackMemberId ?? undefined,
+    },
+  });
 
   return (
     <LayoutAuthenticated
@@ -65,19 +82,7 @@ const ProfilePage = () => {
             bg: "gray.800",
           }}
         >
-          <Formiz
-            autoForm
-            onValidSubmit={(values: UpdateProfileInput) =>
-              profileMutation.mutate(values, {
-                onSuccess: () => {
-                  update();
-                  ctx.user.profile.invalidate();
-                  router.push("/account");
-                },
-              })
-            }
-            initialValues={profile.data}
-          >
+          <Formiz autoForm connect={form}>
             <Stack>
               <FieldInput
                 name="slackMemberId"

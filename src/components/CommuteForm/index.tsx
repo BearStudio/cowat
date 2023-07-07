@@ -29,14 +29,14 @@ import {
   Stack,
   useDisclosure,
 } from "@chakra-ui/react";
-import { Formiz, useForm, useFormContext, useRepeater } from "@formiz/core";
+import { Formiz, useForm, useFormContext, useCollection } from "@formiz/core";
 import { isMaxNumber, isMinNumber } from "@formiz/validations";
+import dayjs from "dayjs";
 import { Plus, Trash } from "lucide-react";
 import { useRouter } from "next/router";
 import { Fragment } from "react";
 
 type CommuteFormProps = {
-  repeaterInitialValues: Array<object>;
   /**
    * Defines which mode the form should have. TEMPLATE and EDIT doesn't include
    * the date selection.
@@ -44,10 +44,7 @@ type CommuteFormProps = {
   mode?: "TEMPLATE" | "CREATE" | "EDIT";
 };
 
-export const CommuteForm = ({
-  repeaterInitialValues: initialValues,
-  mode = "CREATE",
-}: CommuteFormProps) => {
+export const CommuteForm = ({ mode = "CREATE" }: CommuteFormProps) => {
   const router = useRouter();
   const { id } = router.query;
 
@@ -58,12 +55,9 @@ export const CommuteForm = ({
     }
   );
 
-  const form = useForm();
-
-  const stops = useRepeater({
+  const stops = useCollection({
     name: "stops",
-    connect: form,
-    initialValues,
+    defaultValue: [{}],
   });
 
   const arePassengersOnStop = commute.data?.stops.some(
@@ -97,6 +91,14 @@ export const CommuteForm = ({
             label="📆 Departure Date"
             name="date"
             required="Please provide a valid date"
+            validations={[
+              {
+                handler: (_, rawValue) => {
+                  return dayjs(rawValue).isValid();
+                },
+                message: "The departure date must be a valid date",
+              },
+            ]}
           />
         </>
       )}
@@ -144,7 +146,11 @@ type StopProps = {
 const Stop = ({ index, onRemove, isRemovable }: StopProps) => {
   const ctx = api.useContext();
   const form = useFormContext();
-  const newLocationForm = useForm();
+  const newLocationForm = useForm({
+    onValidSubmit: (values: RouterInputs["location"]["create"]) => {
+      createLocation.mutate(values);
+    },
+  });
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -210,12 +216,7 @@ const Stop = ({ index, onRemove, isRemovable }: StopProps) => {
       {isOpen && (
         <Modal isOpen onClose={onClose} size="sm">
           <ModalOverlay />
-          <Formiz
-            connect={newLocationForm}
-            onValidSubmit={(values: RouterInputs["location"]["create"]) => {
-              createLocation.mutate(values);
-            }}
-          >
+          <Formiz connect={newLocationForm}>
             <ModalContent>
               <ModalHeader>New location</ModalHeader>
               <ModalCloseButton />

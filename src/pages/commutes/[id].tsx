@@ -7,7 +7,7 @@ import { LayoutAuthenticated } from "@/layout/LayoutAuthenticated";
 import type { RouterInputs } from "@/utils/api";
 import { api } from "@/utils/api";
 import { Button, Heading, HStack, IconButton } from "@chakra-ui/react";
-import { Formiz } from "@formiz/core";
+import { Formiz, useForm } from "@formiz/core";
 import { ArrowLeft } from "lucide-react";
 import type { NextPage } from "next";
 import Head from "next/head";
@@ -46,17 +46,18 @@ const EditCommute: NextPage = () => {
     );
   };
 
-  const stops = commute.data
-    ? commute.data.stops.map((stop) => ({
-        ...stop,
-        location: stop.location?.id,
-      }))
-    : [{}];
+  const stops = commute.data?.stops.map((stop) => ({
+    ...stop,
+    location: stop.location?.id,
+  }));
 
-  const defaultValues = {
-    ...commute.data,
-    stops,
-  };
+  const form = useForm({
+    initialValues: {
+      ...commute.data,
+      stops,
+    },
+    onValidSubmit: handleOnValidSubmit,
+  });
 
   return (
     <LayoutAuthenticated
@@ -78,17 +79,10 @@ const EditCommute: NextPage = () => {
         <title>Cowat - Edit Commute</title>
       </Head>
       {commute.isLoading && <Loader />}
-      {!commute.isLoading && defaultValues && (
-        <Formiz
-          autoForm
-          initialValues={defaultValues}
-          onValidSubmit={handleOnValidSubmit}
-        >
+      {!commute.isLoading && (
+        <Formiz autoForm connect={form}>
           <SimpleCard>
-            <CommuteForm
-              mode="EDIT"
-              repeaterInitialValues={defaultValues.stops}
-            />
+            <CommuteForm mode="EDIT" />
             <Button
               variant="primary"
               type="submit"

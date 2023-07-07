@@ -21,8 +21,8 @@ dependencies:
     specifier: 4.5.15
     version: 4.5.15
   '@formiz/core':
-    specifier: 2.0.0-alpha.15
-    version: 2.0.0-alpha.15(react@18.2.0)
+    specifier: 2.0.0-beta.11
+    version: 2.0.0-beta.11(react@18.2.0)
   '@formiz/validations':
     specifier: alpha
     version: 2.0.0-alpha.2
@@ -1612,8 +1612,8 @@ packages:
     resolution: {integrity: sha512-FzleM9AxZQK2nqsTDtBiY0PMEVWvnKnuu2i09+p6DHvrHsuucoV2j0tmw+kAT3L4hvsLdAIDv6MdGehsPIdT+Q==}
     dev: false
 
-  /@formiz/core@2.0.0-alpha.15(react@18.2.0):
-    resolution: {integrity: sha512-3Cr815b3SuXxbEOtk2Wx8/Kvh4j2Pfye+3Lqgn+0MT0D5TMK92vf41UV8hi18OckvtTPpknJAwNLelrZ4qjSsw==}
+  /@formiz/core@2.0.0-beta.11(react@18.2.0):
+    resolution: {integrity: sha512-4RoDoUI8s+T5Gd6kaw1sPhsnCqF2tUS8tuiwHPs4e42hwrLOmfFqd4z9KvtV0vg9lY0bnkoj8Pmy0XtCWl4LAA==}
     peerDependencies:
       react: '>=18'
     dependencies:

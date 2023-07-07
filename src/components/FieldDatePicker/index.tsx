@@ -48,10 +48,7 @@ export function FieldDayPicker(
     setValue,
     value,
     otherProps,
-  } = useField(props, {
-    formatValue: (v) =>
-      dayjs(v, DAY_MONTH_YEAR).isValid() ? dayjs(v, DAY_MONTH_YEAR) : null,
-  });
+  } = useField(props);
   const {
     label,
     placeholder,

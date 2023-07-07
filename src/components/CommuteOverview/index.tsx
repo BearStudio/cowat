@@ -35,7 +35,6 @@ import { CheckCircle2, Clock, Navigation, Pencil, Phone } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { ConfirmModal } from "@/components/ConfirmModal";
-import { FiEdit, FiEdit2 } from "react-icons/fi";
 
 export type CommuteOverviewProps = Prisma.CommuteGetPayload<{
   include: {

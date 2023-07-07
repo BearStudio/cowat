@@ -7,7 +7,7 @@ import { LayoutAuthenticated } from "@/layout/LayoutAuthenticated";
 import type { RouterInputs } from "@/utils/api";
 import { api } from "@/utils/api";
 import { Button, Heading, HStack, IconButton } from "@chakra-ui/react";
-import { Formiz } from "@formiz/core";
+import { Formiz, useForm } from "@formiz/core";
 import { ArrowLeft } from "lucide-react";
 import type { NextPage } from "next";
 import Head from "next/head";
@@ -38,17 +38,19 @@ const EditCommuteTemplates: NextPage = () => {
     commuteTemplateMutation.mutate({ ...values, id: id?.toString() ?? "" });
   };
 
-  const stops = template.data
-    ? template.data.stops.map((stop) => ({
-        ...stop,
-        location: stop.location?.id,
-      }))
-    : [{}];
+  const stops = template.data?.stops.map((stop) => ({
+    ...stop,
+    location: stop.location?.id,
+  }));
 
-  const defaultValues = {
-    ...template.data,
-    stops,
-  };
+  const form = useForm({
+    onValidSubmit: handleOnValidSubmit,
+    initialValues: {
+      ...template.data,
+      seats: template.data?.seats ?? undefined,
+      stops,
+    },
+  });
 
   return (
     <LayoutAuthenticated
@@ -70,17 +72,10 @@ const EditCommuteTemplates: NextPage = () => {
         <title>Cowat - Edit Commute Template</title>
       </Head>
       {template.isLoading && <Loader />}
-      {!template.isLoading && defaultValues && (
-        <Formiz
-          autoForm
-          initialValues={defaultValues}
-          onValidSubmit={handleOnValidSubmit}
-        >
+      {!template.isLoading && (
+        <Formiz autoForm connect={form}>
           <SimpleCard>
-            <CommuteForm
-              repeaterInitialValues={defaultValues.stops}
-              mode="TEMPLATE"
-            />
+            <CommuteForm mode="TEMPLATE" />
             <Button
               variant="primary"
               type="submit"

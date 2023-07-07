@@ -61,7 +61,7 @@ async function main() {
       date: dayjs().add(3, "days").toDate(),
       stops: {
         create: {
-          locationId: ivanLocations[0]?.id,
+          locationId: ivanLocations[0]?.id ?? "",
         },
       },
       createdById: ivan?.id,
@@ -73,7 +73,7 @@ async function main() {
       date: dayjs().toDate(),
       stops: {
         create: {
-          locationId: ivanLocations[0]?.id,
+          locationId: ivanLocations[0]?.id ?? "",
         },
       },
       createdById: ivan?.id,
@@ -90,7 +90,7 @@ async function main() {
       date: dayjs().toDate(),
       stops: {
         create: {
-          locationId: yoannLocations[0]?.id,
+          locationId: yoannLocations[0]?.id ?? "",
           time: "08:30",
         },
       },
@@ -110,7 +110,7 @@ async function main() {
       date: dayjs().add(4, "days").toDate(),
       stops: {
         create: {
-          locationId: yoannLocations[0]?.id,
+          locationId: yoannLocations[0]?.id ?? "",
         },
       },
       createdById: yoann?.id,

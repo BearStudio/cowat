@@ -6,7 +6,7 @@ import { LayoutAuthenticated } from "@/layout/LayoutAuthenticated";
 import type { RouterInputs } from "@/utils/api";
 import { api } from "@/utils/api";
 import { Button, Heading, HStack, IconButton } from "@chakra-ui/react";
-import { Formiz } from "@formiz/core";
+import { Formiz, useForm } from "@formiz/core";
 import { ArrowLeft } from "lucide-react";
 import type { NextPage } from "next";
 import Head from "next/head";
@@ -30,6 +30,10 @@ const NewCommuteTemplates: NextPage = () => {
     commuteTemplateMutation.mutate(values);
   };
 
+  const form = useForm({
+    onValidSubmit: handleOnValidSubmit,
+  });
+
   return (
     <LayoutAuthenticated
       hideNav
@@ -49,9 +53,9 @@ const NewCommuteTemplates: NextPage = () => {
       <Head>
         <title>Cowat - New Commute Template</title>
       </Head>
-      <Formiz autoForm onValidSubmit={handleOnValidSubmit}>
+      <Formiz autoForm connect={form}>
         <SimpleCard>
-          <CommuteForm repeaterInitialValues={[{}]} mode="TEMPLATE" />
+          <CommuteForm mode="TEMPLATE" />
           <Button
             variant="primary"
             type="submit"

@@ -17,7 +17,7 @@ import {
 import { LayoutAuthenticated } from "@/layout/LayoutAuthenticated";
 import { Icon } from "@/components/Icon";
 import { ArrowLeft } from "lucide-react";
-import type { Dayjs } from "dayjs";
+
 import dayjs from "dayjs";
 import { DAY_MONTH_YEAR } from "@/constants/dates";
 import { CommuteForm } from "@/components/CommuteForm";
@@ -43,18 +43,20 @@ const New: NextPage = () => {
     setSelectedTemplate(templateQueryParam?.toString());
   }, [templateQueryParam]);
 
-  const form = useForm();
+  type FormValues = Omit<CreateCommuteInput, "date"> & { date: string };
 
-  const commuteTemplates = api.template.myCommuteTemplates.useQuery(undefined, {
-    onSuccess: (data) => {
-      // If the user doesn't have any commute template, set the form to "FROM_SCRATCH" mode
-      if (data.length === 0) {
-        setSelectedTemplate(FROM_SCRATCH);
-      }
-    },
-    // We don't want any caching here, too much rules to handle already. This might be optimized later.
-    cacheTime: 0,
-  });
+  const handleOnValidSubmit = (values: FormValues) => {
+    const { date, ...otherValues } = values;
+
+    createCommute.mutate({
+      ...otherValues,
+      date: dayjs(
+        `${dayjs(date, "DD/MM/YYYY").format("YYYY-MM-DD")} ${
+          otherValues.stops[0]?.time
+        }`
+      ).toDate(),
+    });
+  };
 
   const date = dayjs(dateQueryParam?.toString()).format(DAY_MONTH_YEAR);
 
@@ -70,32 +72,34 @@ const New: NextPage = () => {
         ...stop,
         location: stop.location?.id,
       }))
-    : [{}];
+    : [];
 
-  const defaultValues = {
-    ...fromTemplate.data,
-    stops,
-    date,
-  };
+  const form = useForm({
+    onValidSubmit: handleOnValidSubmit,
+    initialValues: {
+      ...fromTemplate.data,
+      seats: fromTemplate.data?.seats ?? undefined,
+      stops,
+      date,
+    },
+  });
+
+  const commuteTemplates = api.template.myCommuteTemplates.useQuery(undefined, {
+    onSuccess: (data) => {
+      // If the user doesn't have any commute template, set the form to "FROM_SCRATCH" mode
+      if (data.length === 0) {
+        setSelectedTemplate(FROM_SCRATCH);
+      }
+    },
+    // We don't want any caching here, too much rules to handle already. This might be optimized later.
+    cacheTime: 0,
+  });
 
   const createCommute = api.commute.createCommute.useMutation({
     onSuccess: async () => {
       await router.push("/commutes");
     },
   });
-
-  const handleOnValidSubmit = (
-    values: Omit<CreateCommuteInput, "date"> & { date: Dayjs }
-  ) => {
-    const { date, ...otherValues } = values;
-
-    createCommute.mutate({
-      ...otherValues,
-      date: dayjs(
-        `${date.format("YYYY-MM-DD")} ${otherValues.stops[0]?.time}`
-      ).toDate(),
-    });
-  };
 
   const showForm =
     !!selectedTemplate &&
@@ -148,14 +152,9 @@ const New: NextPage = () => {
         </Stack>
       )}
       {showForm && (
-        <Formiz
-          onValidSubmit={handleOnValidSubmit}
-          autoForm
-          connect={form}
-          initialValues={defaultValues}
-        >
+        <Formiz autoForm connect={form}>
           <SimpleCard>
-            <CommuteForm repeaterInitialValues={defaultValues.stops} />
+            <CommuteForm />
             <Button
               variant="primary"
               type="submit"
