@@ -27,6 +27,11 @@ export async function book({
     include: {
       commute: {
         include: {
+          createdBy: {
+            select: {
+              doAutoAcceptRequests: true,
+            },
+          },
           stops: {
             include: {
               passengers: {
@@ -136,6 +141,9 @@ export async function book({
             id: input.stopId,
           },
         },
+        requestStatus: relatedCommute?.commute?.createdBy?.doAutoAcceptRequests
+          ? "ACCEPTED"
+          : "REQUESTED",
       },
       include: {
         stop: {

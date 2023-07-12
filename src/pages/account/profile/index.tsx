@@ -1,3 +1,4 @@
+import { FieldBooleanCheckbox } from "@/components/FieldBooleanCheckbox";
 import { FieldInput } from "@/components/FieldInput";
 import { Icon } from "@/components/Icon";
 import { LayoutAuthenticated } from "@/layout/LayoutAuthenticated";
@@ -42,6 +43,7 @@ const ProfilePage = () => {
     onValidSubmit: handleOnValidSubmit,
     initialValues: {
       ...profile.data,
+      doAutoAcceptRequests: profile.data?.doAutoAcceptRequests,
       slackMemberId: profile.data?.slackMemberId ?? undefined,
     },
   });
@@ -83,14 +85,21 @@ const ProfilePage = () => {
           }}
         >
           <Formiz autoForm connect={form}>
-            <Stack>
-              <FieldInput
-                name="slackMemberId"
-                label="Slack Member Id"
-                required="The Slack member id is required if you want to use Cowat"
-                helper="Member id can be copied on your Slack profile"
-              />
-              <FieldInput name="phone" label="Phone number" />
+            <Stack spacing="8">
+              <Stack spacing="4">
+                <FieldInput
+                  name="slackMemberId"
+                  label="Slack Member Id"
+                  required="The Slack member id is required if you want to use Cowat"
+                  helper="Member id can be copied on your Slack profile"
+                />
+                <FieldInput name="phone" label="Phone number" />
+                <FieldBooleanCheckbox
+                  name="doAutoAcceptRequests"
+                  label="Auto accept requests"
+                  helper="By enabling this setting, requests to your commutes will be automatically accepted"
+                />
+              </Stack>
               <Button
                 variant="primary"
                 type="submit"
