@@ -29,7 +29,13 @@ import {
   Stack,
   useDisclosure,
 } from "@chakra-ui/react";
-import { Formiz, useForm, useFormContext, useRepeater } from "@formiz/core";
+import {
+  Formiz,
+  useForm,
+  useFormContext,
+  useFormFields,
+  useRepeater,
+} from "@formiz/core";
 import { isMaxNumber, isMinNumber } from "@formiz/validations";
 import { Plus, Trash } from "lucide-react";
 import { useRouter } from "next/router";
@@ -144,11 +150,29 @@ type StopProps = {
 const Stop = ({ index, onRemove, isRemovable }: StopProps) => {
   const ctx = api.useContext();
   const form = useFormContext();
+  const formFields = useFormFields({ fields: ["stops"] });
+
   const newLocationForm = useForm();
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const locations = api.location.mine.useQuery();
+
+  //Locations already used in a stop
+  const usedLocations = formFields.stops?.map(
+    (field: { location: { value: string } }) => field?.location?.value
+  );
+
+  const getSelectOptions = (index: number) => {
+    // we keep as options the unused locations & the value of current stop location
+    return (
+      locations?.data?.filter(
+        (location) =>
+          !usedLocations?.includes(location.id) ||
+          location.id === formFields?.stops?.[index]?.location?.value
+      ) ?? []
+    );
+  };
 
   const createLocation = api.location.create.useMutation({
     onSuccess: async ({ id }) => {
@@ -173,7 +197,7 @@ const Stop = ({ index, onRemove, isRemovable }: StopProps) => {
             name={`stops[${index}].location`}
             placeholder="Please select a location"
             options={
-              locations.data?.map((location) => ({
+              getSelectOptions(index)?.map((location) => ({
                 label: location.name,
                 value: location.id,
               })) ?? []
