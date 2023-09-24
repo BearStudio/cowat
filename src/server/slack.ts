@@ -213,6 +213,10 @@ const bookingCanceled = async (
 
   const passengerSlackId = passengerOnStop.user.slackMemberId;
 
+  const passenger = passengerSlackId
+    ? `<@${passengerSlackId}>`
+    : passengerOnStop.stop?.commute?.createdBy?.email ?? "";
+
   try {
     const result = await slackApp.client.chat.postMessage({
       channel: driverSlackId ?? "",
@@ -221,7 +225,7 @@ const bookingCanceled = async (
           type: "section",
           text: {
             type: "mrkdwn",
-            text: `🙅 ${passengerSlackId} cancelled their booking for the *${
+            text: `🙅 ${passenger} cancelled their booking for the *${
               passengerOnStop.stop.commute?.date
                 ? dayjs(passengerOnStop.stop.commute.date)
                     .tz("Europe/Paris")
