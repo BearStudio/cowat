@@ -50,6 +50,7 @@ export const authOptions: NextAuthOptions = {
             },
             data: {
               slackMemberId: account.providerAccountId,
+              image: profile?.picture, // Update user image with current slack profile picture to keep it up to date
             },
           });
         }

@@ -16,5 +16,6 @@ declare module "next-auth" {
   interface Profile extends DefaultProfile {
     // TODO If we put boolean, the `signIn` method from auth.js is not correct anymore. But `any` is OK.
     email_verified: TODO;
+    picture?: string; // Slack profile picture
   }
 }
