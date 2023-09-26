@@ -149,6 +149,19 @@ const Day = ({ date, commutes }: DayProps) => {
       )}
       {myCommutes?.map((commute) => (
         <Fragment key={commute.id}>
+          <Text fontSize="sm" fontWeight="bold" color="gray.500">
+            {commute.createdById === session?.user?.id
+              ? `You are the driver for 
+              ${
+                commute.stops.flatMap((stop) =>
+                  stop.passengers.filter(
+                    (passenger) => passenger.requestStatus === "ACCEPTED"
+                  )
+                ).length
+              } people `
+              : `You are ${commute.createdBy?.name}'s passenger`}
+          </Text>
+
           <CommuteOverview {...commute} />
           {date === dayjs().format(YEAR_MONTH_DAY) && (
             <Button
