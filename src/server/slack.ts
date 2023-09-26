@@ -148,7 +148,9 @@ const newBookingFrom = async (passengerOnStop: PassengerOnStopNotification) => {
                     .tz("Europe/Paris")
                     .format("dddd DD MMM HH:mm")
                 : ""
-            }* commute.`,
+            }* commute. You can see their request <http://${
+              process.env.HOST
+            }/requests|there>`,
           },
         },
       ],
