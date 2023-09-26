@@ -245,9 +245,49 @@ const bookingCanceled = async (
   }
 };
 
+const commuteCanceled = async (
+  passengerOnStop: PassengerOnStopNotification
+) => {
+  const driverSlackId = passengerOnStop.stop.commute?.createdBy?.slackMemberId;
+
+  const passengerSlackId = passengerOnStop.user.slackMemberId;
+
+  const driver = driverSlackId
+    ? `<@${driverSlackId}>`
+    : passengerOnStop.stop.commute?.createdBy?.email ?? "";
+
+  try {
+    const result = await slackApp.client.chat.postMessage({
+      channel: passengerSlackId ?? "",
+      blocks: [
+        {
+          type: "section",
+          text: {
+            type: "mrkdwn",
+            text: `🙅 ${driver} cancelled the *${
+              passengerOnStop.stop.commute?.date
+                ? dayjs(passengerOnStop.stop.commute.date)
+                    .tz("Europe/Paris")
+                    .format("dddd DD MMM HH:mm")
+                : ""
+            }* commute you booked.`,
+          },
+        },
+      ],
+    });
+
+    // TODO: handle result not OK with some logsnag or else
+    console.log(result);
+  } catch (error) {
+    // TODO: handle with some tool to store errors
+    console.error(error);
+  }
+};
+
 export const slack = {
   newBookingFrom,
   newCommute,
   request,
   bookingCanceled,
+  commuteCanceled,
 };

@@ -207,7 +207,7 @@ export const commuteRouter = createTRPCRouter({
   cancelCommute: protectedProcedure
     .input(z.object({ id: z.string().cuid() }))
     .mutation(async ({ ctx, input }) => {
-      await ctx.prisma.commute.update({
+      const commute = await ctx.prisma.commute.update({
         where: {
           id: input.id,
           createdById: ctx.session.user.id,
@@ -215,8 +215,38 @@ export const commuteRouter = createTRPCRouter({
         data: {
           isDeleted: true,
         },
+        include: {
+          stops: {
+            include: {
+              passengers: {
+                include: {
+                  stop: {
+                    include: {
+                      commute: {
+                        include: {
+                          createdBy: {
+                            include: {
+                              accounts: true,
+                            },
+                          },
+                        },
+                      },
+                    },
+                  },
+                  user: {
+                    include: {
+                      accounts: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
       });
-      // TODO send notification to passengers
+      commute?.stops
+        ?.flatMap((stop) => stop.passengers)
+        .map(async (passenger) => await slack.commuteCanceled(passenger));
     }),
   commuteById: protectedProcedure
     .input(z.object({ id: z.string().cuid() }))
