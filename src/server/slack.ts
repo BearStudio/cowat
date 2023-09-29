@@ -4,6 +4,7 @@ import type { Prisma } from "@prisma/client";
 import dayjs from "dayjs";
 import { FULL_TEXT_DATE_WITH_TIME } from "@/constants/dates";
 import { App, LogLevel } from "@slack/bolt";
+import { serverEnv } from "@/env/schema.mjs";
 
 type PassengerOnStopNotification = Prisma.PassengersOnStopsGetPayload<{
   include: {
@@ -149,7 +150,7 @@ const newBookingFrom = async (passengerOnStop: PassengerOnStopNotification) => {
                     .format("dddd DD MMM HH:mm")
                 : ""
             }* commute. You can see their request <http://${
-              process.env.HOST
+              serverEnv.APP_DOMAIN_NAME
             }/requests|there>`,
           },
         },
