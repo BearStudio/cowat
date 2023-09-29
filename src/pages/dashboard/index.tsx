@@ -147,39 +147,42 @@ const Day = ({ date, commutes }: DayProps) => {
           )}
         </EmptyState>
       )}
-      {myCommutes?.map((commute) => (
-        <Fragment key={commute.id}>
-          <Text fontSize="sm" fontWeight="bold" color="gray.500">
-            {commute.createdById === session?.user?.id
-              ? `You are the driver for 
-              ${
-                commute.stops.flatMap((stop) =>
-                  stop.passengers.filter(
-                    (passenger) => passenger.requestStatus === "ACCEPTED"
-                  )
-                ).length
-              } people `
-              : `You are ${commute.createdBy?.name}'s passenger`}
-          </Text>
+      {myCommutes?.map((commute) => {
+        const passengers = commute.stops.flatMap((stop) =>
+          stop.passengers.filter(
+            (passenger) => passenger.requestStatus === "ACCEPTED"
+          )
+        );
+        return (
+          <Fragment key={commute.id}>
+            <Text fontSize="sm" fontWeight="bold" color="gray.500">
+              {commute.createdById === session?.user?.id
+                ? `You are the driver for 
+              ${passengers.length} ${
+                    passengers.length <= 1 ? "person" : "people"
+                  } `
+                : `You are ${commute.createdBy?.name}'s passenger`}
+            </Text>
 
-          <CommuteOverview {...commute} />
-          {date === dayjs().format(YEAR_MONTH_DAY) && (
-            <Button
-              variant="primary"
-              size="lg"
-              leftIcon={<Icon icon={Navigation} />}
-              as={Link}
-              href={`/dashboard/${
-                commute.createdById === session?.user?.id
-                  ? "driver"
-                  : "passenger"
-              }/${commute.id}`}
-            >
-              Open commute&apos;s view
-            </Button>
-          )}
-        </Fragment>
-      ))}
+            <CommuteOverview {...commute} />
+            {date === dayjs().format(YEAR_MONTH_DAY) && (
+              <Button
+                variant="primary"
+                size="lg"
+                leftIcon={<Icon icon={Navigation} />}
+                as={Link}
+                href={`/dashboard/${
+                  commute.createdById === session?.user?.id
+                    ? "driver"
+                    : "passenger"
+                }/${commute.id}`}
+              >
+                Open commute&apos;s view
+              </Button>
+            )}
+          </Fragment>
+        );
+      })}
 
       {!!otherCommutes?.length && !!myCommutes?.length && (
         <Button
