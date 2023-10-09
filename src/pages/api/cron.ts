@@ -2,6 +2,7 @@ import { notify } from "@/server/slack";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "@/server/db";
 import dayjs from "dayjs";
+import { TIMEZONE_NAME } from "@/constants/dates";
 
 export default async function handler(
   request: NextApiRequest,
@@ -72,7 +73,7 @@ export default async function handler(
                 commute.createdBy?.name ?? commute.createdBy?.email
               }'s commute*\n${dayjs(commute.date)
                 .tz("Europe/Paris")
-                .format("dddd, MMMM DD hh:mm A")}\n${
+                .format("dddd, MMMM DD hh:mm A")} ${TIMEZONE_NAME}\n${
                 commute.stops.length
               } stop(s)\n${
                 commute.stops.flatMap((stop) => stop.passengers).length

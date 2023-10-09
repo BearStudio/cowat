@@ -2,7 +2,7 @@ import SlackNotify from "slack-notify";
 import { env } from "@/env/server.mjs";
 import type { Prisma } from "@prisma/client";
 import dayjs from "dayjs";
-import { FULL_TEXT_DATE_WITH_TIME } from "@/constants/dates";
+import { FULL_TEXT_DATE_WITH_TIME, TIMEZONE_NAME } from "@/constants/dates";
 import { App, LogLevel } from "@slack/bolt";
 
 type PassengerOnStopNotification = Prisma.PassengersOnStopsGetPayload<{
@@ -93,7 +93,7 @@ const newCommute = async (
             .tz("Europe/Paris")
             .format(
               FULL_TEXT_DATE_WITH_TIME
-            )}* has been created by ${createdBy} (💺 ${
+            )} ${TIMEZONE_NAME}* has been created by ${createdBy} (💺 ${
             commute.seats
           } seats available)`,
         },
@@ -144,9 +144,9 @@ const newBookingFrom = async (passengerOnStop: PassengerOnStopNotification) => {
             type: "mrkdwn",
             text: `Hey, 🙋 ${passenger} requested a seat on your *${
               passengerOnStop.stop?.commute?.date
-                ? dayjs(passengerOnStop?.stop?.commute?.date)
+                ? `${dayjs(passengerOnStop?.stop?.commute?.date)
                     .tz("Europe/Paris")
-                    .format("dddd DD MMM HH:mm")
+                    .format("dddd DD MMM HH:mm")} ${TIMEZONE_NAME}`
                 : ""
             }* commute.`,
           },
@@ -188,9 +188,9 @@ const request = async (passengerOnStop: PassengerOnStopNotification) => {
       passengerOnStop.requestStatus === "ACCEPTED" ? "✅" : "❌"
     } ${driver} ${passengerOnStop.requestStatus.toLocaleLowerCase()} your request for *${
               passengerOnStop.stop.commute?.date
-                ? dayjs(passengerOnStop.stop.commute.date)
+                ? `${dayjs(passengerOnStop.stop.commute.date)
                     .tz("Europe/Paris")
-                    .format("dddd DD MMM HH:mm")
+                    .format("dddd DD MMM HH:mm")} ${TIMEZONE_NAME}`
                 : ""
             }* commute.`,
           },
@@ -227,9 +227,9 @@ const bookingCanceled = async (
             type: "mrkdwn",
             text: `🙅 ${passenger} cancelled their booking for the *${
               passengerOnStop.stop.commute?.date
-                ? dayjs(passengerOnStop.stop.commute.date)
+                ? `${dayjs(passengerOnStop.stop.commute.date)
                     .tz("Europe/Paris")
-                    .format("dddd DD MMM HH:mm")
+                    .format("dddd DD MMM HH:mm")} ${TIMEZONE_NAME}`
                 : ""
             }* commute.`,
           },
