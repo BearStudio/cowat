@@ -13,6 +13,7 @@ export default async function handler(
         gte: dayjs().startOf("day").toDate(),
         lte: dayjs().endOf("day").toDate(),
       },
+      isDeleted: false,
     },
     include: {
       createdBy: {
@@ -69,9 +70,11 @@ export default async function handler(
               type: "mrkdwn",
               text: `*${
                 commute.createdBy?.name ?? commute.createdBy?.email
-              }'s commute*\n${dayjs(commute.date).format(
-                "dddd, MMMM DD hh:mm A"
-              )}\n${commute.stops.length} stop(s)\n${
+              }'s commute*\n${dayjs(commute.date)
+                .tz("Europe/Paris")
+                .format("dddd, MMMM DD hh:mm A")}\n${
+                commute.stops.length
+              } stop(s)\n${
                 commute.stops.flatMap((stop) => stop.passengers).length
               } passenger(s)`,
             },
