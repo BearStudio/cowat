@@ -56,62 +56,67 @@ export default async function handler(
         type: "header",
         text: {
           type: "plain_text",
-          text: "Today's commutes",
+          text: commutes?.length ? "Today's commutes" : "No commutes today",
           emoji: true,
         },
       },
-      {
-        type: "divider",
-      },
-      ...commutes
-        .map((commute) => [
-          {
-            type: "section",
-            text: {
-              type: "mrkdwn",
-              text: `*${
-                commute.createdBy?.name ?? commute.createdBy?.email
-              }'s commute*\n${dayjs(commute.date)
-                .tz("Europe/Paris")
-                .format("dddd, MMMM DD hh:mm A")} ${TIMEZONE_NAME}\n${
-                commute.stops.length
-              } stop(s)\n${
-                commute.stops.flatMap((stop) => stop.passengers).length
-              } passenger(s)`,
-            },
-            accessory: {
-              type: "image",
-              image_url: commute.createdBy?.image,
-              alt_text: commute.createdBy?.name ?? commute.createdBy?.email,
-            },
-          },
-          ...commute.stops.flatMap((stop) => [
+      ...(commutes.length
+        ? [
             {
-              type: "section",
-              text: {
-                type: "mrkdwn",
-                text: `:round_pushpin: *${stop.location?.address}*\n${stop.location?.name}.`,
-              },
+              type: "divider",
             },
-            ...stop.passengers.map((passenger) => ({
-              type: "context",
-              elements: [
+            ...commutes
+              .map((commute) => [
                 {
-                  type: "image",
-                  image_url: passenger.user.image,
-                  alt_text: passenger.user.name ?? passenger.user.email,
+                  type: "section",
+                  text: {
+                    type: "mrkdwn",
+                    text: `*${
+                      commute.createdBy?.name ?? commute.createdBy?.email
+                    }'s commute*\n${dayjs(commute.date)
+                      .tz("Europe/Paris")
+                      .format("dddd, MMMM DD hh:mm A")} ${TIMEZONE_NAME}\n${
+                      commute.stops.length
+                    } stop(s)\n${
+                      commute.stops.flatMap((stop) => stop.passengers).length
+                    } passenger(s)`,
+                  },
+                  accessory: {
+                    type: "image",
+                    image_url: commute.createdBy?.image,
+                    alt_text:
+                      commute.createdBy?.name ?? commute.createdBy?.email,
+                  },
                 },
-                {
-                  type: "plain_text",
-                  emoji: true,
-                  text: passenger.user.name ?? passenger.user.email,
-                },
-              ],
-            })),
-          ]),
-          { type: "divider" },
-        ])
-        .flat(),
+                ...commute.stops.flatMap((stop) => [
+                  {
+                    type: "section",
+                    text: {
+                      type: "mrkdwn",
+                      text: `:round_pushpin: *${stop.location?.address}*\n${stop.location?.name}.`,
+                    },
+                  },
+                  ...stop.passengers.map((passenger) => ({
+                    type: "context",
+                    elements: [
+                      {
+                        type: "image",
+                        image_url: passenger.user.image,
+                        alt_text: passenger.user.name ?? passenger.user.email,
+                      },
+                      {
+                        type: "plain_text",
+                        emoji: true,
+                        text: passenger.user.name ?? passenger.user.email,
+                      },
+                    ],
+                  })),
+                ]),
+                { type: "divider" },
+              ])
+              .flat(),
+          ]
+        : []),
     ],
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } as any;

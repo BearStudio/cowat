@@ -86,8 +86,8 @@ const newCommute = async (
               FULL_TEXT_DATE_WITH_TIME
             )} ${TIMEZONE_NAME}* has been created by ${createdBy} (💺 ${
             commute.seats
-          } seats available) \n <http://${
-            serverEnv.APP_DOMAIN_NAME
+          } seats available) \n <${
+            clientEnv.NEXT_PUBLIC_BASE_URL
           }/dashboard|See all commutes>`,
         },
       },
