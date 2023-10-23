@@ -72,16 +72,6 @@ const newCommute = async (
         stop.time ? ` - ${stop.time}` : ""
       }*\n${stop.location?.address}`,
     },
-    accessory: {
-      type: "button",
-      text: {
-        type: "plain_text",
-        text: "Book",
-        emoji: true,
-      },
-      value: stop.id,
-      action_id: BOOK_ACTION_ID,
-    },
   }));
 
   return notify.send({
@@ -96,7 +86,9 @@ const newCommute = async (
               FULL_TEXT_DATE_WITH_TIME
             )} ${TIMEZONE_NAME}* has been created by ${createdBy} (💺 ${
             commute.seats
-          } seats available)`,
+          } seats available) \n <http://${
+            serverEnv.APP_DOMAIN_NAME
+          }/dashboard|See all commutes>`,
         },
       },
       {
