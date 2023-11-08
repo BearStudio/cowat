@@ -149,7 +149,6 @@ export const PageBottomBar = ({ children, ...rest }: FlexProps) => {
         {...rest}
       >
         <PageContainer>{children}</PageContainer>
-        <Box w="full" h="0" pb="safe-bottom" />
       </Flex>
     </>
   );
