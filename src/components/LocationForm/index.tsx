@@ -1,6 +1,7 @@
 import { FieldInput } from "@/components/FieldInput";
 import { FieldTextarea } from "@/components/FieldTextarea";
 import { Icon } from "@/components/Icon";
+import { API_STRING_MAX_LENGTH } from "@/constants/api";
 import { searchOnMaps } from "@/constants/google";
 import { Button, Link } from "@chakra-ui/react";
 import { useFormFields } from "@formiz/core";
@@ -19,8 +20,8 @@ export const LocationForm = () => {
         required="Please provide an address"
         validations={[
           {
-            handler: isMaxLength(191),
-            message: "Address is too long",
+            handler: isMaxLength(API_STRING_MAX_LENGTH),
+            message: `Address length should be less than ${API_STRING_MAX_LENGTH}`,
           },
         ]}
       />

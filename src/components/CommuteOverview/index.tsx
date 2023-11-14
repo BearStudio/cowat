@@ -279,7 +279,7 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
                             color="gray.600"
                             _dark={{ color: "gray.300" }}
                             wordBreak="break-word"
-                            noOfLines={2}
+                            noOfLines={3}
                           >
                             {stop?.location?.address}
                           </Text>
