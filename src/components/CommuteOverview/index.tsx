@@ -28,6 +28,7 @@ import {
   Wrap,
   Spacer,
   useBreakpointValue,
+  Tooltip,
 } from "@chakra-ui/react";
 import type { Prisma } from "@prisma/client";
 import dayjs from "dayjs";
@@ -35,7 +36,6 @@ import { CheckCircle2, Clock, Navigation, Pencil, Phone } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { ConfirmModal } from "@/components/ConfirmModal";
-import { FiEdit, FiEdit2 } from "react-icons/fi";
 
 export type CommuteOverviewProps = Prisma.CommuteGetPayload<{
   include: {
@@ -273,13 +273,17 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
                           📍 {!!stop.time && `${stop.time} · `}
                           {stop?.location?.name}{" "}
                         </Text>
-                        <Text
-                          fontSize="sm"
-                          color="gray.600"
-                          _dark={{ color: "gray.300" }}
-                        >
-                          {stop?.location?.address}
-                        </Text>
+                        <Tooltip label={stop?.location?.address}>
+                          <Text
+                            fontSize="sm"
+                            color="gray.600"
+                            _dark={{ color: "gray.300" }}
+                            wordBreak="break-word"
+                            noOfLines={2}
+                          >
+                            {stop?.location?.address}
+                          </Text>
+                        </Tooltip>
                         {!!passengers.length && (
                           <Wrap pt="1">
                             {passengers.map((passenger) => (
@@ -306,17 +310,15 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
                           passengerStatus === "REFUSED") &&
                         !isFull &&
                         dayjs().isBefore(dayjs(props.date)) && (
-                          <HStack>
-                            <Button
-                              variant="primary"
-                              onClick={() =>
-                                bookCommute.mutate({ stopId: stop.id })
-                              }
-                              isLoading={bookCommute.isLoading}
-                            >
-                              Book
-                            </Button>
-                          </HStack>
+                          <Button
+                            variant="primary"
+                            onClick={() =>
+                              bookCommute.mutate({ stopId: stop.id })
+                            }
+                            isLoading={bookCommute.isLoading}
+                          >
+                            Book
+                          </Button>
                         )}
                       {isPassenger &&
                         getIsPassengerOnStop(stop) &&

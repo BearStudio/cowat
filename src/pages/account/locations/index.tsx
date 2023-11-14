@@ -108,7 +108,7 @@ const LocationCard = ({ location }: LocationCardProps) => {
                 <Text>📍</Text>
                 <Stack spacing={0}>
                   <Text fontWeight="bold">{location.name}</Text>
-                  <Text fontSize="sm" color="gray.500">
+                  <Text fontSize="sm" color="gray.500" wordBreak="break-word">
                     {location.address}
                   </Text>
                 </Stack>

@@ -4,6 +4,7 @@ import { Icon } from "@/components/Icon";
 import { searchOnMaps } from "@/constants/google";
 import { Button, Link } from "@chakra-ui/react";
 import { useFormFields } from "@formiz/core";
+import { isMaxLength } from "@formiz/validations";
 import { ExternalLink } from "lucide-react";
 
 export const LocationForm = () => {
@@ -16,6 +17,12 @@ export const LocationForm = () => {
         label="Address"
         name="address"
         required="Please provide an address"
+        validations={[
+          {
+            handler: isMaxLength(191),
+            message: "Address is too long",
+          },
+        ]}
       />
       <Button
         as={Link}
