@@ -4,6 +4,11 @@ import { LayoutAuthenticated } from "@/layout/LayoutAuthenticated";
 import type { RouterInputs } from "@/utils/api";
 import { api } from "@/utils/api";
 import {
+  Alert,
+  AlertDescription,
+  AlertIcon,
+  AlertTitle,
+  Box,
   Button,
   Center,
   Heading,
@@ -13,7 +18,7 @@ import {
   Stack,
 } from "@chakra-ui/react";
 import { Formiz } from "@formiz/core";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, MoreVerticalIcon } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Head from "next/head";
 import Link from "next/link";
@@ -83,8 +88,23 @@ const ProfilePage = () => {
                 name="slackMemberId"
                 label="Slack Member Id"
                 required="The Slack member id is required if you want to use Cowat"
-                helper="Member id can be copied on your Slack profile"
+                formatValue={(value) => value?.trim()}
               />
+
+              <Alert variant="infoGray" borderRadius="md">
+                <AlertIcon />
+                <Box>
+                  <AlertTitle>
+                    Your slack member id can be copied from your slack account
+                  </AlertTitle>
+
+                  <AlertDescription alignContent="center" display="flex">
+                    On your profile, click on
+                    <MoreVerticalIcon style={{ display: "inline" }} />
+                    and select &quot;copy member ID&quot;
+                  </AlertDescription>
+                </Box>
+              </Alert>
               <FieldInput name="phone" label="Phone number" />
               <Button
                 variant="primary"
