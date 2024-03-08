@@ -6,6 +6,7 @@ import { api } from "@/utils/api";
 import { getPassengers, havePassengerOnStop } from "@/utils/commutes";
 import { NOT_YET_PASSENGER_IF_INSIDE } from "@/utils/passengers";
 import { PASSENGER_STATUS } from "@/utils/passengerStatus";
+import { DRIVER_STATUS } from "@/utils/driverStatus";
 import {
   Avatar,
   Badge,
@@ -130,33 +131,34 @@ const Driver = () => {
             </CardHeader>
             <Divider color="gray.200" _dark={{ color: "gray.700" }} />
             <CardBody p="2">
-              <Stack spacing="1">
-                <Text
-                  fontSize="sm"
-                  color="gray.600"
-                  _dark={{ color: "gray.300" }}
-                >
-                  <>
-                    {commute.data?.stops.length} Stops •{" "}
-                    {getPassengers(commute.data.stops).length} Passengers{" "}
-                    {commute.data.status === "DELAYED" && (
-                      <Text
-                        as="span"
-                        fontSize="sm"
-                        color="error.700"
-                        _dark={{ color: "error.500" }}
-                      >
-                        •{" "}
-                        {isNumber(commute.data.delay) ? (
-                          <>{commute.data.delay} minutes late</>
-                        ) : (
-                          "You are late"
-                        )}
-                      </Text>
-                    )}
-                  </>
-                </Text>
-              </Stack>
+              <Flex justify="space-between">
+                <HStack>
+                  <Text
+                    fontSize="sm"
+                    color="gray.600"
+                    _dark={{ color: "gray.300" }}
+                  >
+                    <>
+                      {commute.data?.stops.length} Stops •{" "}
+                      {getPassengers(commute.data.stops).length} Passengers{" "}
+                    </>
+                  </Text>
+                </HStack>
+                <HStack>
+                    <Tag
+                      colorScheme={
+                        DRIVER_STATUS[commute.data.status].colorScheme
+                      }
+                    >
+                      {DRIVER_STATUS[commute.data.status].text}{" "}
+                      {commute.data.delay} {!!commute.data.delay && " minutes"}
+                      <Icon
+                        ml="2"
+                        icon={DRIVER_STATUS[commute.data.status].icon}
+                      />
+                    </Tag>
+                  </HStack>
+              </Flex>
             </CardBody>
             <Divider color="gray.200" _dark={{ color: "gray.700" }} />
             {commute.data.status === "UNKNOWN" && (
@@ -223,7 +225,8 @@ const Driver = () => {
                             PASSENGER_STATUS[passenger.stopStatus].colorScheme
                           }
                         >
-                          {PASSENGER_STATUS[passenger.stopStatus].text}
+                          {PASSENGER_STATUS[passenger.stopStatus].text}{" "}
+                          {passenger.delay} {!!passenger.delay && " minutes"}
                           <Icon
                             ml="2"
                             icon={PASSENGER_STATUS[passenger.stopStatus].icon}
