@@ -246,6 +246,11 @@ export const commuteRouter = createTRPCRouter({
       });
       commute?.stops
         ?.flatMap((stop) => stop.passengers)
+        .filter(
+          (passenger) =>
+            passenger.requestStatus === "ACCEPTED" ||
+            passenger.requestStatus === "REQUESTED"
+        )
         .map(async (passenger) => await slack.commuteCanceled(passenger));
     }),
   commuteById: protectedProcedure

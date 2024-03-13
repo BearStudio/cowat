@@ -214,7 +214,7 @@ const Passenger = () => {
               {havePassengerOnStop(stop) && (
                 <CardBody p="2">
                   <Stack>
-                    {stop.passengers.map((passenger) => (
+                    {getPassengers([stop]).map((passenger) => (
                       <Flex
                         key={passenger.userId}
                         justify="space-between"

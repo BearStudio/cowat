@@ -17,7 +17,31 @@ export const getPassengers = (
 ) => {
   return stops.flatMap((stop) =>
     stop.passengers.filter(
-      (passenger) => passenger.requestStatus !== "CANCELED"
+      (passenger) =>
+        passenger.requestStatus !== "CANCELED" &&
+        passenger.requestStatus !== "REFUSED"
+    )
+  );
+};
+
+/**
+ * Get all the passengers of the given stops, only accepted ones.
+ * @returns The passengers of the given stops, only accepted ones.
+ */
+export const getAcceptedPassengers = (
+  stops: Array<
+    Stop & {
+      passengers: Array<
+        PassengersOnStops & {
+          user: User;
+        }
+      >;
+    }
+  >
+) => {
+  return stops.flatMap((stop) =>
+    stop.passengers.filter(
+      (passenger) => passenger.requestStatus === "ACCEPTED"
     )
   );
 };
@@ -33,6 +57,8 @@ export const havePassengerOnStop = (
   }
 ) => {
   return stop.passengers.some(
-    (passenger) => passenger.requestStatus !== "CANCELED"
+    (passenger) =>
+      passenger.requestStatus !== "CANCELED" &&
+      passenger.requestStatus !== "REFUSED"
   );
 };

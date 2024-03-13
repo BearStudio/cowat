@@ -31,7 +31,6 @@ import dayjs from "dayjs";
 import { ArrowLeft, CheckCircle, Clock, ExternalLink } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { isNumber } from "remeda";
 
 const Driver = () => {
   const router = useRouter();
@@ -145,19 +144,17 @@ const Driver = () => {
                   </Text>
                 </HStack>
                 <HStack>
-                    <Tag
-                      colorScheme={
-                        DRIVER_STATUS[commute.data.status].colorScheme
-                      }
-                    >
-                      {DRIVER_STATUS[commute.data.status].text}{" "}
-                      {commute.data.delay} {!!commute.data.delay && " minutes"}
-                      <Icon
-                        ml="2"
-                        icon={DRIVER_STATUS[commute.data.status].icon}
-                      />
-                    </Tag>
-                  </HStack>
+                  <Tag
+                    colorScheme={DRIVER_STATUS[commute.data.status].colorScheme}
+                  >
+                    {DRIVER_STATUS[commute.data.status].text}{" "}
+                    {commute.data.delay} {!!commute.data.delay && " minutes"}
+                    <Icon
+                      ml="2"
+                      icon={DRIVER_STATUS[commute.data.status].icon}
+                    />
+                  </Tag>
+                </HStack>
               </Flex>
             </CardBody>
             <Divider color="gray.200" _dark={{ color: "gray.700" }} />
@@ -195,7 +192,7 @@ const Driver = () => {
               {havePassengerOnStop(stop) && (
                 <CardBody p="2">
                   <Stack>
-                    {stop.passengers.map((passenger) => (
+                    {getPassengers([stop]).map((passenger) => (
                       <Flex
                         key={passenger.userId}
                         justify="space-between"
