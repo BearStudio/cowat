@@ -218,12 +218,12 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
                       {props.seats > 1 ? "s" : ""}
                     </Text>
                   </Flex>
-                  {passengerStatus === "ACCEPTED" && (
+                  {passengerStatus === "ACCEPTED" && !props.isDeleted && (
                     <Badge colorScheme="success" variant="solid">
                       Passenger <Icon icon={CheckCircle2} />
                     </Badge>
                   )}
-                  {passengerStatus === "REQUESTED" && (
+                  {passengerStatus === "REQUESTED" && !props.isDeleted && (
                     <Badge colorScheme="warning" variant="solid">
                       Passenger <Icon icon={Clock} />
                     </Badge>
@@ -264,7 +264,8 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
 
                 {props.stops.map((stop) => {
                   const passengers = stop.passengers.filter(
-                    (passenger) => passenger.requestStatus !== "CANCELED"
+                    (passenger) =>
+                      !["CANCELED", "REFUSED"].includes(passenger.requestStatus)
                   );
                   return (
                     <HStack key={stop.id}>
@@ -293,8 +294,6 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
                                 colorScheme={
                                   passenger.requestStatus === "ACCEPTED"
                                     ? "success"
-                                    : passenger.requestStatus === "REFUSED"
-                                    ? "error"
                                     : undefined
                                 }
                               >
