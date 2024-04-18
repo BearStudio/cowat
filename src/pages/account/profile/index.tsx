@@ -16,6 +16,7 @@ import {
   IconButton,
   Spinner,
   Stack,
+  Text,
 } from "@chakra-ui/react";
 import { Formiz } from "@formiz/core";
 import { ArrowLeft, MoreVerticalIcon } from "lucide-react";
@@ -96,12 +97,17 @@ const ProfilePage = () => {
                 <Box>
                   <AlertTitle>
                     Your slack member id can be copied from your slack account
+                    on desktop
                   </AlertTitle>
 
-                  <AlertDescription alignContent="center" display="flex">
-                    On your profile, click on
-                    <MoreVerticalIcon style={{ display: "inline" }} />
-                    and select &quot;copy member ID&quot;
+                  <AlertDescription alignContent="center">
+                    <Text>
+                      On your profile, click on
+                      <MoreVerticalIcon
+                        style={{ display: "inline", verticalAlign: "middle" }}
+                      />
+                      and select &quot;copy member ID&quot;
+                    </Text>
                   </AlertDescription>
                 </Box>
               </Alert>
