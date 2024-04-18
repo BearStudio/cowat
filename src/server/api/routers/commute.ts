@@ -121,6 +121,9 @@ export const commuteRouter = createTRPCRouter({
             date: {
               gte: new Date(),
             },
+            isDeleted: {
+              equals: false,
+            },
           },
         },
         requestStatus: {
