@@ -29,6 +29,7 @@ import {
   Spacer,
   useBreakpointValue,
   Tooltip,
+  useDisclosure,
 } from "@chakra-ui/react";
 import type { Prisma } from "@prisma/client";
 import dayjs from "dayjs";
@@ -36,6 +37,7 @@ import { CheckCircle2, Clock, Navigation, Pencil, Phone } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { ConfirmModal } from "@/components/ConfirmModal";
+import { ConfirmBookingModal } from "@/components/ConfirmBookingModal";
 
 export type CommuteOverviewProps = Prisma.CommuteGetPayload<{
   include: {
@@ -51,6 +53,8 @@ export type CommuteOverviewProps = Prisma.CommuteGetPayload<{
 export const CommuteOverview = (props: CommuteOverviewProps) => {
   const { data: session } = useSession();
   const ctx = api.useContext();
+
+  const confirmBookingModal = useDisclosure();
 
   const isMobile = useBreakpointValue({ base: true, md: false });
 
@@ -101,6 +105,9 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
       )
     );
   };
+  const myCommutesOnDate = api.commute.allMyCommutesOnDate.useQuery({
+    date: props.date.toISOString(),
+  });
 
   const passengers = getPassengers(props.stops);
   const isFull = passengers.length === props.seats;
@@ -311,14 +318,26 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
                         dayjs().isBefore(dayjs(props.date)) && (
                           <Button
                             variant="primary"
-                            onClick={() =>
-                              bookCommute.mutate({ stopId: stop.id })
-                            }
+                            onClick={() => {
+                              if (myCommutesOnDate.data?.length > 0) {
+                                confirmBookingModal.onOpen();
+                              }
+                              //bookCommute.mutate({ stopId: stop.id })
+                            }}
                             isLoading={bookCommute.isLoading}
                           >
                             Book
                           </Button>
                         )}
+                      {confirmBookingModal.isOpen && (
+                        <ConfirmBookingModal
+                          onClose={confirmBookingModal.onClose}
+                          onConfirm={() =>
+                            bookCommute.mutate({ stopId: stop.id })
+                          }
+                          myCommutes={myCommutesOnDate.data}
+                        />
+                      )}
                       {isPassenger &&
                         getIsPassengerOnStop(stop) &&
                         (passengerStatus === "REQUESTED" ||
