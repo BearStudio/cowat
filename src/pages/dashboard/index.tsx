@@ -168,7 +168,7 @@ const Day = ({ date, commutes }: DayProps) => {
                 acceptedPassengers.length <= 1 ? "person" : "people"
                   } `
                 : isUserInRequest
-                ? `Your request on ${commute.createdBy?.name} is still pending`
+                ? `Your request on ${commute.createdBy?.name}'s commute is still pending`
                 : `You are ${commute.createdBy?.name}'s passenger`}
             </Text>
 
