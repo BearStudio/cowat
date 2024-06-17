@@ -148,9 +148,15 @@ const Day = ({ date, commutes }: DayProps) => {
         </EmptyState>
       )}
       {myCommutes?.map((commute) => {
-        const passengers = commute.stops.flatMap((stop) =>
+        const acceptedPassengers = commute.stops.flatMap((stop) =>
           stop.passengers.filter(
             (passenger) => passenger.requestStatus === "ACCEPTED"
+          )
+        );
+        const isUserInRequest = commute.stops.some((stop) =>
+          stop.passengers.some((passenger) =>
+            passenger.userId === session?.user?.id &&
+            passenger.requestStatus === "REQUESTED"
           )
         );
         return (
@@ -158,9 +164,11 @@ const Day = ({ date, commutes }: DayProps) => {
             <Text fontSize="sm" fontWeight="bold" color="gray.500">
               {commute.createdById === session?.user?.id
                 ? `You are the driver for 
-              ${passengers.length} ${
-                    passengers.length <= 1 ? "person" : "people"
+              ${acceptedPassengers.length} ${
+                acceptedPassengers.length <= 1 ? "person" : "people"
                   } `
+                : isUserInRequest
+                ? `Your request on ${commute.createdBy?.name} is still pending`
                 : `You are ${commute.createdBy?.name}'s passenger`}
             </Text>
 
