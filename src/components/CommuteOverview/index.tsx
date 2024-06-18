@@ -285,7 +285,7 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
                             {stop?.location?.address}
                           </Text>
                         </Tooltip>
-                        {!!passengers.length && (
+                        {!!passengers.length && !props.isDeleted && (
                           <Wrap pt="1">
                             {passengers.map((passenger) => (
                               <Tag
