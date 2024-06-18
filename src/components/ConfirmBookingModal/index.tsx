@@ -1,3 +1,4 @@
+import { ONLY_TIME } from "@/constants/dates";
 import { api } from "@/utils/api";
 import { ButtonGroup, HStack, ModalFooter, ModalProps } from "@chakra-ui/react";
 import {
@@ -11,6 +12,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import type { Commute, PassengersOnStops, Prisma } from "@prisma/client";
+import dayjs from "dayjs";
 import { useSession } from "next-auth/react";
 
 type ConfirmBookingModalProps = Omit<ModalProps, "isOpen" | "children"> & {
@@ -49,51 +51,65 @@ export const ConfirmBookingModal = ({
         </ModalHeader>
         <ModalBody p="4">
           <Stack>
-            <Text fontWeight="bold" fontSize="sm">
-              You are already in other commutes (as Driver or Passenger)
-            </Text>
-            {myCommutes
-              ?.filter((commute) => !commute.isDeleted)
-              .map((commute) => (
-                <HStack key={commute.id} justifyContent="space-between">
-                  <Text>{commute.id}</Text>
-                  {commute.createdById === session?.user?.id ? (
-                    <Button
-                      variant="danger"
-                      onClick={() => {
-                        cancelCommute.mutate({ id: commute.id });
-                      }}
-                    >
-                      Cancel commute
-                    </Button>
-                  ) : (
-                    <Button
-                      variant="danger"
-                      onClick={() =>
-                        updateRequestStatus.mutate({
-                          stopId: commute.stops.find((stop) =>
-                            stop.passengers.some(
-                              (passenger) =>
-                                passenger.userId === session?.user?.id &&
-                                passenger.requestStatus !== "CANCELED" &&
-                                passenger.requestStatus !== "REFUSED"
-                            )
-                          ).id,
-                          passengerId: session.user?.id as string,
-                          requestStatus: "CANCELED",
-                        })
-                      }
-                    >
-                      Cancel booking
-                    </Button>
-                  )}
-                </HStack>
-              ))}
+            {myCommutes.length <= 0 ? (
+              <Text fontWeight="bold" fontSize="sm" color="green.700">
+                You do not have any other commutes that day!
+              </Text>
+            ) : (
+              <>
+                <Text fontWeight="bold" fontSize="sm">
+                  You are already in other commutes (as Driver or Passenger)
+                </Text>
+                {myCommutes
+                  ?.filter((commute) => !commute.isDeleted)
+                  .map((commute) => (
+                    <HStack key={commute.id} justifyContent="space-between">
+                      {commute.createdById === session?.user?.id ? (
+                        <>
+                          <Text>Driver for a commute at {dayjs(commute.date).format(ONLY_TIME)}</Text>
+                          <Button
+                            variant="danger"
+                            onClick={() => {
+                              cancelCommute.mutate({ id: commute.id });
+                            }}
+                          >
+                            Cancel commute
+                          </Button>
+                        </>
+                      ) : (
+                        <>
+                          <Text>Passenger for {commute.createdBy.name}'s commute at {dayjs(commute.date).format(ONLY_TIME)}</Text>
+                          <Button
+                            variant="danger"
+                            onClick={() =>
+                              updateRequestStatus.mutate({
+                                stopId: commute.stops.find((stop) =>
+                                  stop.passengers.some(
+                                    (passenger) =>
+                                      passenger.userId === session?.user?.id &&
+                                      passenger.requestStatus !== "CANCELED" &&
+                                      passenger.requestStatus !== "REFUSED"
+                                  )
+                                ).id,
+                                passengerId: session.user?.id as string,
+                                requestStatus: "CANCELED",
+                              })
+                            }
+                          >
+                            Cancel booking
+                          </Button>
+                        </>
+                      
+                      )}
+                    </HStack>
+                  ))
+                }
+              </>
+            )}
           </Stack>
         </ModalBody>
         <ModalFooter>
           <ButtonGroup justifyContent="space-between" w="full">
-            <Button onClick={onClose}>Cancel</Button>
             <Button
               variant={"primary"}
               onClick={() => {
@@ -103,6 +119,7 @@ export const ConfirmBookingModal = ({
             >
               Book
             </Button>
+            <Button onClick={onClose}>Cancel</Button>
           </ButtonGroup>
         </ModalFooter>
       </ModalContent>

@@ -122,6 +122,7 @@ export const commuteRouter = createTRPCRouter({
               createdById: {
                 equals: ctx.session.user.id,
               },
+              isDeleted: false,
             },
             {
               stops: {
@@ -135,13 +136,6 @@ export const commuteRouter = createTRPCRouter({
                     },
                   },
                 },
-              },
-            },
-          ],
-          AND: [
-            {
-              date: {
-                gte: input?.date,
               },
             },
           ],
@@ -163,8 +157,12 @@ export const commuteRouter = createTRPCRouter({
           createdBy: true,
         },
       });
+      
+      const commutesOnDate = commutes.filter((commute) => 
+        dayjs(input?.date).isSame(dayjs(commute.date), 'day')
+      )
 
-      return commutes;
+      return commutesOnDate;
     }),
   allRequestsForMyCommute: protectedProcedure.query(async ({ ctx }) => {
     const requests = ctx.prisma.passengersOnStops.findMany({
