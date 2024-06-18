@@ -321,14 +321,16 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
                             onClick={() => {
                               if (myCommutesOnDate.data?.length > 0) {
                                 confirmBookingModal.onOpen();
+                              } else {
+                                bookCommute.mutate({ stopId: stop.id })
                               }
-                              //bookCommute.mutate({ stopId: stop.id })
                             }}
                             isLoading={bookCommute.isLoading}
                           >
                             Book
                           </Button>
-                        )}
+                        )
+                      }
                       {confirmBookingModal.isOpen && (
                         <ConfirmBookingModal
                           onClose={confirmBookingModal.onClose}
