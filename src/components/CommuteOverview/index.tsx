@@ -4,7 +4,6 @@ import { api } from "@/utils/api";
 import { getPassengers } from "@/utils/commutes";
 import { NOT_YET_PASSENGER_IF_INSIDE } from "@/utils/passengers";
 import {
-  chakra,
   Accordion,
   AccordionButton,
   AccordionIcon,
@@ -36,8 +35,8 @@ import dayjs from "dayjs";
 import { CheckCircle2, Clock, Navigation, Pencil, Phone } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import { ConfirmModal } from "@/components/ConfirmModal";
 import { ConfirmBookingModal } from "@/components/ConfirmBookingModal";
+import { ConfirmCancelCommuteModal } from "../ConfirmCancelCommuteModal";
 
 export type CommuteOverviewProps = Prisma.CommuteGetPayload<{
   include: {
@@ -69,12 +68,6 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
     onSuccess: async () => {
       await ctx.commute.invalidate();
       await ctx.stop.invalidate();
-    },
-  });
-
-  const cancelCommute = api.commute.cancelCommute.useMutation({
-    onSuccess: async () => {
-      await ctx.commute.invalidate();
     },
   });
 
@@ -393,43 +386,9 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
                     </>
                   )}
                   {isCurrentUserCreator && !props.isDeleted && (
-                    <ConfirmModal
-                      onConfirm={() => {
-                        cancelCommute.mutate({ id: props.id });
-                      }}
-                      confirmVariant="danger"
-                      confirmText="Cancel commute"
-                      cancelText="Keep"
-                      title="You're about to cancel the following commute"
-                      message={
-                        <>
-                          <strong>
-                            {dayjs(props.date).format(FULL_TEXT_DATE_WITH_TIME)}
-                          </strong>{" "}
-                          commute
-                          <br />
-                          with{" "}
-                          <chakra.strong
-                            color={
-                              passengers.length > 0
-                                ? "error.700"
-                                : "success.600"
-                            }
-                          >
-                            {passengers.length ?? ""} passenger
-                            {passengers.length > 1 ? "s" : ""}
-                          </chakra.strong>
-                          .
-                        </>
-                      }
-                    >
-                      <Button
-                        variant="danger"
-                        isLoading={cancelCommute.isLoading}
-                      >
-                        Cancel Commute
-                      </Button>
-                    </ConfirmModal>
+                    <ConfirmCancelCommuteModal
+                      commute={props}
+                    />
                   )}
                   <Spacer />
                   {props.createdBy?.phone && (

@@ -1,5 +1,6 @@
 import { ONLY_TIME } from "@/constants/dates";
 import { api } from "@/utils/api";
+import type { CommuteType } from "@/utils/commutes";
 import type { ModalProps } from "@chakra-ui/react";
 import { ButtonGroup, HStack, ModalFooter } from "@chakra-ui/react";
 import {
@@ -12,38 +13,15 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
-import type { CommuteStatus, DriverStopStatus, Location, PassengersOnStops, User } from "@prisma/client";
+import type { PassengersOnStops } from "@prisma/client";
 import dayjs from "dayjs";
 import { useSession } from "next-auth/react";
+import { ConfirmCancelCommuteModal } from "../ConfirmCancelCommuteModal";
 
-type Stop = {
-    id: string;
-    locationId: string | null;
-    location: Location | null;
-    time: string | null;
-    commuteId: string | null;
-    commuteTemplateId: string | null;
-    passengers: PassengersOnStops[]
-    driverStatus: DriverStopStatus;
-}
 
-type Commute = {
-  id: string;
-  createdAt: Date;
-  updatedAt: Date;
-  isDeleted: boolean | null;
-  createdBy: User | null;
-  createdById: string;
-  date: Date;
-  seats: number;
-  status: CommuteStatus
-  delay: number | null;
-  stops: Stop[];
-  comment: string | null;
-}
 
 type ConfirmBookingModalProps = Omit<ModalProps, "isOpen" | "children"> & {
-  myCommutes: Commute[];
+  myCommutes: CommuteType[];
   onConfirm: () => void;
 };
 
@@ -59,11 +37,6 @@ export const ConfirmBookingModal = ({
     onSuccess: async () => {
       await ctx.commute.invalidate();
       await ctx.stop.invalidate();
-    },
-  });
-  const cancelCommute = api.commute.cancelCommute.useMutation({
-    onSuccess: async () => {
-      await ctx.commute.invalidate();
     },
   });
   return (
@@ -93,14 +66,9 @@ export const ConfirmBookingModal = ({
                       {commute.createdById === session?.user?.id ? (
                         <>
                           <Text>Driver for a commute at {dayjs(commute.date).format(ONLY_TIME)}</Text>
-                          <Button
-                            variant="danger"
-                            onClick={() => {
-                              cancelCommute.mutate({ id: commute.id });
-                            }}
-                          >
-                            Cancel commute
-                          </Button>
+                          <ConfirmCancelCommuteModal
+                            commute={commute}
+                          />
                         </>
                       ) : (
                         <>
@@ -121,6 +89,7 @@ export const ConfirmBookingModal = ({
                                 requestStatus: "CANCELED",
                               })
                             }
+                            isLoading={updateRequestStatus.isLoading}
                           >
                             Cancel booking
                           </Button>
