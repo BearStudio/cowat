@@ -2,7 +2,7 @@ import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { z } from "zod";
 import { slack } from "@/server/slack";
 import dayjs from "dayjs";
-import { RequestStatus } from "@prisma/client";
+import { RequestStatus, Commute } from "@prisma/client";
 import { groupBy } from "remeda";
 import { YEAR_MONTH_DAY } from "@/constants/dates";
 
