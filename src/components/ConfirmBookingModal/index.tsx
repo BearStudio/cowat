@@ -1,6 +1,7 @@
 import { ONLY_TIME } from "@/constants/dates";
 import { api } from "@/utils/api";
-import { ButtonGroup, HStack, ModalFooter, ModalProps } from "@chakra-ui/react";
+import type { ModalProps } from "@chakra-ui/react";
+import { ButtonGroup, HStack, ModalFooter } from "@chakra-ui/react";
 import {
   Button,
   Modal,
@@ -11,13 +12,38 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
-import type { Commute, PassengersOnStops, Prisma } from "@prisma/client";
+import type { CommuteStatus, DriverStopStatus, Location, PassengersOnStops, User } from "@prisma/client";
 import dayjs from "dayjs";
 import { useSession } from "next-auth/react";
 
+type Stop = {
+    id: string;
+    locationId: string | null;
+    location: Location | null;
+    time: string | null;
+    commuteId: string | null;
+    commuteTemplateId: string | null;
+    passengers: PassengersOnStops[]
+    driverStatus: DriverStopStatus;
+}
+
+type Commute = {
+  id: string;
+  createdAt: Date;
+  updatedAt: Date;
+  isDeleted: boolean | null;
+  createdBy: User | null;
+  createdById: string;
+  date: Date;
+  seats: number;
+  status: CommuteStatus
+  delay: number | null;
+  stops: Stop[];
+  comment: string | null;
+}
+
 type ConfirmBookingModalProps = Omit<ModalProps, "isOpen" | "children"> & {
-  commuteId: number;
-  myCommutes: any;
+  myCommutes: Commute[];
   onConfirm: () => void;
 };
 
@@ -78,20 +104,20 @@ export const ConfirmBookingModal = ({
                         </>
                       ) : (
                         <>
-                          <Text>Passenger for {commute.createdBy.name}'s commute at {dayjs(commute.date).format(ONLY_TIME)}</Text>
+                          <Text>Passenger for {commute.createdBy?.name}&apos;s commute at {dayjs(commute.date).format(ONLY_TIME)}</Text>
                           <Button
                             variant="danger"
                             onClick={() =>
                               updateRequestStatus.mutate({
                                 stopId: commute.stops.find((stop) =>
                                   stop.passengers.some(
-                                    (passenger) =>
+                                    (passenger: PassengersOnStops) =>
                                       passenger.userId === session?.user?.id &&
                                       passenger.requestStatus !== "CANCELED" &&
                                       passenger.requestStatus !== "REFUSED"
                                   )
-                                ).id,
-                                passengerId: session.user?.id as string,
+                                )?.id || "",
+                                passengerId: session?.user?.id as string,
                                 requestStatus: "CANCELED",
                               })
                             }
