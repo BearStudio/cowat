@@ -21,7 +21,7 @@ Make a **review request** in #bs-merge-request on slack, by filling in the URL o
 
 1. `git pull` : This is extremely important before rebasing ! Otherwise you risk overwriting all the changes that have been made to your branch by someone else and that you wouldn't have pulled
 2. `git fetch` : To update with remote branches
-3. `git rebase origin/xxx` : Replace xxx with the branch you want your rebase to be based on (often `develop` or `main`)
+3. `git pull origin xxx --rebase` : Replace xxx with the branch you want your rebase to be based on (often `develop` or `main`).
 4. For conflicts that have to be resolved manually : `git rebase --continue` to move on to the next step
 5. If you wish to cancel the rebase completely and return to the initial state of the branch : `git rebase --abort`
 6. `git push --force-with-lease` : Push force is compulsory after a rebase, but with lease lets you know if someone has pushed your branch in-between.
