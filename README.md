@@ -38,6 +38,14 @@ Then, launch the postgres image with:
 
 `docker compose up -d`
 
+If you don't have docker permissions for your user, try:
+
+`sudo usermod -aG docker $USER`
+
+You can check if the container is running with:
+
+`docker ps`
+
 To push the prisma schema to postgres, use:
 
 `pnpm dlx prisma db push`
