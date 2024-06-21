@@ -25,6 +25,23 @@ pnpm install
 6. `pnpm dev`
 7. Open https://localhost:3001 and enjoy HTTPS for localhost
 
+## Connect to local database
+
+To connect to the local database, you should change the following environment variables:
+- `DOCKER_DATABASE_PORT`
+- `DOCKER_DATABASE_NAME`
+- `DOCKER_DATABASE_USERNAME`
+- `DOCKER_DATABASE_PASSWORD`
+- `DOCKER_DATABASE_IP`
+
+Then, launch the postgres image with:
+
+`docker compose up -d`
+
+To push the prisma schema to postgres, use:
+
+`pnpm dlx prisma db push`
+
 ## What's next? How do I make an app with this?
 
 We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
