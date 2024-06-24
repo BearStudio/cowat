@@ -158,13 +158,13 @@ const Day = ({ date, commutes }: DayProps) => {
         );
         return (
           <Fragment key={commute.id}>
-            { commute.createdById === session?.user?.id &&
+            {commute.createdById === session?.user?.id &&
               <Text fontSize="sm" fontWeight="bold" color="gray.500">
                 You are the driver for {acceptedPassengers.length}
                 {acceptedPassengers.length <= 1 ? " person" : " people"}
               </Text> ||
               <Text fontSize="sm" fontWeight="bold" color="gray.500">
-                { isUserInRequest
+                {isUserInRequest
                   ? `Your request on ${commute.createdBy?.name}'s commute is still pending`
                   : `You are ${commute.createdBy?.name}'s passenger`
                 }
