@@ -150,12 +150,8 @@ const Day = ({ date, commutes }: DayProps) => {
       )}
       {myCommutes?.map((commute) => {
         const acceptedPassengers = getAcceptedPassengers(commute.stops);
-        const isUserInRequest = commute.stops.some((stop) =>
-          stop.passengers.some(
-            (passenger) =>
-              passenger.userId === session?.user?.id &&
-              passenger.requestStatus === "REQUESTED"
-          )
+        const isUserAccepted = acceptedPassengers.some(
+          (passenger) => passenger.userId === session?.user?.id
         );
         return (
           <Fragment key={commute.id}>
@@ -167,9 +163,9 @@ const Day = ({ date, commutes }: DayProps) => {
             )}
             {commute.createdById !== session?.user?.id && (
               <Text fontSize="sm" fontWeight="bold" color="gray.500">
-                {isUserInRequest
-                  ? `Your request on ${commute.createdBy?.name}'s commute is still pending`
-                  : `You are ${commute.createdBy?.name}'s passenger`}
+                {isUserAccepted
+                  ? `You are ${commute.createdBy?.name}'s passenger`
+                  : `Your request on ${commute.createdBy?.name}'s commute is still pending`}
               </Text>
             )}
 
