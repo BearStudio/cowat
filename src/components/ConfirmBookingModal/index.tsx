@@ -18,8 +18,6 @@ import dayjs from "dayjs";
 import { useSession } from "next-auth/react";
 import { ConfirmCancelCommuteModal } from "../ConfirmCancelCommuteModal";
 
-
-
 type ConfirmBookingModalProps = Omit<ModalProps, "isOpen" | "children"> & {
   myCommutes: CommuteType[];
   onConfirm: () => void;
@@ -65,26 +63,33 @@ export const ConfirmBookingModal = ({
                     <HStack key={commute.id} justifyContent="space-between">
                       {commute.createdById === session?.user?.id ? (
                         <>
-                          <Text>Driver for a commute at {dayjs(commute.date).format(ONLY_TIME)}</Text>
-                          <ConfirmCancelCommuteModal
-                            commute={commute}
-                          />
+                          <Text>
+                            Driver for a commute at{" "}
+                            {dayjs(commute.date).format(ONLY_TIME)}
+                          </Text>
+                          <ConfirmCancelCommuteModal commute={commute} />
                         </>
                       ) : (
                         <>
-                          <Text>Passenger for {commute.createdBy?.name}&apos;s commute at {dayjs(commute.date).format(ONLY_TIME)}</Text>
+                          <Text>
+                            Passenger for {commute.createdBy?.name}&apos;s
+                            commute at {dayjs(commute.date).format(ONLY_TIME)}
+                          </Text>
                           <Button
                             variant="danger"
                             onClick={() =>
                               updateRequestStatus.mutate({
-                                stopId: commute.stops.find((stop) =>
-                                  stop.passengers.some(
-                                    (passenger: PassengersOnStops) =>
-                                      passenger.userId === session?.user?.id &&
-                                      passenger.requestStatus !== "CANCELED" &&
-                                      passenger.requestStatus !== "REFUSED"
-                                  )
-                                )?.id || "",
+                                stopId:
+                                  commute.stops.find((stop) =>
+                                    stop.passengers.some(
+                                      (passenger: PassengersOnStops) =>
+                                        passenger.userId ===
+                                          session?.user?.id &&
+                                        passenger.requestStatus !==
+                                          "CANCELED" &&
+                                        passenger.requestStatus !== "REFUSED"
+                                    )
+                                  )?.id || "",
                                 passengerId: session?.user?.id as string,
                                 requestStatus: "CANCELED",
                               })
@@ -94,11 +99,9 @@ export const ConfirmBookingModal = ({
                             Cancel booking
                           </Button>
                         </>
-                      
                       )}
                     </HStack>
-                  ))
-                }
+                  ))}
               </>
             )}
           </Stack>

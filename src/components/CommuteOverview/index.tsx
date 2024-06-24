@@ -312,25 +312,31 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
                           <Button
                             variant="primary"
                             onClick={() => {
-                              if (myCommutesOnDate.isSuccess && myCommutesOnDate.data?.length > 0) {
+                              if (
+                                myCommutesOnDate.isSuccess &&
+                                myCommutesOnDate.data?.length > 0
+                              ) {
                                 confirmBookingModal.onOpen();
                               } else {
-                                bookCommute.mutate({ stopId: stop.id })
+                                bookCommute.mutate({ stopId: stop.id });
                               }
                             }}
                             isLoading={bookCommute.isLoading}
                           >
                             Book
                           </Button>
-                        )
-                      }
+                        )}
                       {confirmBookingModal.isOpen && (
                         <ConfirmBookingModal
                           onClose={confirmBookingModal.onClose}
                           onConfirm={() =>
                             bookCommute.mutate({ stopId: stop.id })
                           }
-                          myCommutes={myCommutesOnDate.isSuccess ? myCommutesOnDate.data : []}
+                          myCommutes={
+                            myCommutesOnDate.isSuccess
+                              ? myCommutesOnDate.data
+                              : []
+                          }
                         />
                       )}
                       {isPassenger &&
@@ -386,9 +392,7 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
                     </>
                   )}
                   {isCurrentUserCreator && !props.isDeleted && (
-                    <ConfirmCancelCommuteModal
-                      commute={props}
-                    />
+                    <ConfirmCancelCommuteModal commute={props} />
                   )}
                   <Spacer />
                   {props.createdBy?.phone && (

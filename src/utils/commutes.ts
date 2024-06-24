@@ -1,4 +1,13 @@
-import type { CommuteStatus, DriverStopStatus, Location, PassengersOnStops, User, Stop, RequestStatus, StopStatus } from "@prisma/client";
+import type {
+  CommuteStatus,
+  DriverStopStatus,
+  Location,
+  PassengersOnStops,
+  User,
+  Stop,
+  RequestStatus,
+  StopStatus,
+} from "@prisma/client";
 
 export type PassengersOnStopsType = {
   user: User;
@@ -7,7 +16,7 @@ export type PassengersOnStopsType = {
   requestStatus: RequestStatus;
   stopStatus: StopStatus;
   delay: number | null;
-}
+};
 
 export type StopType = {
   id: string;
@@ -18,22 +27,22 @@ export type StopType = {
   commuteTemplateId: string | null;
   passengers: PassengersOnStopsType[];
   driverStatus: DriverStopStatus;
-}
+};
 
 export type CommuteType = {
-id: string;
-createdAt: Date;
-updatedAt: Date;
-isDeleted: boolean | null;
-createdBy: User | null;
-createdById: string;
-date: Date;
-seats: number;
-status: CommuteStatus
-delay: number | null;
-stops: StopType[];
-comment: string | null;
-}
+  id: string;
+  createdAt: Date;
+  updatedAt: Date;
+  isDeleted: boolean | null;
+  createdBy: User | null;
+  createdById: string;
+  date: Date;
+  seats: number;
+  status: CommuteStatus;
+  delay: number | null;
+  stops: StopType[];
+  comment: string | null;
+};
 
 /**
  * Get all the passengers of the given stops, wihtout the canceled ones.

@@ -157,10 +157,10 @@ export const commuteRouter = createTRPCRouter({
           createdBy: true,
         },
       });
-      
-      const commutesOnDate = commutes.filter((commute) => 
-        dayjs(input?.date).isSame(dayjs(commute.date), 'day')
-      )
+
+      const commutesOnDate = commutes.filter((commute) =>
+        dayjs(input?.date).isSame(dayjs(commute.date), "day")
+      );
 
       return commutesOnDate;
     }),
