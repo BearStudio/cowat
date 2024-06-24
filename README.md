@@ -27,12 +27,22 @@ pnpm install
 
 ## Connect to local database
 
+### Connection
+
 To connect to the local database, you should change the following environment variables:
-- `DOCKER_DATABASE_PORT`
-- `DOCKER_DATABASE_NAME`
-- `DOCKER_DATABASE_USERNAME`
-- `DOCKER_DATABASE_PASSWORD`
-- `DOCKER_DATABASE_IP`
+- `DOCKER_DATABASE_PORT` : postgres docker port.
+- `DOCKER_DATABASE_NAME` : name of the postgres db.
+- `DOCKER_DATABASE_USERNAME` : username to connect to the postgres db.
+- `DOCKER_DATABASE_PASSWORD` : password to connect to the postgres db.
+- `DOCKER_DATABASE_IP` : local IP address of the host.
+
+**If you're creating your own database** (following instructions in the next section), you can choose all variables as they will be used both to create the docker container and to connect to it.
+
+**If you're connecting to someone else database**, write down the same variables as the host.
+
+### Creation
+
+If you want to use your own local database, you should first write down the environment variables (cf. **Connection** section)
 
 Then, launch the postgres image with:
 
