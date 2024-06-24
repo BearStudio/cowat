@@ -44,21 +44,18 @@ To connect to the local database, you should change the following environment va
 
 If you want to use your own local database, you should first write down the environment variables (cf. **Connection** section)
 
+**Prerequisites**:
+- [Docker](https://docs.docker.com/engine/install/) (feel free to [check out the first steps with docker](https://docs.docker.com/engine/install/linux-postinstall/) if it's your first time or if you have any probelms)
+
 Then, launch the postgres image with:
+```
+# if it's your first time you'll have to initialize it with
+pnpm dk:init
+# else you can just use
+pnpm dk:start
+```
 
-`docker compose up -d`
-
-If you don't have docker permissions for your user, try:
-
-`sudo usermod -aG docker $USER`
-
-You can check if the container is running with:
-
-`docker ps`
-
-To push the prisma schema to postgres, use:
-
-`pnpm dlx prisma db push`
+(you can check quickly if the container is running with: `docker ps`)
 
 ## What's next? How do I make an app with this?
 
