@@ -1,4 +1,3 @@
-
 import { ConfirmModal } from "@/components/ConfirmModal";
 import { FULL_TEXT_DATE_WITH_TIME } from "@/constants/dates";
 import { api } from "@/utils/api";
@@ -13,7 +12,7 @@ type ConfirmCancelCommuteModalProps = {
 };
 
 export const ConfirmCancelCommuteModal = ({
-    commute,
+  commute,
 }: ConfirmCancelCommuteModalProps) => {
   const ctx = api.useContext();
   const cancelCommute = api.commute.cancelCommute.useMutation({
@@ -22,7 +21,7 @@ export const ConfirmCancelCommuteModal = ({
     },
   });
   const passengers = getPassengers(commute.stops);
-  return(
+  return (
     <ConfirmModal
       onConfirm={() => {
         cancelCommute.mutate({ id: commute.id });
@@ -40,11 +39,7 @@ export const ConfirmCancelCommuteModal = ({
           <br />
           with{" "}
           <chakra.strong
-            color={
-              passengers.length > 0
-                ? "error.700"
-                : "success.600"
-            }
+            color={passengers.length > 0 ? "error.700" : "success.600"}
           >
             {passengers.length ?? ""} passenger
             {passengers.length > 1 ? "s" : ""}
@@ -53,12 +48,9 @@ export const ConfirmCancelCommuteModal = ({
         </>
       }
     >
-      <Button
-        variant="danger"
-        isLoading={cancelCommute.isLoading}
-      >
+      <Button variant="danger" isLoading={cancelCommute.isLoading}>
         Cancel commute
       </Button>
     </ConfirmModal>
   );
-}
+};
