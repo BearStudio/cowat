@@ -5,6 +5,7 @@ import { FULL_TEXT_DATE, YEAR_MONTH_DAY } from "@/constants/dates";
 import { LayoutAuthenticated } from "@/layout/LayoutAuthenticated";
 import type { RouterOutputs } from "@/utils/api";
 import { api } from "@/utils/api";
+import { getAcceptedPassengers } from "@/utils/commutes";
 import type { ModalProps } from "@chakra-ui/react";
 import { useDisclosure } from "@chakra-ui/react";
 import {
@@ -148,11 +149,7 @@ const Day = ({ date, commutes }: DayProps) => {
         </EmptyState>
       )}
       {myCommutes?.map((commute) => {
-        const acceptedPassengers = commute.stops.flatMap((stop) =>
-          stop.passengers.filter(
-            (passenger) => passenger.requestStatus === "ACCEPTED"
-          )
-        );
+        const acceptedPassengers = getAcceptedPassengers(commute.stops);
         const isUserInRequest = commute.stops.some((stop) =>
           stop.passengers.some((passenger) =>
             passenger.userId === session?.user?.id &&
@@ -161,16 +158,18 @@ const Day = ({ date, commutes }: DayProps) => {
         );
         return (
           <Fragment key={commute.id}>
-            <Text fontSize="sm" fontWeight="bold" color="gray.500">
-              {commute.createdById === session?.user?.id
-                ? `You are the driver for 
-              ${acceptedPassengers.length} ${
-                acceptedPassengers.length <= 1 ? "person" : "people"
-                  } `
-                : isUserInRequest
-                ? `Your request on ${commute.createdBy?.name}'s commute is still pending`
-                : `You are ${commute.createdBy?.name}'s passenger`}
-            </Text>
+            { commute.createdById === session?.user?.id &&
+              <Text fontSize="sm" fontWeight="bold" color="gray.500">
+                You are the driver for {acceptedPassengers.length}
+                {acceptedPassengers.length <= 1 ? " person" : " people"}
+              </Text> ||
+              <Text fontSize="sm" fontWeight="bold" color="gray.500">
+                { isUserInRequest
+                  ? `Your request on ${commute.createdBy?.name}'s commute is still pending`
+                  : `You are ${commute.createdBy?.name}'s passenger`
+                }
+              </Text>
+            }
 
             <CommuteOverview {...commute} />
             {date === dayjs().format(YEAR_MONTH_DAY) && (
