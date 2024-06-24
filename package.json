@@ -12,6 +12,11 @@
     "ssl:generate": "mkcert localhost",
     "ssl:proxy": "npx local-ssl-proxy --key localhost-key.pem --cert localhost.pem --source 3001 --target 3000",
     "theme:generate-typing": "chakra-cli tokens ./src/theme/theme.ts",
+    "dk:init": "docker compose up -d && sleep 10 && pnpm db:init",
+    "dk:start": "docker compose start",
+    "dk:stop": "docker compose stop",
+    "dk:clear": "docker compose down --volumes",
+    "db:init": "pnpm db:push",
     "db:push": "prisma db push",
     "db:ui": "prisma studio",
     "db:seed": "prisma db seed"

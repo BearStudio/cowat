@@ -1,7 +1,5 @@
-version: '3'
-
 services:
-  postgress:
+  postgres:
     image: postgres:latest
     volumes:
       - ./postgres:/var/lib/postgresql/data
