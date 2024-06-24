@@ -151,25 +151,27 @@ const Day = ({ date, commutes }: DayProps) => {
       {myCommutes?.map((commute) => {
         const acceptedPassengers = getAcceptedPassengers(commute.stops);
         const isUserInRequest = commute.stops.some((stop) =>
-          stop.passengers.some((passenger) =>
-            passenger.userId === session?.user?.id &&
-            passenger.requestStatus === "REQUESTED"
+          stop.passengers.some(
+            (passenger) =>
+              passenger.userId === session?.user?.id &&
+              passenger.requestStatus === "REQUESTED"
           )
         );
         return (
           <Fragment key={commute.id}>
-            {commute.createdById === session?.user?.id &&
+            {commute.createdById === session?.user?.id && (
               <Text fontSize="sm" fontWeight="bold" color="gray.500">
                 You are the driver for {acceptedPassengers.length}
                 {acceptedPassengers.length <= 1 ? " person" : " people"}
-              </Text> ||
+              </Text>
+            )}
+            {commute.createdById !== session?.user?.id && (
               <Text fontSize="sm" fontWeight="bold" color="gray.500">
                 {isUserInRequest
                   ? `Your request on ${commute.createdBy?.name}'s commute is still pending`
-                  : `You are ${commute.createdBy?.name}'s passenger`
-                }
+                  : `You are ${commute.createdBy?.name}'s passenger`}
               </Text>
-            }
+            )}
 
             <CommuteOverview {...commute} />
             {date === dayjs().format(YEAR_MONTH_DAY) && (
