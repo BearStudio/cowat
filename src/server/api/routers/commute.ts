@@ -125,6 +125,7 @@ export const commuteRouter = createTRPCRouter({
                 gte: targetDate,
                 lt: nextDay,
               },
+              isDeleted: false,
             },
             {
               OR: [
@@ -132,7 +133,6 @@ export const commuteRouter = createTRPCRouter({
                   createdById: {
                     equals: ctx.session.user.id,
                   },
-                  isDeleted: false,
                 },
                 {
                   stops: {
