@@ -36,7 +36,7 @@ import { CheckCircle2, Clock, Navigation, Pencil, Phone } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { ConfirmBookingModal } from "@/components/ConfirmBookingModal";
-import { ConfirmCancelCommuteModal } from "../ConfirmCancelCommuteModal";
+import { ConfirmCancelCommuteModal } from "@/components/ConfirmCancelCommuteModal";
 
 export type CommuteOverviewProps = Prisma.CommuteGetPayload<{
   include: {
@@ -99,11 +99,22 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
     );
   };
   const myCommutesOnDate = api.commute.allMyCommutesOnDate.useQuery({
-    date: props.date.toISOString(),
+    date: props.date,
   });
 
   const passengers = getPassengers(props.stops);
   const isFull = passengers.length === props.seats;
+
+  const handleBookClick = (stopId: string) => {
+    if (
+      myCommutesOnDate.isSuccess &&
+      myCommutesOnDate.data?.length > 0
+    ) {
+      confirmBookingModal.onOpen();
+    } else {
+      bookCommute.mutate({ stopId });
+    }
+  }
 
   const commuteColor = (() => {
     if (props.isDeleted) {
@@ -311,16 +322,7 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
                         dayjs().isBefore(dayjs(props.date)) && (
                           <Button
                             variant="primary"
-                            onClick={() => {
-                              if (
-                                myCommutesOnDate.isSuccess &&
-                                myCommutesOnDate.data?.length > 0
-                              ) {
-                                confirmBookingModal.onOpen();
-                              } else {
-                                bookCommute.mutate({ stopId: stop.id });
-                              }
-                            }}
+                            onClick={() => handleBookClick(stop.id)}
                             isLoading={bookCommute.isLoading}
                           >
                             Book
