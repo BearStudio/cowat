@@ -74,6 +74,7 @@ const Driver = () => {
       }
     );
   };
+  const timeZone = window.localStorage.getItem("timezone");
 
   return (
     <LayoutAuthenticated
@@ -115,9 +116,13 @@ const Driver = () => {
             <CardHeader p="2">
               <Flex justify="space-between" align="center">
                 <Text fontWeight="bold" fontSize="sm">
-                  Departure at {dayjs(commute.data?.date).format("HH:mm A")}
+                  Departure at
+                  {timeZone !== null
+                    ? ` ${dayjs
+                        .tz(commute.data?.date, timeZone)
+                        .format("HH:mm A")}`
+                    : ` ${dayjs(commute.data?.date).format("HH:mm A")}`}
                 </Text>
-
                 <Button
                   onClick={() => modal.onOpen()}
                   size="sm"
@@ -172,89 +177,107 @@ const Driver = () => {
               </CardFooter>
             )}
           </Card>
-          {commute.data?.stops.map((stop) => (
-            <Card key={stop.id}>
-              <CardHeader p="2">
-                <Stack>
-                  <Text fontWeight="bold" fontSize="sm">
-                    📍{stop.location?.name} {!!stop.time && `at ${stop.time}`}
-                  </Text>
-                  <Text
-                    fontSize="xs"
-                    color="gray.600"
-                    _dark={{ color: "gray.300" }}
-                  >
-                    {stop.location?.address}
-                  </Text>
-                </Stack>
-              </CardHeader>
-              <Divider color="gray.200" _dark={{ color: "gray.700" }} />
-              {havePassengerOnStop(stop) && (
-                <CardBody p="2">
+          {commute.data?.stops.map((stop) => {
+            const stopDay = dayjs(commute.data?.date).format("YYYY-MM-DD");
+            const stopDate = dayjs(`${stopDay} ${stop.time}`);
+            return (
+              <Card key={stop.id}>
+                <CardHeader p="2">
                   <Stack>
-                    {getPassengers([stop]).map((passenger) => (
-                      <Flex
-                        key={passenger.userId}
-                        justify="space-between"
-                        align="center"
-                      >
-                        <HStack>
-                          <Avatar
-                            size="sm"
-                            src={passenger.user.image ?? ""}
-                            name={
-                              passenger.user.name ?? passenger.user.email ?? ""
-                            }
-                            opacity={
-                              NOT_YET_PASSENGER_IF_INSIDE.includes(
-                                passenger.requestStatus
-                              )
-                                ? 0.6
-                                : 1
-                            }
-                          />
-                          <Text fontSize="sm" fontWeight="medium">
-                            {passenger.user.name ?? passenger.user.email}
-                          </Text>
-                        </HStack>
-                        <Tag
-                          colorScheme={
-                            PASSENGER_STATUS[passenger.stopStatus].colorScheme
-                          }
-                        >
-                          {PASSENGER_STATUS[passenger.stopStatus].text}{" "}
-                          {passenger.delay} {!!passenger.delay && " minutes"}
-                          <Icon
-                            ml="2"
-                            icon={PASSENGER_STATUS[passenger.stopStatus].icon}
-                          />
-                        </Tag>
-                      </Flex>
-                    ))}
-                  </Stack>
-                </CardBody>
-              )}
-              <Divider color="gray.200" _dark={{ color: "gray.700" }} />
+                    {!!stop.time && ( // If there is a time defined for this stop
+                      <Text fontWeight="bold" fontSize="sm">
+                        📍{stop.location?.name} at
+                        {timeZone !== null
+                          ? ` ${dayjs.tz(stopDate, timeZone).format("HH:mm A")}`
+                          : ` ${stopDate.format("HH:mm A")}`}
+                      </Text>
+                    )}
 
-              <CardFooter p="2">
-                <Button
-                  variant="primary"
-                  size="sm"
-                  w="full"
-                  isDisabled={
-                    commute.data.status === "UNKNOWN" ||
-                    stop.driverStatus === "HERE"
-                  }
-                  onClick={() => hereOnStop.mutate({ id: stop.id })}
-                  isLoading={hereOnStop.isLoading}
-                >
-                  {stop.driverStatus === "UNKNOWN"
-                    ? "I'm here"
-                    : "You are here"}
-                </Button>
-              </CardFooter>
-            </Card>
-          ))}
+                    {!stop.time && ( // Else if there isn't any time defined for this stop
+                      <Text fontWeight="bold" fontSize="sm">
+                        📍{stop.location?.name}
+                      </Text>
+                    )}
+
+                    <Text
+                      fontSize="xs"
+                      color="gray.600"
+                      _dark={{ color: "gray.300" }}
+                    >
+                      {stop.location?.address}
+                    </Text>
+                  </Stack>
+                </CardHeader>
+                <Divider color="gray.200" _dark={{ color: "gray.700" }} />
+                {havePassengerOnStop(stop) && (
+                  <CardBody p="2">
+                    <Stack>
+                      {getPassengers([stop]).map((passenger) => (
+                        <Flex
+                          key={passenger.userId}
+                          justify="space-between"
+                          align="center"
+                        >
+                          <HStack>
+                            <Avatar
+                              size="sm"
+                              src={passenger.user.image ?? ""}
+                              name={
+                                passenger.user.name ??
+                                passenger.user.email ??
+                                ""
+                              }
+                              opacity={
+                                NOT_YET_PASSENGER_IF_INSIDE.includes(
+                                  passenger.requestStatus
+                                )
+                                  ? 0.6
+                                  : 1
+                              }
+                            />
+                            <Text fontSize="sm" fontWeight="medium">
+                              {passenger.user.name ?? passenger.user.email}
+                            </Text>
+                          </HStack>
+                          <Tag
+                            colorScheme={
+                              PASSENGER_STATUS[passenger.stopStatus].colorScheme
+                            }
+                          >
+                            {PASSENGER_STATUS[passenger.stopStatus].text}{" "}
+                            {passenger.delay} {!!passenger.delay && " minutes"}
+                            <Icon
+                              ml="2"
+                              icon={PASSENGER_STATUS[passenger.stopStatus].icon}
+                            />
+                          </Tag>
+                        </Flex>
+                      ))}
+                    </Stack>
+                  </CardBody>
+                )}
+                <Divider color="gray.200" _dark={{ color: "gray.700" }} />
+
+                <CardFooter p="2">
+                  <Button
+                    variant="primary"
+                    size="sm"
+                    w="full"
+                    isDisabled={
+                      commute.data.status === "UNKNOWN" ||
+                      stop.driverStatus === "HERE"
+                    }
+                    onClick={() => hereOnStop.mutate({ id: stop.id })}
+                    isLoading={hereOnStop.isLoading}
+                  >
+                    {stop.driverStatus === "UNKNOWN"
+                      ? "I'm here"
+                      : "You are here"}
+                  </Button>
+                </CardFooter>
+              </Card>
+            );
+          })}
         </Stack>
       )}
     </LayoutAuthenticated>

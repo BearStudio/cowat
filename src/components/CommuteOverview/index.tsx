@@ -124,6 +124,7 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
 
     return { light: "gray.300", dark: "gray.500" } as const;
   })();
+  const timeZone = window.localStorage.getItem("timezone");
 
   return (
     <Card
@@ -162,8 +163,12 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
             />
             <Stack spacing={0}>
               <HStack>
-                <Text fontSize="sm" fontWeight="bold">
-                  {dayjs(props.date).format(FULL_TEXT_DATE_WITH_TIME)}
+                <Text fontWeight="bold" fontSize="sm">
+                  {timeZone !== null
+                    ? ` ${dayjs
+                        .tz(props.date, timeZone)
+                        .format(FULL_TEXT_DATE_WITH_TIME)}`
+                    : ` ${dayjs(props.date).format(FULL_TEXT_DATE_WITH_TIME)}`}
                 </Text>
               </HStack>
               <Text fontSize="sm">
