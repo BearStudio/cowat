@@ -4,7 +4,6 @@ import type { CommuteType } from "@/utils/commutes";
 import type { ModalProps } from "@chakra-ui/react";
 import {
   Button,
-  ButtonGroup,
   HStack,
   Modal,
   ModalBody,
@@ -15,7 +14,7 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
-import type { Commute, PassengersOnStops } from "@prisma/client";
+import type { PassengersOnStops } from "@prisma/client";
 import dayjs from "dayjs";
 import { useSession } from "next-auth/react";
 import { ConfirmCancelCommuteModal } from "@/components/ConfirmCancelCommuteModal";
@@ -42,16 +41,17 @@ export const ConfirmBookingModal = ({
   });
 
   const handleCancelClick = (commute: CommuteType) => {
+    const stopToCancelId = commute.stops.find((stop) =>
+      stop.passengers.some(
+        (passenger: PassengersOnStops) =>
+          passenger.userId === session?.user?.id &&
+          passenger.requestStatus !== "CANCELED" &&
+          passenger.requestStatus !== "REFUSED"
+      )
+    )?.id;
+
     updateRequestStatus.mutate({
-      stopId:
-        commute.stops.find((stop) =>
-          stop.passengers.some(
-            (passenger: PassengersOnStops) =>
-              passenger.userId === session?.user?.id &&
-              passenger.requestStatus !== "CANCELED" &&
-              passenger.requestStatus !== "REFUSED"
-          )
-        )?.id || "",
+      stopId: stopToCancelId || "",
       passengerId: session?.user?.id || "",
       requestStatus: "CANCELED",
     });
@@ -110,19 +110,17 @@ export const ConfirmBookingModal = ({
             )}
           </Stack>
         </ModalBody>
-        <ModalFooter>
-          <ButtonGroup justifyContent="space-between" w="full">
-            <Button
-              variant={"primary"}
-              onClick={() => {
-                onConfirm();
-                onClose();
-              }}
-            >
-              Book
-            </Button>
-            <Button onClick={onClose}>Cancel</Button>
-          </ButtonGroup>
+        <ModalFooter justifyContent="space-between" w="full">
+          <Button
+            variant={"primary"}
+            onClick={() => {
+              onConfirm();
+              onClose();
+            }}
+          >
+            Book
+          </Button>
+          <Button onClick={onClose}>Cancel</Button>
         </ModalFooter>
       </ModalContent>
     </Modal>

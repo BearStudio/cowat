@@ -3,8 +3,7 @@ import { FULL_TEXT_DATE_WITH_TIME } from "@/constants/dates";
 import { api } from "@/utils/api";
 import type { CommuteType } from "@/utils/commutes";
 import { getPassengers } from "@/utils/commutes";
-import { Button } from "@chakra-ui/react";
-import { chakra } from "@chakra-ui/react";
+import { Button, chakra } from "@chakra-ui/react";
 import dayjs from "dayjs";
 
 type ConfirmCancelCommuteModalProps = {
