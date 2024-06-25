@@ -113,30 +113,42 @@ export const commuteRouter = createTRPCRouter({
     return commutes;
   }),
   allMyCommutesOnDate: protectedProcedure
-    .input(z.object({ date: z.string() }))
+    .input(z.object({ date: z.date() }))
     .query(async ({ ctx, input }) => {
+      const targetDate = dayjs(input?.date).startOf("day").toDate();
+      const nextDay = dayjs(targetDate).add(1, "day").toDate();
       const commutes = await ctx.prisma.commute.findMany({
         where: {
-          OR: [
+          AND: [
             {
-              createdById: {
-                equals: ctx.session.user.id,
+              date: {
+                gte: targetDate,
+                lt: nextDay,
               },
-              isDeleted: false,
             },
             {
-              stops: {
-                some: {
-                  passengers: {
+              OR: [
+                {
+                  createdById: {
+                    equals: ctx.session.user.id,
+                  },
+                  isDeleted: false,
+                },
+                {
+                  stops: {
                     some: {
-                      userId: ctx.session.user.id,
-                      requestStatus: {
-                        notIn: ["CANCELED", "REFUSED"],
+                      passengers: {
+                        some: {
+                          userId: ctx.session.user.id,
+                          requestStatus: {
+                            notIn: ["CANCELED", "REFUSED"],
+                          },
+                        },
                       },
                     },
                   },
                 },
-              },
+              ],
             },
           ],
         },
@@ -158,11 +170,7 @@ export const commuteRouter = createTRPCRouter({
         },
       });
 
-      const commutesOnDate = commutes.filter((commute) =>
-        dayjs(input?.date).isSame(dayjs(commute.date), "day")
-      );
-
-      return commutesOnDate;
+      return commutes;
     }),
   allRequestsForMyCommute: protectedProcedure.query(async ({ ctx }) => {
     const requests = ctx.prisma.passengersOnStops.findMany({
