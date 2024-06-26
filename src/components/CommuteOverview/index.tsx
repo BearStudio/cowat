@@ -272,13 +272,31 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
                     (passenger) =>
                       !["CANCELED", "REFUSED"].includes(passenger.requestStatus)
                   );
+
+                  const stopDay = dayjs(props.date).format("YYYY-MM-DD");
+                  const stopDate = dayjs(`${stopDay} ${stop.time}`);
+
                   return (
                     <HStack key={stop.id}>
                       <Stack spacing={0} flex={1}>
-                        <Text fontSize="sm" fontWeight="bold">
-                          📍 {!!stop.time && `${stop.time} · `}
-                          {stop?.location?.name}{" "}
-                        </Text>
+                        {!!stop.time && ( // If there is a time defined for this stop
+                          <Text fontWeight="bold" fontSize="sm">
+                            📍
+                            {timeZone !== null
+                              ? ` ${dayjs
+                                  .tz(stopDate, timeZone)
+                                  .format("HH:mm")}`
+                              : ` ${stopDate.format("HH:mm")}`}
+                            {" · "}
+                            {stop.location?.name}
+                          </Text>
+                        )}
+
+                        {!stop.time && ( // Else if there isn't any time defined for this stop
+                          <Text fontWeight="bold" fontSize="sm">
+                            📍{stop.location?.name}
+                          </Text>
+                        )}
                         <Tooltip label={stop?.location?.address}>
                           <Text
                             fontSize="sm"

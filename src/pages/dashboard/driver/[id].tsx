@@ -188,8 +188,8 @@ const Driver = () => {
                       <Text fontWeight="bold" fontSize="sm">
                         📍{stop.location?.name} at
                         {timeZone !== null
-                          ? ` ${dayjs.tz(stopDate, timeZone).format("HH:mm A")}`
-                          : ` ${stopDate.format("HH:mm A")}`}
+                          ? ` ${dayjs.tz(stopDate, timeZone).format("HH:mm")}`
+                          : ` ${stopDate.format("HH:mm")}`}
                       </Text>
                     )}
 
