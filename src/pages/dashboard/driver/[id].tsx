@@ -184,21 +184,16 @@ const Driver = () => {
               <Card key={stop.id}>
                 <CardHeader p="2">
                   <Stack>
-                    {!!stop.time && ( // If there is a time defined for this stop
-                      <Text fontWeight="bold" fontSize="sm">
-                        📍{stop.location?.name} at
-                        {timeZone !== null
-                          ? ` ${dayjs.tz(stopDate, timeZone).format("HH:mm")}`
-                          : ` ${stopDate.format("HH:mm")}`}
-                      </Text>
-                    )}
-
-                    {!stop.time && ( // Else if there isn't any time defined for this stop
-                      <Text fontWeight="bold" fontSize="sm">
-                        📍{stop.location?.name}
-                      </Text>
-                    )}
-
+                    <Text fontWeight="bold" fontSize="sm">
+                      📍 {stop.location?.name} at
+                      {!!stop.time && (
+                        <>
+                          {timeZone !== null
+                            ? ` ${dayjs.tz(stopDate, timeZone).format("HH:mm")}`
+                            : ` ${stopDate.format("HH:mm")}`}
+                        </>
+                      )}
+                    </Text>
                     <Text
                       fontSize="xs"
                       color="gray.600"

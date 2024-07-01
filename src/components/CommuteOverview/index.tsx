@@ -295,24 +295,20 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
                   return (
                     <HStack key={stop.id}>
                       <Stack spacing={0} flex={1}>
-                        {!!stop.time && ( // If there is a time defined for this stop
-                          <Text fontWeight="bold" fontSize="sm">
-                            📍
-                            {timeZone !== null
-                              ? ` ${dayjs
-                                  .tz(stopDate, timeZone)
-                                  .format("HH:mm")}`
-                              : ` ${stopDate.format("HH:mm")}`}
-                            {" · "}
-                            {stop.location?.name}
-                          </Text>
-                        )}
-
-                        {!stop.time && ( // Else if there isn't any time defined for this stop
-                          <Text fontWeight="bold" fontSize="sm">
-                            📍{stop.location?.name}
-                          </Text>
-                        )}
+                        <Text fontWeight="bold" fontSize="sm">
+                          📍
+                          {!!stop.time && (
+                            <>
+                              {timeZone !== null
+                                ? ` ${dayjs
+                                    .tz(stopDate, timeZone)
+                                    .format("HH:mm")}`
+                                : ` ${stopDate.format("HH:mm")}`}
+                              {" · "}
+                            </>
+                          )}
+                          {stop.location?.name}
+                        </Text>
                         <Tooltip label={stop?.location?.address}>
                           <Text
                             fontSize="sm"

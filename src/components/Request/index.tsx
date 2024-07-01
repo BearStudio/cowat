@@ -69,21 +69,18 @@ export const Request = ({ request }: RequestProps) => {
                   commute
                 </>
               </Text>
-
-              {!!request.stop.time && ( // If there is a time defined for this stop
-                <Text fontSize="xs">
-                  📍
-                  {timeZone !== null
-                    ? ` ${dayjs.tz(stopDate, timeZone).format("HH:mm")}`
-                    : ` ${stopDate.format("HH:mm")}`}
-                  {" · "}
-                  {request.stop.location?.name}
-                </Text>
-              )}
-
-              {!request.stop.time && ( // Else if there isn't any time defined for this stop
-                <Text fontSize="xs">📍{request.stop.location?.name}</Text>
-              )}
+              <Text fontSize="xs">
+                📍
+                {!!request.stop.time && (
+                  <>
+                    {timeZone !== null
+                      ? ` ${dayjs.tz(stopDate, timeZone).format("HH:mm")}`
+                      : ` ${stopDate.format("HH:mm")}`}
+                    {" · "}
+                  </>
+                )}
+                {request.stop.location?.name}
+              </Text>
             </Stack>
             <Avatar
               src={request.user.image ?? ""}
