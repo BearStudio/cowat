@@ -74,6 +74,7 @@ const Passenger = () => {
     );
   };
 
+  const timeZone = window.localStorage.getItem("timezone");
   return (
     <LayoutAuthenticated
       hideNav
@@ -112,7 +113,11 @@ const Passenger = () => {
               <Flex justify="space-between" align="center">
                 <Text fontWeight="bold" fontSize="sm">
                   {commute.data.createdBy?.name}&apos;s departure at{" "}
-                  {dayjs(commute.data?.date).format("HH:mm A")}
+                  {timeZone !== null
+                    ? ` ${dayjs
+                        .tz(commute.data?.date, timeZone)
+                        .format("HH:mm A")}`
+                    : ` ${dayjs(commute.data?.date).format("HH:mm A")}`}
                 </Text>
               </Flex>
             </CardHeader>
@@ -160,122 +165,136 @@ const Passenger = () => {
             </CardBody>
             <Divider color="gray.200" _dark={{ color: "gray.700" }} />
           </Card>
-          {commute.data?.stops.map((stop) => (
-            <Card key={stop.id}>
-              <CardHeader p="2">
-                <Stack divider={<StackDivider />}>
-                  <Flex justify="space-between">
-                    <Stack>
-                      <Text fontWeight="bold" fontSize="sm">
-                        📍{stop.location?.name}{" "}
-                        {!!stop.time && `at ${stop.time}`}
-                      </Text>
-                      <Text
-                        fontSize="xs"
-                        color="gray.600"
-                        _dark={{ color: "gray.300" }}
-                      >
-                        {stop.location?.address}
-                      </Text>
-                    </Stack>
-                    {!!stop.passengers.find(
-                      (passenger) => passenger.userId === session?.user?.id
-                    ) && (
-                      <>
-                        <Button
-                          onClick={() => modal.onOpen()}
-                          size="sm"
-                          variant="danger"
-                          leftIcon={<Icon icon={Clock} />}
+          {commute.data?.stops.map((stop) => {
+            const stopDay = dayjs(commute.data?.date).format("YYYY-MM-DD");
+            const stopDate = dayjs(`${stopDay} ${stop.time}`);
+            return (
+              <Card key={stop.id}>
+                <CardHeader p="2">
+                  <Stack divider={<StackDivider />}>
+                    <Flex justify="space-between">
+                      <Stack>
+                        <Text fontWeight="bold" fontSize="sm">
+                          📍 {stop.location?.name} at
+                          {!!stop.time && (
+                            <>
+                              {timeZone !== null
+                                ? ` ${dayjs
+                                    .tz(stopDate, timeZone)
+                                    .format("HH:mm")}`
+                                : ` ${stopDate.format("HH:mm")}`}
+                            </>
+                          )}
+                        </Text>
+                        <Text
+                          fontSize="xs"
+                          color="gray.600"
+                          _dark={{ color: "gray.300" }}
                         >
-                          I&apos;m late
-                        </Button>
-
-                        {modal.isOpen && (
-                          <LateModal
-                            onClick={(delay) =>
-                              handleOnLateModalClick(delay, stop.id)
-                            }
-                            onClose={modal.onClose}
-                          />
-                        )}
-                      </>
-                    )}
-                  </Flex>
-                  {stop.driverStatus === DriverStopStatus.HERE && (
-                    <Text color="green.700" fontSize="xs" fontWeight="medium">
-                      {commute.data.createdBy?.name} checked this stop
-                      <Icon icon={FiCheckCircle} ml="2" />
-                    </Text>
-                  )}
-                </Stack>
-              </CardHeader>
-              <Divider color="gray.200" _dark={{ color: "gray.700" }} />
-              {havePassengerOnStop(stop) && (
-                <CardBody p="2">
-                  <Stack>
-                    {getPassengers([stop]).map((passenger) => (
-                      <Flex
-                        key={passenger.userId}
-                        justify="space-between"
-                        align="center"
-                      >
-                        <HStack>
-                          <Avatar
+                          {stop.location?.address}
+                        </Text>
+                      </Stack>
+                      {!!stop.passengers.find(
+                        (passenger) => passenger.userId === session?.user?.id
+                      ) && (
+                        <>
+                          <Button
+                            onClick={() => modal.onOpen()}
                             size="sm"
-                            src={passenger.user.image ?? ""}
-                            name={
-                              passenger.user.name ?? passenger.user.email ?? ""
-                            }
-                            opacity={
-                              NOT_YET_PASSENGER_IF_INSIDE.includes(
-                                passenger.requestStatus
-                              )
-                                ? 0.6
-                                : 1
-                            }
-                          />
-                          <Text fontSize="sm" fontWeight="medium">
-                            {passenger.user.name ?? passenger.user.email}
-                          </Text>
-                        </HStack>
-                        <Tag
-                          colorScheme={
-                            PASSENGER_STATUS[passenger.stopStatus].colorScheme
-                          }
-                        >
-                          {PASSENGER_STATUS[passenger.stopStatus].text}{" "}
-                          {passenger.delay} {!!passenger.delay && " minutes"}
-                          <Icon
-                            ml="2"
-                            icon={PASSENGER_STATUS[passenger.stopStatus].icon}
-                          />
-                        </Tag>
-                      </Flex>
-                    ))}
+                            variant="danger"
+                            leftIcon={<Icon icon={Clock} />}
+                          >
+                            I&apos;m late
+                          </Button>
+
+                          {modal.isOpen && (
+                            <LateModal
+                              onClick={(delay) =>
+                                handleOnLateModalClick(delay, stop.id)
+                              }
+                              onClose={modal.onClose}
+                            />
+                          )}
+                        </>
+                      )}
+                    </Flex>
+                    {stop.driverStatus === DriverStopStatus.HERE && (
+                      <Text color="green.700" fontSize="xs" fontWeight="medium">
+                        {commute.data.createdBy?.name} checked this stop
+                        <Icon icon={FiCheckCircle} ml="2" />
+                      </Text>
+                    )}
                   </Stack>
-                </CardBody>
-              )}
-              <Divider color="gray.200" _dark={{ color: "gray.700" }} />
-              {stop.passengers.some(
-                (passenger) =>
-                  passenger.userId === session?.user?.id &&
-                  passenger.stopStatus !== "ON_TIME"
-              ) && (
-                <CardFooter p="2">
-                  <Button
-                    variant="primary"
-                    size="sm"
-                    w="full"
-                    onClick={() => hereOnStop.mutate({ id: stop.id })}
-                    isLoading={hereOnStop.isLoading}
-                  >
-                    I&apos;m here
-                  </Button>
-                </CardFooter>
-              )}
-            </Card>
-          ))}
+                </CardHeader>
+                <Divider color="gray.200" _dark={{ color: "gray.700" }} />
+                {havePassengerOnStop(stop) && (
+                  <CardBody p="2">
+                    <Stack>
+                      {getPassengers([stop]).map((passenger) => (
+                        <Flex
+                          key={passenger.userId}
+                          justify="space-between"
+                          align="center"
+                        >
+                          <HStack>
+                            <Avatar
+                              size="sm"
+                              src={passenger.user.image ?? ""}
+                              name={
+                                passenger.user.name ??
+                                passenger.user.email ??
+                                ""
+                              }
+                              opacity={
+                                NOT_YET_PASSENGER_IF_INSIDE.includes(
+                                  passenger.requestStatus
+                                )
+                                  ? 0.6
+                                  : 1
+                              }
+                            />
+                            <Text fontSize="sm" fontWeight="medium">
+                              {passenger.user.name ?? passenger.user.email}
+                            </Text>
+                          </HStack>
+                          <Tag
+                            colorScheme={
+                              PASSENGER_STATUS[passenger.stopStatus].colorScheme
+                            }
+                          >
+                            {PASSENGER_STATUS[passenger.stopStatus].text}{" "}
+                            {passenger.delay} {!!passenger.delay && " minutes"}
+                            <Icon
+                              ml="2"
+                              icon={PASSENGER_STATUS[passenger.stopStatus].icon}
+                            />
+                          </Tag>
+                        </Flex>
+                      ))}
+                    </Stack>
+                  </CardBody>
+                )}
+                <Divider color="gray.200" _dark={{ color: "gray.700" }} />
+                {stop.passengers.some(
+                  (passenger) =>
+                    passenger.userId === session?.user?.id &&
+                    passenger.stopStatus !== "ON_TIME"
+                ) && (
+                  <CardFooter p="2">
+                    <Button
+                      variant="primary"
+                      size="sm"
+                      w="full"
+                      onClick={() => hereOnStop.mutate({ id: stop.id })}
+                      isLoading={hereOnStop.isLoading}
+                    >
+                      I&apos;m here
+                    </Button>
+                  </CardFooter>
+                )}
+              </Card>
+            );
+          })}
         </Stack>
       )}
     </LayoutAuthenticated>
