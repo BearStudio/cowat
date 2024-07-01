@@ -1,5 +1,5 @@
 import type { NextPage } from "next";
-import { Formiz, useForm } from "@formiz/core";
+import { Formiz, useForm, useFormFields } from "@formiz/core";
 import type { RouterInputs } from "@/utils/api";
 import { api } from "@/utils/api";
 import { useRouter } from "next/router";
@@ -13,6 +13,7 @@ import {
   IconButton,
   Spinner,
   Stack,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { LayoutAuthenticated } from "@/layout/LayoutAuthenticated";
 import { Icon } from "@/components/Icon";
@@ -25,6 +26,7 @@ import { useEffect, useState } from "react";
 import { CommuteTemplateOverview } from "@/components/CommuteTemplateOverview";
 import Head from "next/head";
 import { SimpleCard } from "@/components/SimpleCard";
+import { ConfirmBookingModal } from "@/components/ConfirmBookingModal";
 
 type CreateCommuteInput = RouterInputs["commute"]["createCommute"];
 
@@ -38,12 +40,30 @@ const New: NextPage = () => {
     string | undefined | typeof FROM_SCRATCH
   >(undefined);
 
+  const confirmCommuteModal = useDisclosure();
+
+  const form = useForm();
+
+  const formValues = useFormFields({
+    connect: form,
+    selector: (field) => field.value,
+  });
+
+  const dateString = dayjs(dateQueryParam?.toString()).format(DAY_MONTH_YEAR);
+  const date = formValues.date
+    ? dayjs(formValues.date).toDate()
+    : dayjs(dateQueryParam?.toString()).toDate();
+
+  const myCommutesOnDate = api.commute.allMyCommutesOnDate.useQuery({
+    date: date,
+  });
+
+  console.log(date);
+
   // Need to react to the params changes.
   useEffect(() => {
     setSelectedTemplate(templateQueryParam?.toString());
   }, [templateQueryParam]);
-
-  const form = useForm();
 
   const commuteTemplates = api.template.myCommuteTemplates.useQuery(undefined, {
     onSuccess: (data) => {
@@ -55,8 +75,6 @@ const New: NextPage = () => {
     // We don't want any caching here, too much rules to handle already. This might be optimized later.
     cacheTime: 0,
   });
-
-  const date = dayjs(dateQueryParam?.toString()).format(DAY_MONTH_YEAR);
 
   const fromTemplate = api.template.get.useQuery(
     { id: selectedTemplate ?? "" },
@@ -75,7 +93,7 @@ const New: NextPage = () => {
   const defaultValues = {
     ...fromTemplate.data,
     stops,
-    date,
+    dateString,
   };
 
   const createCommute = api.commute.createCommute.useMutation({
@@ -158,12 +176,21 @@ const New: NextPage = () => {
             <CommuteForm repeaterInitialValues={defaultValues.stops} />
             <Button
               variant="primary"
-              type="submit"
+              onClick={confirmCommuteModal.onOpen}
               isLoading={createCommute.isLoading}
             >
               Save
             </Button>
           </SimpleCard>
+          {confirmCommuteModal.isOpen && (
+            <ConfirmBookingModal
+              onClose={confirmCommuteModal.onClose}
+              onConfirm={form.submit}
+              myCommutes={
+                myCommutesOnDate.isSuccess ? myCommutesOnDate.data : []
+              }
+            />
+          )}
         </Formiz>
       )}
     </LayoutAuthenticated>
