@@ -93,7 +93,7 @@ const New: NextPage = () => {
   const defaultValues = {
     ...fromTemplate.data,
     stops,
-    dateString,
+    date: dateString,
   };
 
   const createCommute = api.commute.createCommute.useMutation({
@@ -178,6 +178,7 @@ const New: NextPage = () => {
               variant="primary"
               onClick={confirmCommuteModal.onOpen}
               isLoading={createCommute.isLoading}
+              isDisabled={!form.isValid}
             >
               Save
             </Button>
@@ -186,6 +187,7 @@ const New: NextPage = () => {
             <ConfirmBookingModal
               onClose={confirmCommuteModal.onClose}
               onConfirm={form.submit}
+              isANewCommute={true}
               myCommutes={
                 myCommutesOnDate.isSuccess ? myCommutesOnDate.data : []
               }
