@@ -27,6 +27,7 @@ export const FieldSelect = (props: FieldSelectProps) => {
   } = useField(props);
 
   const {
+    isDisabled,
     label,
     placeholder,
     helper,
@@ -60,7 +61,7 @@ export const FieldSelect = (props: FieldSelectProps) => {
         autoFocus={autoFocus}
         placeholder={placeholder ? String(placeholder) : ""}
         value={value ?? ""}
-        isDisabled={isValidating}
+        isDisabled={isValidating || isDisabled}
         onChange={(e) => setValue(e.target.value)}
       >
         {options.map(({ label, value }) => (
