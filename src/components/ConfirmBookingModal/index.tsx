@@ -24,12 +24,15 @@ type CommuteType = RouterOutputs["commute"]["commuteById"];
 type ConfirmBookingModalProps = Omit<ModalProps, "isOpen" | "children"> & {
   myCommutes: CommuteType[];
   onConfirm: () => void;
+  onClose: () => void;
+  isANewCommute?: boolean;
 };
 
 export const ConfirmBookingModal = ({
   onConfirm,
   onClose,
   myCommutes,
+  isANewCommute = false,
   ...props
 }: ConfirmBookingModalProps) => {
   const { data: session } = useSession();
@@ -65,7 +68,7 @@ export const ConfirmBookingModal = ({
       <ModalContent>
         <ModalHeader shadow="layout">
           <Text fontWeight="bold" fontSize="lg">
-            Confirm booking
+            Confirm {isANewCommute ? "commute" : "booking"}
           </Text>
         </ModalHeader>
         <ModalBody p="4">
@@ -102,7 +105,7 @@ export const ConfirmBookingModal = ({
                             onClick={() => handleCancelClick(commute)}
                             isLoading={updateRequestStatus.isLoading}
                           >
-                            Cancel booking
+                            Cancel {isANewCommute ? "commute" : "booking"}
                           </Button>
                         </>
                       )}
@@ -120,7 +123,7 @@ export const ConfirmBookingModal = ({
               onClose();
             }}
           >
-            Book
+            {isANewCommute ? "Save" : "Book"}
           </Button>
           <Button onClick={onClose}>Cancel</Button>
         </ModalFooter>
