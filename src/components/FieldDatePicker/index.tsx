@@ -5,7 +5,7 @@ import { useRef, useState } from "react";
 import FocusLock from "react-focus-lock";
 import { DayPicker } from "react-day-picker";
 import type { InputGroupProps, InputProps } from "@chakra-ui/react";
-import { InputLeftElement } from "@chakra-ui/react";
+import { InputLeftElement, Text } from "@chakra-ui/react";
 import {
   IconButton,
   Input,
@@ -28,6 +28,8 @@ import { useField } from "@formiz/core";
 import type { FormGroupProps } from "@/components/FormGroup";
 import { FormGroup } from "@/components/FormGroup";
 import "react-day-picker/dist/style.css";
+import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
+dayjs.extend(isSameOrAfter);
 
 export function FieldDayPicker(
   props: FieldProps<string> &
@@ -50,7 +52,10 @@ export function FieldDayPicker(
     otherProps,
   } = useField(props, {
     formatValue: (v) =>
-      dayjs(v, DAY_MONTH_YEAR).isValid() ? dayjs(v, DAY_MONTH_YEAR) : null,
+      dayjs(v, DAY_MONTH_YEAR).isValid() &&
+      dayjs(v, "DD-MM-YYYY").isSameOrAfter(dayjs(), "day")
+        ? dayjs(v, DAY_MONTH_YEAR)
+        : null,
   });
   const {
     label,
@@ -159,6 +164,17 @@ export function FieldDayPicker(
           onBlur={() => setIsTouched(true)}
         />
       </InputGroup>
+      {value && dayjs(value, "DD-MM-YYYY").isSame(dayjs(), "day") && (
+        <Text color="orange" fontSize="sm">
+          ⚠ The date you selected is today
+        </Text>
+      )}
+
+      {value && dayjs(value, "DD-MM-YYYY").isBefore(dayjs(), "day") && (
+        <Text color="red" fontSize="sm">
+          ⚠ The date you selected is in the past
+        </Text>
+      )}
     </FormGroup>
   );
 }
