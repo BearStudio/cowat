@@ -1,13 +1,13 @@
 import { ConfirmModal } from "@/components/ConfirmModal";
 import { FULL_TEXT_DATE_WITH_TIME } from "@/constants/dates";
+import type { RouterOutputs } from "@/utils/api";
 import { api } from "@/utils/api";
-import type { CommuteType } from "@/utils/commutes";
 import { getPassengers } from "@/utils/commutes";
 import { Button, chakra } from "@chakra-ui/react";
 import dayjs from "dayjs";
 
 type ConfirmCancelCommuteModalProps = {
-  commute: CommuteType;
+  commute: RouterOutputs["commute"]["commuteById"];
 };
 
 export const ConfirmCancelCommuteModal = ({
