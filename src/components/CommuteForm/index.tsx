@@ -40,6 +40,7 @@ import { isMaxNumber, isMinNumber } from "@formiz/validations";
 import { Plus, Trash } from "lucide-react";
 import { useRouter } from "next/router";
 import { Fragment } from "react";
+import dayjs from "dayjs";
 
 type CommuteFormProps = {
   repeaterInitialValues: Array<object>;
@@ -103,6 +104,16 @@ export const CommuteForm = ({
             label="📆 Departure Date"
             name="date"
             required="Please provide a valid date"
+            validations={[
+              {
+                handler: (value) => {
+                  return !(
+                    value && dayjs(value, "DD-MM-YYYY").isBefore(dayjs(), "day")
+                  );
+                },
+                message: "The date you selected is in the past",
+              },
+            ]}
           />
         </>
       )}
