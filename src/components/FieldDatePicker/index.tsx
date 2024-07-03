@@ -160,7 +160,11 @@ export function FieldDayPicker(
         />
       </InputGroup>
       {value && dayjs(value, "DD-MM-YYYY").isSame(dayjs(), "day") && (
-        <Text color="warning.600" fontSize="sm">
+        <Text
+          color="warning.600"
+          _dark={{ color: "warning.400" }}
+          fontSize="sm"
+        >
           ⚠ The date you selected is today
         </Text>
       )}
