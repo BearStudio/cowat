@@ -1,6 +1,6 @@
 import { ONLY_TIME } from "@/constants/dates";
+import type { RouterOutputs } from "@/utils/api";
 import { api } from "@/utils/api";
-import type { CommuteType } from "@/utils/commutes";
 import type { ModalProps } from "@chakra-ui/react";
 import {
   Button,
@@ -18,6 +18,8 @@ import type { PassengersOnStops } from "@prisma/client";
 import dayjs from "dayjs";
 import { useSession } from "next-auth/react";
 import { ConfirmCancelCommuteModal } from "@/components/ConfirmCancelCommuteModal";
+
+type CommuteType = RouterOutputs["commute"]["commuteById"];
 
 type ConfirmBookingModalProps = Omit<ModalProps, "isOpen" | "children"> & {
   myCommutes: CommuteType[];

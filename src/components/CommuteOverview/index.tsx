@@ -105,16 +105,21 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
   const passengers = getPassengers(props.stops);
   const isFull = passengers.length === props.seats;
 
+  const commuteCanBeBooked =
+    !isCurrentUserCreator &&
+    (!isPassenger ||
+      passengerStatus === "CANCELED" ||
+      passengerStatus === "REFUSED") &&
+    !isFull &&
+    dayjs().isBefore(dayjs(props.date));
+
   const handleBookClick = (stopId: string) => {
-    if (
-      myCommutesOnDate.isSuccess &&
-      myCommutesOnDate.data?.length > 0
-    ) {
+    if (myCommutesOnDate.isSuccess && myCommutesOnDate.data?.length > 0) {
       confirmBookingModal.onOpen();
     } else {
       bookCommute.mutate({ stopId });
     }
-  }
+  };
 
   const commuteColor = (() => {
     if (props.isDeleted) {
@@ -314,31 +319,22 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
                           </Wrap>
                         )}
                       </Stack>
-                      {!isCurrentUserCreator &&
-                        (!isPassenger ||
-                          passengerStatus === "CANCELED" ||
-                          passengerStatus === "REFUSED") &&
-                        !isFull &&
-                        dayjs().isBefore(dayjs(props.date)) && (
-                          <Button
-                            variant="primary"
-                            onClick={() => handleBookClick(stop.id)}
-                            isLoading={bookCommute.isLoading}
-                          >
-                            Book
-                          </Button>
-                        )}
+                      {commuteCanBeBooked && (
+                        <Button
+                          variant="primary"
+                          onClick={() => handleBookClick(stop.id)}
+                          isLoading={bookCommute.isLoading}
+                        >
+                          Book
+                        </Button>
+                      )}
                       {confirmBookingModal.isOpen && (
                         <ConfirmBookingModal
                           onClose={confirmBookingModal.onClose}
                           onConfirm={() =>
                             bookCommute.mutate({ stopId: stop.id })
                           }
-                          myCommutes={
-                            myCommutesOnDate.isSuccess
-                              ? myCommutesOnDate.data
-                              : []
-                          }
+                          myCommutes={myCommutesOnDate.data || []}
                         />
                       )}
                       {isPassenger &&
