@@ -463,7 +463,22 @@ export const commuteRouter = createTRPCRouter({
           comment: input.comment,
         },
         where: {
+          createdById: ctx.session.user.id,
           id: input.id,
+        },
+        include: {
+          createdBy: {
+            select: {
+              accounts: true,
+              email: true,
+            },
+          },
+          stops: {
+            select: {
+              location: true,
+              time: true,
+            },
+          },
         },
       });
 
