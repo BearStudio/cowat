@@ -364,6 +364,39 @@ export const commuteRouter = createTRPCRouter({
         }
       }
 
+      const updatedStops = await ctx.prisma.stop.findMany({
+        where: {
+          commuteId: input.id,
+        },
+        orderBy: {
+          time: "asc",
+        },
+      });
+      const firstStopTime = updatedStops[0]?.time;
+
+      const currentCommute = await ctx.prisma.commute.findUnique({
+        where: {
+          id: input.id,
+        },
+      });
+
+      if (currentCommute && firstStopTime) {
+        const { date } = currentCommute;
+        const hoursMinutesArray = firstStopTime?.split(":");
+        const hours = Number(hoursMinutesArray[0]);
+        const minutes = Number(hoursMinutesArray[1]);
+        date.setHours(hours, minutes);
+
+        await ctx.prisma.commute.update({
+          data: {
+            date: date,
+          },
+          where: {
+            id: input.id,
+          },
+        });
+      }
+
       const commute = await ctx.prisma.commute.update({
         data: {
           seats: input.seats,
