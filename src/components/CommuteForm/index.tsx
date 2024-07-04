@@ -88,7 +88,7 @@ export const CommuteForm = ({
     const isEditable =
       numberOfPassengersOnStop === 0 || numberOfPassengersOnStop === undefined;
     const isRemovable = stops.keys.length > 1 && isEditable;
-    return { isEditable, isRemovable, numberOfPassengers };
+    return { isEditable, isRemovable };
   };
 
   return (
