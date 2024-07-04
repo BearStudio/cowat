@@ -1,4 +1,4 @@
-import type { PassengersOnStops, User, Stop } from "@prisma/client";
+import type { PassengersOnStops, Stop, User } from "@prisma/client";
 
 /**
  * Get all the passengers of the given stops, wihtout the canceled ones.
