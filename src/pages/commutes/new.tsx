@@ -58,8 +58,6 @@ const New: NextPage = () => {
     date: date,
   });
 
-  console.log(date);
-
   // Need to react to the params changes.
   useEffect(() => {
     setSelectedTemplate(templateQueryParam?.toString());
