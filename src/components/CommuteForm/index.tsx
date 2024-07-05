@@ -78,19 +78,6 @@ export const CommuteForm = ({
 
   const numberOfPassengers = getPassengers(commute.data?.stops ?? []).length;
 
-  type possibleActionsOnStopProps = {
-    index: number;
-  };
-
-  const possibleActionsOnStop = ({ index }: possibleActionsOnStopProps) => {
-    const numberOfPassengersOnStop =
-      commute.data?.stops[index]?.passengers.length;
-    const isEditable =
-      numberOfPassengersOnStop === 0 || numberOfPassengersOnStop === undefined;
-    const isRemovable = stops.keys.length > 1 && isEditable;
-    return { isEditable, isRemovable };
-  };
-
   return (
     <>
       <FieldInput<number>
@@ -133,7 +120,12 @@ export const CommuteForm = ({
       )}
       <>
         {stops.keys.map((key, index) => {
-          const { isEditable, isRemovable } = possibleActionsOnStop({ index });
+          const numberOfPassengersOnStop =
+            commute.data?.stops[index]?.passengers.length;
+          const isEditable =
+            numberOfPassengersOnStop === 0 ||
+            numberOfPassengersOnStop === undefined;
+          const isRemovable = stops.keys.length > 1 && isEditable;
           return (
             <Fragment key={key}>
               <Stop

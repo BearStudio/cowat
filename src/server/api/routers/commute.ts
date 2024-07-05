@@ -322,11 +322,8 @@ export const commuteRouter = createTRPCRouter({
       type InputStopType =
         RouterInputs["commute"]["createCommute"]["stops"][number];
 
-      const AreSameStop = (stop: Stop, inputStop: InputStopType) => {
-        const sameTime = stop.time === inputStop.time;
-        const sameLocation = stop.locationId === inputStop.location;
-        return sameTime && sameLocation;
-      };
+      const AreSameStop = (stop: Stop, inputStop: InputStopType) =>
+        stop.time === inputStop.time && stop.locationId === inputStop.location;
 
       if (input.stops) {
         const existingStops = await ctx.prisma.stop.findMany({
@@ -382,10 +379,8 @@ export const commuteRouter = createTRPCRouter({
 
       if (currentCommute && firstStopTime) {
         const { date } = currentCommute;
-        const hoursMinutesArray = firstStopTime?.split(":");
-        const hours = Number(hoursMinutesArray[0]);
-        const minutes = Number(hoursMinutesArray[1]);
-        date.setHours(hours, minutes);
+        const [hours, minutes] = firstStopTime?.split(":");
+        date.setHours(Number(hours), Number(minutes));
 
         await ctx.prisma.commute.update({
           data: {
