@@ -21,7 +21,10 @@ import { ConfirmCancelCommuteModal } from "@/components/ConfirmCancelCommuteModa
 
 type CommuteType = RouterOutputs["commute"]["commuteById"];
 
-type ConfirmDayCommutesModalProps = Omit<ModalProps, "isOpen" | "children"> & {
+type ConfirmCommuteActionModalProps = Omit<
+  ModalProps,
+  "isOpen" | "children"
+> & {
   myCommutes: CommuteType[];
   onConfirm: () => void;
   onClose: () => void;
@@ -29,14 +32,14 @@ type ConfirmDayCommutesModalProps = Omit<ModalProps, "isOpen" | "children"> & {
   confirmText?: string;
 };
 
-export const ConfirmDayCommutesModal = ({
+export const ConfirmCommuteActionModal = ({
   onConfirm,
   onClose,
   myCommutes,
   title = "Confirm",
   confirmText = "Save",
   ...props
-}: ConfirmDayCommutesModalProps) => {
+}: ConfirmCommuteActionModalProps) => {
   const { data: session } = useSession();
   const ctx = api.useContext();
 

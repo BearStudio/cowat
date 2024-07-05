@@ -26,7 +26,7 @@ import { useEffect, useState } from "react";
 import { CommuteTemplateOverview } from "@/components/CommuteTemplateOverview";
 import Head from "next/head";
 import { SimpleCard } from "@/components/SimpleCard";
-import { ConfirmDayCommutesModal } from "@/components/ConfirmDayCommutesModal";
+import { ConfirmCommuteActionModal } from "@/components/ConfirmCommuteActionModal";
 
 type CreateCommuteInput = RouterInputs["commute"]["createCommute"];
 
@@ -182,7 +182,7 @@ const New: NextPage = () => {
             </Button>
           </SimpleCard>
           {confirmCommuteModal.isOpen && (
-            <ConfirmDayCommutesModal
+            <ConfirmCommuteActionModal
               onClose={confirmCommuteModal.onClose}
               onConfirm={form.submit}
               title="Confirm commute"
