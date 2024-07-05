@@ -26,7 +26,7 @@ import { useEffect, useState } from "react";
 import { CommuteTemplateOverview } from "@/components/CommuteTemplateOverview";
 import Head from "next/head";
 import { SimpleCard } from "@/components/SimpleCard";
-import { ConfirmBookingModal } from "@/components/ConfirmBookingModal";
+import { ConfirmDayCommutesModal } from "@/components/ConfirmDayCommutesModal";
 
 type CreateCommuteInput = RouterInputs["commute"]["createCommute"];
 
@@ -51,8 +51,8 @@ const New: NextPage = () => {
 
   const dateString = dayjs(dateQueryParam?.toString()).format(DAY_MONTH_YEAR);
   const date = formValues.date
-    ? dayjs(formValues.date).toDate()
-    : dayjs(dateQueryParam?.toString()).toDate();
+    ? new Date(formValues.date)
+    : new Date(dateQueryParam?.toString() || "");
 
   const myCommutesOnDate = api.commute.allMyCommutesOnDate.useQuery({
     date: date,
@@ -182,10 +182,11 @@ const New: NextPage = () => {
             </Button>
           </SimpleCard>
           {confirmCommuteModal.isOpen && (
-            <ConfirmBookingModal
+            <ConfirmDayCommutesModal
               onClose={confirmCommuteModal.onClose}
               onConfirm={form.submit}
-              isANewCommute={true}
+              title="Confirm commute"
+              confirmText="Save"
               myCommutes={
                 myCommutesOnDate.isSuccess ? myCommutesOnDate.data : []
               }

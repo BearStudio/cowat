@@ -35,7 +35,7 @@ import dayjs from "dayjs";
 import { CheckCircle2, Clock, Navigation, Pencil, Phone } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import { ConfirmBookingModal } from "@/components/ConfirmBookingModal";
+import { ConfirmDayCommutesModal } from "@/components/ConfirmDayCommutesModal";
 import { ConfirmCancelCommuteModal } from "@/components/ConfirmCancelCommuteModal";
 
 export type CommuteOverviewProps = Prisma.CommuteGetPayload<{
@@ -53,7 +53,7 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
   const { data: session } = useSession();
   const ctx = api.useContext();
 
-  const confirmBookingModal = useDisclosure();
+  const confirmDayCommutesModal = useDisclosure();
 
   const isMobile = useBreakpointValue({ base: true, md: false });
 
@@ -115,7 +115,7 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
 
   const handleBookClick = (stopId: string) => {
     if (myCommutesOnDate.isSuccess && myCommutesOnDate.data?.length > 0) {
-      confirmBookingModal.onOpen();
+      confirmDayCommutesModal.onOpen();
     } else {
       bookCommute.mutate({ stopId });
     }
@@ -328,9 +328,11 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
                           Book
                         </Button>
                       )}
-                      {confirmBookingModal.isOpen && (
-                        <ConfirmBookingModal
-                          onClose={confirmBookingModal.onClose}
+                      {confirmDayCommutesModal.isOpen && (
+                        <ConfirmDayCommutesModal
+                          title="Confirm booking"
+                          confirmText="Book"
+                          onClose={confirmDayCommutesModal.onClose}
                           onConfirm={() =>
                             bookCommute.mutate({ stopId: stop.id })
                           }
