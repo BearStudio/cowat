@@ -21,20 +21,22 @@ import { ConfirmCancelCommuteModal } from "@/components/ConfirmCancelCommuteModa
 
 type CommuteType = RouterOutputs["commute"]["commuteById"];
 
-type ConfirmBookingModalProps = Omit<ModalProps, "isOpen" | "children"> & {
+type ConfirmDayCommutesModalProps = Omit<ModalProps, "isOpen" | "children"> & {
   myCommutes: CommuteType[];
   onConfirm: () => void;
   onClose: () => void;
-  isANewCommute?: boolean;
+  title?: string;
+  confirmText?: string;
 };
 
-export const ConfirmBookingModal = ({
+export const ConfirmDayCommutesModal = ({
   onConfirm,
   onClose,
   myCommutes,
-  isANewCommute = false,
+  title = "Confirm",
+  confirmText = "Save",
   ...props
-}: ConfirmBookingModalProps) => {
+}: ConfirmDayCommutesModalProps) => {
   const { data: session } = useSession();
   const ctx = api.useContext();
 
@@ -68,7 +70,7 @@ export const ConfirmBookingModal = ({
       <ModalContent>
         <ModalHeader shadow="layout">
           <Text fontWeight="bold" fontSize="lg">
-            Confirm {isANewCommute ? "commute" : "booking"}
+            {title}
           </Text>
         </ModalHeader>
         <ModalBody p="4">
@@ -105,7 +107,7 @@ export const ConfirmBookingModal = ({
                             onClick={() => handleCancelClick(commute)}
                             isLoading={updateRequestStatus.isLoading}
                           >
-                            Cancel {isANewCommute ? "commute" : "booking"}
+                            Cancel
                           </Button>
                         </>
                       )}
@@ -123,7 +125,7 @@ export const ConfirmBookingModal = ({
               onClose();
             }}
           >
-            {isANewCommute ? "Save" : "Book"}
+            {confirmText}
           </Button>
           <Button onClick={onClose}>Cancel</Button>
         </ModalFooter>
