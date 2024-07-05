@@ -30,9 +30,13 @@ export const authOptions: NextAuthOptions = {
     },
     async signIn({ account, profile, user }) {
       if (account?.provider === "google") {
+        const domains = env.GOOGLE_AUTHORIZED_DOMAIN
+          .split(',')
+          .filter((domain) => !!domain)  // We don't keep as authorized domain empty string, in case there is a additional ',' in the GOOGLE_AUTHORIZED_DOMAIN const
+          .map((domain)=>domain.trim());  // We remove whitespaces from the string to prevent error
         return (
-          profile?.email_verified &&
-          profile.email?.endsWith(env.GOOGLE_AUTHORIZED_DOMAIN)
+          profile?.email_verified && 
+          domains.includes(`@${profile.email?.split('@')[1]}` || '') 
         );
       }
 
