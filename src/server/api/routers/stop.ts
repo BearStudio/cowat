@@ -43,6 +43,8 @@ export async function book({
 
   const passengers = getPassengers(relatedCommute?.commute?.stops ?? []);
 
+  const stopCreatorId = relatedCommute?.commute?.createdById ?? "";
+
   // The commute is deleted / canceled
   if (relatedCommute?.commute?.isDeleted) {
     throw new TRPCError({
@@ -60,7 +62,7 @@ export async function book({
   }
 
   // The driver can't book their own commute
-  if (relatedCommute?.commute?.createdById === userId) {
+  if (stopCreatorId === userId) {
     throw new TRPCError({
       code: "BAD_REQUEST",
       message: "You can't book your own commute",
@@ -88,6 +90,13 @@ export async function book({
       },
     },
   });
+
+  const {autoAccept: isCreatorAutoAccepting} = await prisma.user.findUnique({
+    where: {
+      id: stopCreatorId,
+    },
+  }) ?? {};
+  const requestStatus = isCreatorAutoAccepting ? "REQUESTED" : "ACCEPTED";
 
   // If passenger on stop exists, then update the data. If it exist it means the
   // user did cancel the request.
@@ -136,6 +145,7 @@ export async function book({
             id: input.stopId,
           },
         },
+        requestStatus: requestStatus,
       },
       include: {
         stop: {

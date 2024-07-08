@@ -7,6 +7,7 @@ export const userRouter = createTRPCRouter({
       z.object({
         phone: z.string().nullish(),
         slackMemberId: z.string(),
+        autoAccept: z.boolean(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -17,6 +18,7 @@ export const userRouter = createTRPCRouter({
         data: {
           phone: input.phone,
           slackMemberId: input.slackMemberId,
+          autoAccept: input.autoAccept,
         },
       });
 

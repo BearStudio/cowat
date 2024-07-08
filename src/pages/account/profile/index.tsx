@@ -1,4 +1,5 @@
 import { FieldInput } from "@/components/FieldInput";
+import { FieldSwitch } from "@/components/FieldSwitch";
 import { Icon } from "@/components/Icon";
 import { LayoutAuthenticated } from "@/layout/LayoutAuthenticated";
 import type { RouterInputs } from "@/utils/api";
@@ -112,6 +113,7 @@ const ProfilePage = () => {
                 </Box>
               </Alert>
               <FieldInput name="phone" label="Phone number" />
+              <FieldSwitch name="autoAccept" label="Auto-accept" />
               <Button
                 variant="primary"
                 type="submit"
