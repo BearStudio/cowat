@@ -319,10 +319,10 @@ export const commuteRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ input, ctx }) => {
-      type InputStopType =
-        RouterInputs["commute"]["createCommute"]["stops"][number];
-
-      const AreSameStop = (stop: Stop, inputStop: InputStopType) =>
+      const areSameStop = (
+        stop: Stop,
+        inputStop: RouterInputs["commute"]["createCommute"]["stops"][number]
+      ) =>
         stop.time === inputStop.time && stop.locationId === inputStop.location;
 
       if (input.stops) {
@@ -334,13 +334,13 @@ export const commuteRouter = createTRPCRouter({
         const stopsToCreate = input.stops.filter(
           (stop) =>
             !existingStops.some((existingStop) =>
-              AreSameStop(existingStop, stop)
+              areSameStop(existingStop, stop)
             )
         );
         const stopIdsToDelete = existingStops
           .filter(
             (existingStop) =>
-              !input.stops?.some((stop) => AreSameStop(existingStop, stop))
+              !input.stops?.some((stop) => areSameStop(existingStop, stop))
           )
           .map((stop) => stop.id);
 
