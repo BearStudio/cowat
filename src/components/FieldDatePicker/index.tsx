@@ -28,6 +28,7 @@ import { useField } from "@formiz/core";
 import type { FormGroupProps } from "@/components/FormGroup";
 import { FormGroup } from "@/components/FormGroup";
 import "react-day-picker/dist/style.css";
+import { FiAlertTriangle } from "react-icons/fi";
 
 export function FieldDayPicker(
   props: FieldProps<string> &
@@ -164,8 +165,10 @@ export function FieldDayPicker(
           color="warning.600"
           _dark={{ color: "warning.400" }}
           fontSize="sm"
+          marginTop={"1"}
         >
-          ⚠ The date you selected is today
+          <Icon icon={FiAlertTriangle} me="1" />
+          The date you selected is today
         </Text>
       )}
     </FormGroup>
