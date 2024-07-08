@@ -1,6 +1,6 @@
 import { defineStyle, defineStyleConfig } from "@chakra-ui/react";
 
-const defaultSwitch = defineStyle({
+const primary = defineStyle({
   ".chakra-switch__track": {
     bg: "gray.200",
     borderColor: "gray.200",
@@ -24,20 +24,5 @@ const defaultSwitch = defineStyle({
 });
 
 export const switchTheme = defineStyleConfig({
-  baseStyle: {
-    _focusVisible: {
-      ring: "2px",
-      ringColor: "gray.900",
-      ringOffset: "2px",
-      ringOffsetColor: "white",
-      _dark: {
-        ringColor: "white",
-        ringOffsetColor: "gray.800",
-      },
-    },
-  },
-  variants: { default: defaultSwitch },
-  defaultProps: {
-    variant: "default",
-  },
+  variants: { primary },
 });

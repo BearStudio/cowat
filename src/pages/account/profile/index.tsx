@@ -117,7 +117,6 @@ const ProfilePage = () => {
               <Alert variant="infoGray" borderRadius="md">
                 <AlertIcon />
                 <Box>
-                  <AlertTitle>You can toggle auto-accept here</AlertTitle>
                   <AlertDescription alignContent="center">
                     <Text>
                       When auto-accept is on, all booking requests made on your
