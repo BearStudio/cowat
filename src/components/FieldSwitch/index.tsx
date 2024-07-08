@@ -54,6 +54,7 @@ export const FieldSwitch = (props: FieldSwitchProps) => {
         isDisabled={isValidating}
         size={size}
         autoFocus={autoFocus}
+        variant="primary"
         // sx={{
         //   ".chakra-switch__track": {
         //     bg: "gray.200",
