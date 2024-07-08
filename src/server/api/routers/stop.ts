@@ -96,7 +96,7 @@ export async function book({
       id: stopCreatorId,
     },
   }) ?? {};
-  const requestStatus = isCreatorAutoAccepting ? "REQUESTED" : "ACCEPTED";
+  const requestStatus = isCreatorAutoAccepting ? "ACCEPTED" : "REQUESTED";
 
   // If passenger on stop exists, then update the data. If it exist it means the
   // user did cancel the request.
