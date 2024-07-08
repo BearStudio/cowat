@@ -187,7 +187,7 @@ const request = async (passengerOnStop: PassengerOnStopNotification) => {
                     .tz("Europe/Paris")
                     .format("dddd DD MMM HH:mm")} ${TIMEZONE_NAME}`
                 : ""
-            }* commute.`,
+            }* commute and added a comment : ${passengerOnStop.requestComment}`,
           },
         },
       ],

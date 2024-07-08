@@ -175,6 +175,7 @@ export const stopRouter = createTRPCRouter({
         stopId: z.string(),
         passengerId: z.string(),
         requestStatus: z.nativeEnum(RequestStatus),
+        requestComment: z.string(),
       })
     )
     .mutation(async ({ ctx, input }) => {
