@@ -114,6 +114,18 @@ const ProfilePage = () => {
               </Alert>
               <FieldInput name="phone" label="Phone number" />
               <FieldSwitch name="autoAccept" label="Auto-accept" />
+              <Alert variant="infoGray" borderRadius="md">
+                <AlertIcon />
+                <Box>
+                  <AlertTitle>You can toggle auto-accept here</AlertTitle>
+                  <AlertDescription alignContent="center">
+                    <Text>
+                      When auto-accept is on, all booking requests made on your
+                      commutes will be automatically accepted
+                    </Text>
+                  </AlertDescription>
+                </Box>
+              </Alert>
               <Button
                 variant="primary"
                 type="submit"
