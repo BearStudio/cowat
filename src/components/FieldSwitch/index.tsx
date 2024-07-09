@@ -4,7 +4,7 @@ import type { FieldProps } from "@formiz/core";
 
 import React, { useEffect, useState } from "react";
 import { useField } from "@formiz/core";
-import { SwitchProps } from "@chakra-ui/react";
+import type { SwitchProps } from "@chakra-ui/react";
 import { Switch } from "@chakra-ui/react";
 
 export type FieldSwitchProps = FieldProps<boolean> &
@@ -54,29 +54,6 @@ export const FieldSwitch = (props: FieldSwitchProps) => {
         isDisabled={isValidating}
         size={size}
         autoFocus={autoFocus}
-        variant="primary"
-        // sx={{
-        //   ".chakra-switch__track": {
-        //     bg: "gray.200",
-        //     borderColor: "gray.200",
-        //     _checked: {
-        //       bg: "blue.500",
-        //     },
-        //     _dark: {
-        //       bg: "gray.600",
-        //       borderColor: "gray.900",
-        //       _checked: {
-        //         bg: "blue.300",
-        //       },
-        //     },
-        //   },
-        //   ".chakra-switch__thumb": {
-        //     bg: "white",
-        //     _dark: {
-        //       bg: "gray.800",
-        //     },
-        //   },
-        // }}
         // Type error here, require help with formiz
         onChange={(e) => setValue(e.target.checked)}
         {...rest}
