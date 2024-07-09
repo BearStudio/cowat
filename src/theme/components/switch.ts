@@ -1,7 +1,7 @@
 import { defineStyle, defineStyleConfig } from "@chakra-ui/react";
 
-const primary = defineStyle({
-  ".chakra-switch__track": {
+const defaultSwitch = defineStyle({
+  track: {
     bg: "gray.200",
     borderColor: "gray.200",
     _checked: {
@@ -15,7 +15,7 @@ const primary = defineStyle({
       },
     },
   },
-  ".chakra-switch__thumb": {
+  thumb: {
     bg: "white",
     _dark: {
       bg: "gray.800",
@@ -24,5 +24,8 @@ const primary = defineStyle({
 });
 
 export const switchTheme = defineStyleConfig({
-  variants: { primary },
+  variants: { default: defaultSwitch },
+  defaultProps: {
+    variant: "default",
+  },
 });
