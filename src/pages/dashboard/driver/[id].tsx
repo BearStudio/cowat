@@ -25,7 +25,6 @@ import {
   Tag,
   Text,
   useDisclosure,
-  VStack,
 } from "@chakra-ui/react";
 
 import dayjs from "dayjs";
@@ -243,7 +242,7 @@ const Driver = () => {
                               {passenger.user.name ?? passenger.user.email}
                             </Text>
                           </HStack>
-                          <VStack align={"end"}>
+                          <Stack align={"end"}>
                             <Tag
                               colorScheme={
                                 PASSENGER_STATUS[passenger.stopStatus]
@@ -271,7 +270,7 @@ const Driver = () => {
                               confirmVariant="danger"
                               confirmText="Decline passenger"
                               cancelText="Cancel"
-                              title="You’re about to decline a passenger for your commute."
+                              title="You’re about to decline a passenger on your commute."
                               message={
                                 <>
                                   Are you sure you want to decline{" "}
@@ -290,7 +289,7 @@ const Driver = () => {
                                 Decline passenger
                               </Button>
                             </ConfirmModal>
-                          </VStack>
+                          </Stack>
                         </Flex>
                       ))}
                     </Stack>
