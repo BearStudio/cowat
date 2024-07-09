@@ -117,7 +117,7 @@ const New: NextPage = () => {
     !!selectedTemplate &&
     (selectedTemplate === FROM_SCRATCH || !fromTemplate.isLoading);
 
-  const handleSubmitClick = () => {
+  const handleSave = () => {
     if (myCommutesOnDate.isSuccess && myCommutesOnDate.data?.length > 0) {
       confirmCommuteModal.onOpen();
     } else {
@@ -182,7 +182,7 @@ const New: NextPage = () => {
             <CommuteForm repeaterInitialValues={defaultValues.stops} />
             <Button
               variant="primary"
-              onClick={handleSubmitClick}
+              onClick={handleSave}
               isLoading={createCommute.isLoading}
               isDisabled={!form.isValid}
             >
