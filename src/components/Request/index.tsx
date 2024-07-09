@@ -104,14 +104,14 @@ export const Request = ({ request }: RequestProps) => {
               variant="primary"
               leftIcon={<Icon icon={Check} />}
               isLoading={updateRequestStatus.isLoading}
-              onClick={() => {
+              onClick={() =>
                 updateRequestStatus.mutate({
                   passengerId: request.userId,
                   requestStatus: RequestStatus.ACCEPTED,
                   stopId: request.stopId,
                   requestComment: textareaValue,
-                });
-              }}
+                })
+              }
             >
               Accept
             </Button>
@@ -120,14 +120,14 @@ export const Request = ({ request }: RequestProps) => {
               variant="danger"
               leftIcon={<Icon icon={X} />}
               isLoading={updateRequestStatus.isLoading}
-              onClick={() => {
+              onClick={() =>
                 updateRequestStatus.mutate({
                   passengerId: request.userId,
                   requestStatus: RequestStatus.REFUSED,
                   stopId: request.stopId,
                   requestComment: textareaValue,
-                });
-              }}
+                })
+              }
             >
               Refuse
             </Button>
