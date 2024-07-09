@@ -36,7 +36,7 @@ export const authOptions: NextAuthOptions = {
           .map((domain)=>domain.trim());  // We remove whitespaces from the string to prevent error
         return (
           profile?.email_verified && 
-          domains.includes(`@${profile.email?.split('@')[1]}` || '') 
+          domains.some(domain => profile.email?.endsWith(domain)) 
         );
       }
 
