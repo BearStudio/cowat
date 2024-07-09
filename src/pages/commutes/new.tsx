@@ -117,6 +117,14 @@ const New: NextPage = () => {
     !!selectedTemplate &&
     (selectedTemplate === FROM_SCRATCH || !fromTemplate.isLoading);
 
+  const handleSubmitClick = () => {
+    if (myCommutesOnDate.isSuccess && myCommutesOnDate.data?.length > 0) {
+      confirmCommuteModal.onOpen();
+    } else {
+      form.submit();
+    }
+  };
+
   return (
     <LayoutAuthenticated
       hideNav
@@ -174,7 +182,7 @@ const New: NextPage = () => {
             <CommuteForm repeaterInitialValues={defaultValues.stops} />
             <Button
               variant="primary"
-              onClick={confirmCommuteModal.onOpen}
+              onClick={handleSubmitClick}
               isLoading={createCommute.isLoading}
               isDisabled={!form.isValid}
             >
