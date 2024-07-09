@@ -9,7 +9,7 @@ import { Switch } from "@chakra-ui/react";
 
 export type FieldSwitchProps = FieldProps<boolean> &
   FormGroupProps &
-  Omit<SwitchProps, "children"> & {
+  Omit<SwitchProps, "children" | "value" | "defaultValue"> & {
     autoFocus?: boolean;
   };
 
@@ -54,7 +54,6 @@ export const FieldSwitch = (props: FieldSwitchProps) => {
         isDisabled={isValidating}
         size={size}
         autoFocus={autoFocus}
-        // Type error here, require help with formiz
         onChange={(e) => setValue(e.target.checked)}
         {...rest}
       />
