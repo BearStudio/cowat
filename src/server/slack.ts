@@ -189,9 +189,9 @@ const request = async (passengerOnStop: PassengerOnStopNotification) => {
                 : ""
             }* commute
             ${
-              passengerOnStop.requestComment === ""
-                ? ""
-                : `and added a comment : ${passengerOnStop.requestComment}`
+              passengerOnStop.requestComment
+                ? `and added a comment : ${passengerOnStop.requestComment}`
+                : ""
             }`,
           },
         },
