@@ -220,6 +220,7 @@ export const stopRouter = createTRPCRouter({
         },
         data: {
           requestStatus: input.requestStatus,
+          requestComment: input.requestComment,
         },
         include: {
           stop: {
