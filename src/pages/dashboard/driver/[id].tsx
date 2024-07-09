@@ -269,14 +269,14 @@ const Driver = () => {
                                 })
                               }
                               confirmVariant="danger"
-                              confirmText="Refuse passenger"
+                              confirmText="Decline passenger"
                               cancelText="Cancel"
-                              title="You're about to reject a passenger from your commute"
+                              title="You’re about to decline a passenger for your commute."
                               message={
                                 <>
-                                  Are you sure you want to remove{" "}
-                                  <strong>{passenger.user.name}</strong> from
-                                  stop &quot;
+                                  Are you sure you want to decline{" "}
+                                  <strong>{passenger.user.name}</strong> at stop
+                                  &quot;
                                   <strong>{stop.location?.name}</strong>
                                   &quot; at <strong>{stop.time}</strong> ?
                                 </>
@@ -284,9 +284,10 @@ const Driver = () => {
                             >
                               <Button
                                 variant="danger"
+                                size="sm"
                                 isLoading={updateRequestStatus.isLoading}
                               >
-                                Refuse passenger
+                                Decline passenger
                               </Button>
                             </ConfirmModal>
                           </VStack>
