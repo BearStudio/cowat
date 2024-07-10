@@ -230,7 +230,7 @@ const bookingAutoAccepted = async (
           text: {
             type: "mrkdwn",
             text: `Hey ${passenger},
-              ✅${driver} automatically accepted your request for *${
+    ✅${driver} automatically accepted your request for *${
               passengerOnStop.stop.commute?.date
                 ? `${dayjs(passengerOnStop.stop.commute.date)
                     .tz("Europe/Paris")
