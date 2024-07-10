@@ -175,7 +175,7 @@ model User {
     role             UserRole?           @default(USER)
     passengerOn      PassengersOnStops[]
     slackMemberId    String?
-    autoAccept       Boolean             @default(false)
+    isAutoAccepting  Boolean             @default(false)
 
     @@unique([slackMemberId])
 }
