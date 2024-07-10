@@ -91,14 +91,14 @@ export async function book({
     },
   });
 
-  const { isAutoAccepting: isCreatorAutoAccepting } =
+  const { isAutoAcceptEnabled } =
     (await prisma.user.findUnique({
       where: {
         id: stopCreatorId,
       },
     })) ?? {};
   const requestStatus =
-    isCreatorAutoAccepting && !doesExist ? "ACCEPTED" : "REQUESTED";
+    isAutoAcceptEnabled && !doesExist ? "ACCEPTED" : "REQUESTED";
 
   // If passenger on stop exists, then update the data. If it exist it means the
   // user did cancel the request.
