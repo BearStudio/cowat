@@ -97,7 +97,8 @@ export async function book({
         id: stopCreatorId,
       },
     })) ?? {};
-  const requestStatus = isCreatorAutoAccepting ? "ACCEPTED" : "REQUESTED";
+  const requestStatus =
+    isCreatorAutoAccepting && !doesExist ? "ACCEPTED" : "REQUESTED";
 
   // If passenger on stop exists, then update the data. If it exist it means the
   // user did cancel the request.
@@ -110,7 +111,7 @@ export async function book({
         },
       },
       data: {
-        requestStatus: "REQUESTED",
+        requestStatus: requestStatus,
       },
       include: {
         stop: {
@@ -172,7 +173,7 @@ export async function book({
   }
 
   await slack.newBookingFrom(passengerOnStop);
-  if (isCreatorAutoAccepting) {
+  if (requestStatus === "ACCEPTED") {
     await slack.bookingAutoAccepted(passengerOnStop);
   }
 
