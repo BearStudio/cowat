@@ -201,6 +201,50 @@ const request = async (passengerOnStop: PassengerOnStopNotification) => {
   }
 };
 
+const bookingAutoAccepted = async (
+  passengerOnStop: PassengerOnStopNotification
+) => {
+  const driverSlackId = passengerOnStop.stop.commute?.createdBy?.slackMemberId;
+
+  const driver = driverSlackId
+    ? `<@${driverSlackId}>`
+    : passengerOnStop.stop.commute?.createdBy?.email ?? "";
+
+  const passengerSlackId = passengerOnStop.user.slackMemberId;
+
+  const passenger = passengerSlackId
+    ? `<@${passengerSlackId}>`
+    : passengerOnStop.stop.commute?.createdBy?.email ?? "";
+
+  try {
+    const result = await slackApp.client.chat.postMessage({
+      channel: passengerSlackId ?? "",
+      blocks: [
+        {
+          type: "section",
+          text: {
+            type: "mrkdwn",
+            text: `Hey ${passenger},
+              ✅${driver} automatically accepted your request for *${
+              passengerOnStop.stop.commute?.date
+                ? `${dayjs(passengerOnStop.stop.commute.date)
+                    .tz("Europe/Paris")
+                    .format("dddd DD MMM HH:mm")} ${TIMEZONE_NAME}`
+                : ""
+            }* commute.`,
+          },
+        },
+      ],
+    });
+
+    // TODO: handle result not OK with some logsnag or else
+    console.log(result);
+  } catch (error) {
+    // TODO: handle with some tool to store errors
+    console.error(error);
+  }
+};
+
 const bookingCanceled = async (
   passengerOnStop: PassengerOnStopNotification
 ) => {
@@ -283,6 +327,7 @@ export const slack = {
   newBookingFrom,
   newCommute,
   request,
+  bookingAutoAccepted,
   bookingCanceled,
   commuteCanceled,
 };
