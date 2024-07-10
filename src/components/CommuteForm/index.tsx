@@ -5,6 +5,7 @@ import { FieldSelect } from "@/components/FieldSelect";
 import { FieldTextarea } from "@/components/FieldTextarea";
 import { FieldTime } from "@/components/FieldTime";
 import { FieldHidden } from "@/components/FieldHidden";
+import { FieldNumber } from "@/components/InputSpinner";
 import { Icon } from "@/components/Icon";
 import { LocationForm } from "@/components/LocationForm";
 import type { RouterInputs } from "@/utils/api";
@@ -80,7 +81,25 @@ export const CommuteForm = ({
 
   return (
     <>
-      <FieldInput<number>
+      <FieldNumber
+        label="💺 Seats"
+        name="seats"
+        // type="number"
+        required="Please provide the number of available seats"
+        validations={[
+          {
+            handler: isMinNumber(numberOfPassengers ?? 0),
+            message: `Should be a number over ${numberOfPassengers}`,
+          },
+          {
+            handler: isMaxNumber(10),
+            message: "Should be a number less than 10",
+          },
+        ]}
+        // formatValue={(value) => parseInt(value ?? "", 10)}
+      />
+
+      {/* <FieldInput<number>
         label="💺 Seats"
         name="seats"
         type="number"
@@ -96,7 +115,8 @@ export const CommuteForm = ({
           },
         ]}
         formatValue={(value) => parseInt(value ?? "", 10)}
-      />
+      /> */}
+
       {["CREATE"].includes(mode) && (
         <>
           <FieldDayPicker
