@@ -172,6 +172,9 @@ export async function book({
   }
 
   await slack.newBookingFrom(passengerOnStop);
+  if (isCreatorAutoAccepting) {
+    await slack.bookingAutoAccepted(passengerOnStop);
+  }
 
   return passengerOnStop;
 }
