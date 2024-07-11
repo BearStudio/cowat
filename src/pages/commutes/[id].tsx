@@ -36,6 +36,7 @@ const EditCommute: NextPage = () => {
   });
 
   const handleOnValidSubmit = (values: EditCommuteInput) => {
+    console.log(values)
     commuteMutation.mutate(
       { ...values, id: id?.toString() ?? "" },
       {
