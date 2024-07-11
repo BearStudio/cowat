@@ -12,7 +12,7 @@ import type { FieldProps } from "@formiz/core";
 import { useField } from "@formiz/core";
 
 export type FieldNumberProps = FieldProps<number> &
-  FormGroupProps & { placeholder?: number };
+  FormGroupProps & { placeholder?: number; type?: string };
 
 export const FieldNumber = (props: FieldNumberProps) => {
   const { errorMessage, id, shouldDisplayError, setValue, value, otherProps } =
