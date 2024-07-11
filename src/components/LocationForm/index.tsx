@@ -13,8 +13,14 @@ export const LocationForm = () => {
 
   return (
     <>
-      <FieldInput label="Name" name="name" required="Please provide a name" />
+      <FieldInput
+        label="Name"
+        name="name"
+        required="Please provide a name"
+        mb={3}
+      />
       <FieldTextarea
+        mb={1}
         label="Address"
         name="address"
         required="Please provide an address"
