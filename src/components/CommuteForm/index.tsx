@@ -41,6 +41,7 @@ import { Plus, Trash } from "lucide-react";
 import { useRouter } from "next/router";
 import { Fragment } from "react";
 import dayjs from "dayjs";
+import { FieldHidden } from "../FieldHidden";
 
 type CommuteFormProps = {
   repeaterInitialValues: Array<object>;
@@ -73,11 +74,9 @@ export const CommuteForm = ({
     initialValues,
   });
 
-  const arePassengersOnStops = commute.data?.stops.some(
-    (stop) => stop.passengers.length !== 0
-  );
-
   const numberOfPassengers = getPassengers(commute.data?.stops ?? []).length;
+
+  const arePassengersOnStops = numberOfPassengers !== 0;
 
   return (
     <>
@@ -131,8 +130,11 @@ export const CommuteForm = ({
       )}
       <>
         {stops.keys.map((key, index) => {
-          const numberOfPassengersOnStop =
-            commute.data?.stops[index]?.passengers.length;
+          const stop = commute.data?.stops[index];
+          let numberOfPassengersOnStop;
+          if (stop) {
+            numberOfPassengersOnStop = getPassengers([stop]).length;
+          }
           const isEditable =
             numberOfPassengersOnStop === 0 ||
             numberOfPassengersOnStop === undefined;
@@ -140,6 +142,7 @@ export const CommuteForm = ({
           return (
             <Fragment key={key}>
               <Stop
+                id={stop?.id}
                 index={index}
                 isEditable={isEditable}
                 isRemovable={isRemovable}
@@ -159,6 +162,7 @@ export const CommuteForm = ({
 };
 
 type StopProps = {
+  id?: string;
   index: number;
   isRemovable?: boolean;
   isEditable?: boolean;
@@ -166,6 +170,7 @@ type StopProps = {
 };
 
 const Stop = ({
+  id,
   index,
   onRemove,
   isRemovable = true,
@@ -215,6 +220,10 @@ const Stop = ({
         spacing={{ base: 2, md: 6 }}
       >
         <HStack align="flex-start" w="full">
+          <FieldHidden 
+            name={`stops[${index}].id`}
+            defaultValue={id}
+          />
           <FieldSelect
             label={`📍 Stop ${index + 1}`}
             name={`stops[${index}].location`}

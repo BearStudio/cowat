@@ -371,10 +371,11 @@ export const commuteRouter = createTRPCRouter({
           .array(
             z.object({
               location: z.string(),
-              time: z.string()?.nullish(),
+              time: z.string().nullish(),
+              id: z.string().optional()
             })
           )
-          ?.nullish(),
+          .nullish(),
         comment: z.string().nullish(),
       })
     )
@@ -385,40 +386,74 @@ export const commuteRouter = createTRPCRouter({
       ) =>
         stop.time === inputStop.time && stop.locationId === inputStop.location;
 
+      const areSameLocation = (
+        stopLocation: String,
+        inputStopLocation: RouterInputs["commute"]["createCommute"]["stops"][number]["location"]
+      ) =>
+        stopLocation === inputStopLocation;
+
       if (input.stops) {
         const existingStops = await ctx.prisma.stop.findMany({
           where: {
             commuteId: input.id,
           },
         });
-        const stopsToCreate = input.stops.filter(
-          (stop) =>
-            !existingStops.some((existingStop) =>
-              areSameStop(existingStop, stop)
+        const existingStopsIds = existingStops.map((existingStop) => existingStop.id)
+        console.log("Existing stops : ",existingStops)
+        console.log("Existing stops ids : ",existingStopsIds)
+        console.log("Input stops : ",input.stops)
+        // const stopsToCreate = input.stops.filter(
+        //   (stop) => 
+        //     !existingStops.some((existingStop) =>
+        //       existingStop.locationId && areSameLocation(existingStop.locationId,stop.location)
+        //     )
+        // ).map((stop) => ({
+        //   locationId: stop.location,
+        //   time: stop.time,
+        //   commuteId: input.id
+        // }));
+        // console.log("Stops to create : ",stopsToCreate)
+        // const stopsToModify = input.stops.filter(
+        //   (stop) => 
+        //     existingStops.some((existingStop) =>
+        //       existingStop.locationId && areSameLocation(existingStop.locationId,stop.location) && !areSameStop(existingStop,stop)
+        //     )
+        // ).map((stop) => ({
+        //   locationId: stop.location,
+        //   time: stop.time,
+        //   commuteId: input.id,
+        //   id: stop.id
+        // }));;
+        // console.log("Stops to modify : ",stopsToModify)
+        const stopsToCancel = existingStops.filter(
+          (existingStop) => 
+            !input.stops?.some((stop) =>
+              existingStop.locationId && areSameLocation(existingStop.locationId,stop.location)
             )
         );
-        const stopIdsToDelete = existingStops
-          .filter(
-            (existingStop) =>
-              !input.stops?.some((stop) => areSameStop(existingStop, stop))
-          )
-          .map((stop) => stop.id);
+        console.log("Stops to cancel : ",stopsToCancel)
 
-        await ctx.prisma.stop.deleteMany({
-          where: {
-            id: { in: stopIdsToDelete },
-          },
-        });
+        // await ctx.prisma.stop.createMany({
+        //   data: stopsToCreate
+        // })
 
-        for (const stop of stopsToCreate) {
-          await ctx.prisma.stop.create({
-            data: {
-              time: stop.time,
-              locationId: stop.location,
-              commuteId: input.id,
+        await ctx.prisma.$transaction(stopsToCreateOrModify.map( (stopToCreateOrModify) => 
+          ctx.prisma.stop.upsert({
+            update: {
+              time: stopToCreateOrModify.time
             },
-          });
-        }
+            create: {
+              time: stopToCreateOrModify.time,
+              locationId: stopToCreateOrModify.locationId
+            },
+            where: {
+              location: {
+                id: stopToCreateOrModify.locationId
+              },
+              id: stopToCreateOrModify.id
+            }
+          })
+        ))
       }
 
       const updatedStops = await ctx.prisma.stop.findMany({
