@@ -1,6 +1,7 @@
 import { Icon } from "@/components/Icon";
 import { FULL_TEXT_DATE_WITH_TIME } from "@/constants/dates";
 import { api } from "@/utils/api";
+import { isBrowser } from "@/utils/ssr";
 import {
   Avatar,
   Button,
@@ -41,7 +42,7 @@ export const Request = ({ request }: RequestProps) => {
     },
   });
 
-  const timeZone = window.localStorage.getItem("timezone");
+  const timeZone = isBrowser ? window.localStorage.getItem("timezone") : null;
 
   const stopDay = dayjs(request.stop.commute?.date).format("YYYY-MM-DD");
   const stopDate = dayjs(`${stopDay} ${request.stop.time}`);

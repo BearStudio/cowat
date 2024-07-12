@@ -37,6 +37,7 @@ import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { ConfirmCommuteActionModal } from "@/components/ConfirmCommuteActionModal";
 import { ConfirmCancelCommuteModal } from "@/components/ConfirmCancelCommuteModal";
+import { isBrowser } from "@/utils/ssr";
 
 export type CommuteOverviewProps = Prisma.CommuteGetPayload<{
   include: {
@@ -140,7 +141,8 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
 
     return { light: "gray.300", dark: "gray.500" } as const;
   })();
-  const timeZone = window.localStorage.getItem("timezone");
+
+  const timeZone = isBrowser ? window.localStorage.getItem("timezone") : null;
 
   return (
     <Card
@@ -192,23 +194,27 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
               </Text>
             </Stack>
           </HStack>
-          {!props.isDeleted
-          ? <AvatarGroup size="sm" max={3}>
-            {passengers.map((passenger) => (
-              <Avatar
-                key={passenger.user.id}
-                src={passenger.user.image ?? ""}
-                name={passenger.user.name ?? passenger.user.email ?? ""}
-                opacity={
-                  NOT_YET_PASSENGER_IF_INSIDE.includes(passenger.requestStatus)
-                    ? 0.6
-                    : 1
-                }
-                border="2px solid white"
-              />
-            ))}
-          </AvatarGroup>
-          : <></>}
+          {!props.isDeleted ? (
+            <AvatarGroup size="sm" max={3}>
+              {passengers.map((passenger) => (
+                <Avatar
+                  key={passenger.user.id}
+                  src={passenger.user.image ?? ""}
+                  name={passenger.user.name ?? passenger.user.email ?? ""}
+                  opacity={
+                    NOT_YET_PASSENGER_IF_INSIDE.includes(
+                      passenger.requestStatus
+                    )
+                      ? 0.6
+                      : 1
+                  }
+                  border="2px solid white"
+                />
+              ))}
+            </AvatarGroup>
+          ) : (
+            <></>
+          )}
         </Flex>
       </CardHeader>
       <CardBody pt={2} zIndex={2}>
