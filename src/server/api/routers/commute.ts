@@ -372,7 +372,7 @@ export const commuteRouter = createTRPCRouter({
             z.object({
               location: z.string(),
               time: z.string().nullish(),
-              id: z.string().optional()
+              id: z.string().nullish()
             })
           )
           .nullish(),
@@ -380,76 +380,49 @@ export const commuteRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ input, ctx }) => {
-      const areSameStop = (
-        stop: Stop,
-        inputStop: RouterInputs["commute"]["createCommute"]["stops"][number]
-      ) =>
-        stop.time === inputStop.time && stop.locationId === inputStop.location;
-
-      const areSameLocation = (
-        stopLocation: String,
-        inputStopLocation: RouterInputs["commute"]["createCommute"]["stops"][number]["location"]
-      ) =>
-        stopLocation === inputStopLocation;
-
       if (input.stops) {
         const existingStops = await ctx.prisma.stop.findMany({
           where: {
             commuteId: input.id,
           },
         });
-        const existingStopsIds = existingStops.map((existingStop) => existingStop.id)
-        console.log("Existing stops : ",existingStops)
-        console.log("Existing stops ids : ",existingStopsIds)
-        console.log("Input stops : ",input.stops)
-        // const stopsToCreate = input.stops.filter(
-        //   (stop) => 
-        //     !existingStops.some((existingStop) =>
-        //       existingStop.locationId && areSameLocation(existingStop.locationId,stop.location)
-        //     )
-        // ).map((stop) => ({
-        //   locationId: stop.location,
-        //   time: stop.time,
-        //   commuteId: input.id
-        // }));
-        // console.log("Stops to create : ",stopsToCreate)
-        // const stopsToModify = input.stops.filter(
-        //   (stop) => 
-        //     existingStops.some((existingStop) =>
-        //       existingStop.locationId && areSameLocation(existingStop.locationId,stop.location) && !areSameStop(existingStop,stop)
-        //     )
-        // ).map((stop) => ({
-        //   locationId: stop.location,
-        //   time: stop.time,
-        //   commuteId: input.id,
-        //   id: stop.id
-        // }));;
-        // console.log("Stops to modify : ",stopsToModify)
-        const stopsToCancel = existingStops.filter(
-          (existingStop) => 
-            !input.stops?.some((stop) =>
-              existingStop.locationId && areSameLocation(existingStop.locationId,stop.location)
-            )
-        );
-        console.log("Stops to cancel : ",stopsToCancel)
 
-        // await ctx.prisma.stop.createMany({
-        //   data: stopsToCreate
-        // })
+        const inputStops = input.stops.map((stop) => ({
+            id: stop.id ? stop.id : '0',
+            locationId: stop.location,
+            time: stop.time,
+            commuteId: input.id
+          }));
+
+        console.log("Existing stops : ",existingStops)
+        console.log("Input stops : ",inputStops)
+
+        const inputStopsIds = inputStops.map((stop) => stop.id)
+
+        const stopsToCancel = existingStops.filter((stop) => !inputStopsIds?.includes(stop.id))
+        const stopsToCancelIds = stopsToCancel.map((stop) => stop.id)
+
+        const stopsToCreateOrModify = inputStops.filter(
+          (stop) => !stopsToCancelIds.some(
+            (stopCancelId) => stop.id === stopCancelId
+          )
+        )
+        
+        console.log("Stops to cancel : ",stopsToCancel)
+        console.log("Stops to create or modify : ",stopsToCreateOrModify)
 
         await ctx.prisma.$transaction(stopsToCreateOrModify.map( (stopToCreateOrModify) => 
           ctx.prisma.stop.upsert({
             update: {
-              time: stopToCreateOrModify.time
-            },
-            create: {
               time: stopToCreateOrModify.time,
               locationId: stopToCreateOrModify.locationId
             },
+            create: {
+              time: stopToCreateOrModify.time,
+              locationId: stopToCreateOrModify.locationId,
+              commuteId: stopToCreateOrModify.commuteId
+            },
             where: {
-              location: {
-                id: stopToCreateOrModify.locationId
-              },
               id: stopToCreateOrModify.id
             }
           })
