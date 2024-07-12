@@ -31,6 +31,7 @@ import dayjs from "dayjs";
 import { ArrowLeft, CheckCircle, Clock, ExternalLink } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { isBrowser } from "@/utils/ssr";
 
 const Driver = () => {
   const router = useRouter();
@@ -74,7 +75,7 @@ const Driver = () => {
       }
     );
   };
-  const timeZone = window.localStorage.getItem("timezone");
+  const timeZone = isBrowser ? window.localStorage.getItem("timezone") : null;
 
   return (
     <LayoutAuthenticated
