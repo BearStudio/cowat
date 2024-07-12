@@ -2,11 +2,9 @@ import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { z } from "zod";
 import { slack } from "@/server/slack";
 import dayjs from "dayjs";
-import type { Stop } from "@prisma/client";
 import { RequestStatus } from "@prisma/client";
 import { groupBy } from "remeda";
 import { YEAR_MONTH_DAY } from "@/constants/dates";
-import type { RouterInputs } from "@/utils/api";
 
 export const commuteRouter = createTRPCRouter({
   createCommute: protectedProcedure
@@ -394,22 +392,19 @@ export const commuteRouter = createTRPCRouter({
             commuteId: input.id
           }));
 
-        console.log("Existing stops : ",existingStops)
-        console.log("Input stops : ",inputStops)
-
         const inputStopsIds = inputStops.map((stop) => stop.id)
 
-        const stopsToCancel = existingStops.filter((stop) => !inputStopsIds?.includes(stop.id))
-        const stopsToCancelIds = stopsToCancel.map((stop) => stop.id)
+        const stopsToDeleteIds = existingStops.filter(
+          (stop) => !inputStopsIds?.includes(stop.id)
+        ).map(
+          (stop) => stop.id
+        )
 
         const stopsToCreateOrModify = inputStops.filter(
-          (stop) => !stopsToCancelIds.some(
-            (stopCancelId) => stop.id === stopCancelId
+          (stop) => !stopsToDeleteIds.some(
+            (stopToDeleteId) => stop.id === stopToDeleteId
           )
         )
-        
-        console.log("Stops to cancel : ",stopsToCancel)
-        console.log("Stops to create or modify : ",stopsToCreateOrModify)
 
         await ctx.prisma.$transaction(stopsToCreateOrModify.map( (stopToCreateOrModify) => 
           ctx.prisma.stop.upsert({
@@ -427,6 +422,14 @@ export const commuteRouter = createTRPCRouter({
             }
           })
         ))
+
+        await ctx.prisma.stop.deleteMany({
+          where: {
+            id: {
+              in: stopsToDeleteIds
+            }
+          }
+        })
       }
 
       const updatedStops = await ctx.prisma.stop.findMany({
