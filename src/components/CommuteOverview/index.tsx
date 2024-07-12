@@ -194,7 +194,7 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
               </Text>
             </Stack>
           </HStack>
-          {!props.isDeleted ? (
+          {!props.isDeleted && (
             <AvatarGroup size="sm" max={3}>
               {passengers.map((passenger) => (
                 <Avatar
@@ -212,8 +212,6 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
                 />
               ))}
             </AvatarGroup>
-          ) : (
-            <></>
           )}
         </Flex>
       </CardHeader>
