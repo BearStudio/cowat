@@ -92,6 +92,7 @@ model CommuteTemplate {
     stops       Stop[]
     seats       Int?
     comment     String?  @db.Text
+    commuteName String?   @db.Text @default("DefaultCommuteName")
 
     @@index([createdById])
 }

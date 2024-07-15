@@ -5,6 +5,7 @@ import { FieldTextarea } from "@/components/FieldTextarea";
 import { FieldTime } from "@/components/FieldTime";
 import { FieldHidden } from "@/components/FieldHidden";
 import { FieldNumber } from "@/components/FieldNumber";
+import { FieldInput } from "@/components/FieldInput";
 import { Icon } from "@/components/Icon";
 import { LocationForm } from "@/components/LocationForm";
 import type { RouterInputs } from "@/utils/api";
@@ -80,6 +81,16 @@ export const CommuteForm = ({
 
   return (
     <>
+      {["TEMPLATE"].includes(mode) && (
+        <>
+          <FieldInput<string>
+            label="Commute name"
+            name="commuteName"
+            type="string"
+            required="Please provide a valid commute name"
+          />
+        </>
+      )}
       <FieldNumber
         label="💺 Seats"
         name="seats"
