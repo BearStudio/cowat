@@ -31,6 +31,7 @@ import dayjs from "dayjs";
 import { ArrowLeft, CheckCircle, Clock, ExternalLink } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { ConfirmModal } from "@/components/ConfirmModal";
 import { isBrowser } from "@/utils/ssr";
 
 const Driver = () => {
@@ -46,6 +47,13 @@ const Driver = () => {
     },
     { enabled: !!commuteId, refetchInterval: 30_000 }
   );
+
+  const updateRequestStatus = api.stop.requestStatus.useMutation({
+    onSuccess: async () => {
+      await ctx.commute.invalidate();
+      await ctx.stop.invalidate();
+    },
+  });
 
   const ctx = api.useContext();
 
@@ -235,18 +243,54 @@ const Driver = () => {
                               {passenger.user.name ?? passenger.user.email}
                             </Text>
                           </HStack>
-                          <Tag
-                            colorScheme={
-                              PASSENGER_STATUS[passenger.stopStatus].colorScheme
-                            }
-                          >
-                            {PASSENGER_STATUS[passenger.stopStatus].text}{" "}
-                            {passenger.delay} {!!passenger.delay && " minutes"}
-                            <Icon
-                              ml="2"
-                              icon={PASSENGER_STATUS[passenger.stopStatus].icon}
-                            />
-                          </Tag>
+                          <Stack align={"end"}>
+                            <Tag
+                              colorScheme={
+                                PASSENGER_STATUS[passenger.stopStatus]
+                                  .colorScheme
+                              }
+                            >
+                              {PASSENGER_STATUS[passenger.stopStatus].text}{" "}
+                              {passenger.delay}{" "}
+                              {!!passenger.delay && " minutes"}
+                              <Icon
+                                ml="2"
+                                icon={
+                                  PASSENGER_STATUS[passenger.stopStatus].icon
+                                }
+                              />
+                            </Tag>
+                            <ConfirmModal
+                              onConfirm={() =>
+                                updateRequestStatus.mutate({
+                                  stopId: stop.id,
+                                  passengerId: passenger.userId,
+                                  requestStatus: "REFUSED",
+                                })
+                              }
+                              confirmVariant="danger"
+                              confirmText="Decline passenger"
+                              cancelText="Cancel"
+                              title="You’re about to decline a passenger on your commute."
+                              message={
+                                <>
+                                  Are you sure you want to decline{" "}
+                                  <strong>{passenger.user.name}</strong> at stop
+                                  &quot;
+                                  <strong>{stop.location?.name}</strong>
+                                  &quot; at <strong>{stop.time}</strong> ?
+                                </>
+                              }
+                            >
+                              <Button
+                                variant="danger"
+                                size="sm"
+                                isLoading={updateRequestStatus.isLoading}
+                              >
+                                Decline passenger
+                              </Button>
+                            </ConfirmModal>
+                          </Stack>
                         </Flex>
                       ))}
                     </Stack>
