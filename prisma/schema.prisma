@@ -73,6 +73,7 @@ model PassengersOnStops {
     stopId        String
     requestStatus RequestStatus @default(REQUESTED)
     stopStatus    StopStatus    @default(UNKNOWN)
+    requestComment String?      @db.Text
     // Passenger is late, number of minutes of delay.
     delay         Int?
 

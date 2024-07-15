@@ -175,6 +175,7 @@ export const stopRouter = createTRPCRouter({
         stopId: z.string(),
         passengerId: z.string(),
         requestStatus: z.nativeEnum(RequestStatus),
+        requestComment: z.string().nullish(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -219,6 +220,7 @@ export const stopRouter = createTRPCRouter({
         },
         data: {
           requestStatus: input.requestStatus,
+          requestComment: input.requestComment,
         },
         include: {
           stop: {

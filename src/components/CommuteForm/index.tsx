@@ -73,7 +73,7 @@ export const CommuteForm = ({
     initialValues,
   });
 
-  const arePassengersOnStop = commute.data?.stops.some(
+  const arePassengersOnStops = commute.data?.stops.some(
     (stop) => stop.passengers.length !== 0
   );
 
@@ -118,35 +118,41 @@ export const CommuteForm = ({
         </>
       )}
       <Divider />
-      {arePassengersOnStop && (
+      {arePassengersOnStops && (
         <Alert status="info" fontSize="sm" borderRadius="md">
           <AlertIcon />
           <Box>
-            <AlertTitle>Stops are not editable at the moment.</AlertTitle>
+            <AlertTitle>Some stops are not editable at the moment.</AlertTitle>
             <AlertDescription>
-              When users made request to be on your commute, you can&apos;t edit
-              them at the moment
+              Stops that other users requested can&apos;t be edited.
             </AlertDescription>
           </Box>
         </Alert>
       )}
-      {!arePassengersOnStop && (
-        <>
-          {stops.keys.map((key, index) => (
+      <>
+        {stops.keys.map((key, index) => {
+          const numberOfPassengersOnStop =
+            commute.data?.stops[index]?.passengers.length;
+          const isEditable =
+            numberOfPassengersOnStop === 0 ||
+            numberOfPassengersOnStop === undefined;
+          const isRemovable = stops.keys.length > 1 && isEditable;
+          return (
             <Fragment key={key}>
               <Stop
                 index={index}
-                isRemovable={stops.keys.length > 1}
+                isEditable={isEditable}
+                isRemovable={isRemovable}
                 onRemove={() => stops.remove(index)}
               />
               <Divider />
             </Fragment>
-          ))}
-          <AddPlaceholder onClick={() => stops.append()}>
-            <Icon icon={Plus} /> Add Stop 📍
-          </AddPlaceholder>
-        </>
-      )}
+          );
+        })}
+        <AddPlaceholder onClick={() => stops.append()}>
+          <Icon icon={Plus} /> Add Stop 📍
+        </AddPlaceholder>
+      </>
       <FieldTextarea label="Comment" name="comment" />
     </>
   );
@@ -155,10 +161,16 @@ export const CommuteForm = ({
 type StopProps = {
   index: number;
   isRemovable?: boolean;
+  isEditable?: boolean;
   onRemove: () => void;
 };
 
-const Stop = ({ index, onRemove, isRemovable }: StopProps) => {
+const Stop = ({
+  index,
+  onRemove,
+  isRemovable = true,
+  isEditable = true,
+}: StopProps) => {
   const ctx = api.useContext();
   const form = useFormContext();
   const formFields = useFormFields({ fields: ["stops"] });
@@ -206,6 +218,7 @@ const Stop = ({ index, onRemove, isRemovable }: StopProps) => {
           <FieldSelect
             label={`📍 Stop ${index + 1}`}
             name={`stops[${index}].location`}
+            isDisabled={!isEditable}
             placeholder="Please select a location"
             options={
               getSelectOptions(index)?.map((location) => ({
@@ -219,6 +232,7 @@ const Stop = ({ index, onRemove, isRemovable }: StopProps) => {
             <IconButton
               aria-label="Add a location"
               icon={<Icon icon={Plus} />}
+              isDisabled={!isEditable}
               onClick={onOpen}
             />
           </Box>
@@ -227,6 +241,7 @@ const Stop = ({ index, onRemove, isRemovable }: StopProps) => {
           <FieldTime
             label="🕑 Pick up time"
             name={`stops[${index}].time`}
+            isDisabled={!isEditable}
             required={
               index === 0 ? "The first pick up time is required" : false
             }

@@ -7,6 +7,7 @@ import { getPassengers, havePassengerOnStop } from "@/utils/commutes";
 import { DRIVER_STATUS } from "@/utils/driverStatus";
 import { NOT_YET_PASSENGER_IF_INSIDE } from "@/utils/passengers";
 import { PASSENGER_STATUS } from "@/utils/passengerStatus";
+import { isBrowser } from "@/utils/ssr";
 import {
   Avatar,
   Badge,
@@ -74,7 +75,8 @@ const Passenger = () => {
     );
   };
 
-  const timeZone = window.localStorage.getItem("timezone");
+  const timeZone = isBrowser ? window.localStorage.getItem("timezone") : null;
+
   return (
     <LayoutAuthenticated
       hideNav

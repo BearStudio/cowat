@@ -1,6 +1,8 @@
+import React, { useState } from "react";
 import { Icon } from "@/components/Icon";
 import { FULL_TEXT_DATE_WITH_TIME } from "@/constants/dates";
 import { api } from "@/utils/api";
+import { isBrowser } from "@/utils/ssr";
 import {
   Avatar,
   Button,
@@ -9,6 +11,7 @@ import {
   Flex,
   Stack,
   Text,
+  Textarea,
 } from "@chakra-ui/react";
 import type {
   Commute,
@@ -33,6 +36,7 @@ type RequestProps = {
 
 export const Request = ({ request }: RequestProps) => {
   const ctx = api.useContext();
+  const [textareaValue, setTextareaValue] = useState("");
 
   const updateRequestStatus = api.stop.requestStatus.useMutation({
     onSuccess: () => {
@@ -41,7 +45,7 @@ export const Request = ({ request }: RequestProps) => {
     },
   });
 
-  const timeZone = window.localStorage.getItem("timezone");
+  const timeZone = isBrowser ? window.localStorage.getItem("timezone") : null;
 
   const stopDay = dayjs(request.stop.commute?.date).format("YYYY-MM-DD");
   const stopDate = dayjs(`${stopDay} ${request.stop.time}`);
@@ -87,6 +91,13 @@ export const Request = ({ request }: RequestProps) => {
               name={request.user.name ?? request.user.email ?? ""}
             />
           </Flex>
+          <Flex gap="1">
+            <Textarea
+              placeholder="Any comments ?"
+              value={textareaValue}
+              onChange={(e) => setTextareaValue(e.target.value)}
+            />
+          </Flex>
           <Flex gap="3">
             <Button
               w="full"
@@ -98,6 +109,7 @@ export const Request = ({ request }: RequestProps) => {
                   passengerId: request.userId,
                   requestStatus: RequestStatus.ACCEPTED,
                   stopId: request.stopId,
+                  requestComment: textareaValue,
                 })
               }
             >
@@ -113,6 +125,7 @@ export const Request = ({ request }: RequestProps) => {
                   passengerId: request.userId,
                   requestStatus: RequestStatus.REFUSED,
                   stopId: request.stopId,
+                  requestComment: textareaValue,
                 })
               }
             >

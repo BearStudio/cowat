@@ -2,9 +2,11 @@ import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { z } from "zod";
 import { slack } from "@/server/slack";
 import dayjs from "dayjs";
+import type { Stop } from "@prisma/client";
 import { RequestStatus } from "@prisma/client";
 import { groupBy } from "remeda";
 import { YEAR_MONTH_DAY } from "@/constants/dates";
+import type { RouterInputs } from "@/utils/api";
 
 export const commuteRouter = createTRPCRouter({
   createCommute: protectedProcedure
@@ -377,29 +379,81 @@ export const commuteRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ input, ctx }) => {
-      // Deleting all the stops so we can recreate them
-      // This is a quick win, we should probably do it another way like update
+      const areSameStop = (
+        stop: Stop,
+        inputStop: RouterInputs["commute"]["createCommute"]["stops"][number]
+      ) =>
+        stop.time === inputStop.time && stop.locationId === inputStop.location;
 
       if (input.stops) {
-        await ctx.prisma.stop.deleteMany({
+        const existingStops = await ctx.prisma.stop.findMany({
           where: {
             commuteId: input.id,
+          },
+        });
+        const stopsToCreate = input.stops.filter(
+          (stop) =>
+            !existingStops.some((existingStop) =>
+              areSameStop(existingStop, stop)
+            )
+        );
+        const stopIdsToDelete = existingStops
+          .filter(
+            (existingStop) =>
+              !input.stops?.some((stop) => areSameStop(existingStop, stop))
+          )
+          .map((stop) => stop.id);
+
+        await ctx.prisma.stop.deleteMany({
+          where: {
+            id: { in: stopIdsToDelete },
+          },
+        });
+
+        for (const stop of stopsToCreate) {
+          await ctx.prisma.stop.create({
+            data: {
+              time: stop.time,
+              locationId: stop.location,
+              commuteId: input.id,
+            },
+          });
+        }
+      }
+
+      const updatedStops = await ctx.prisma.stop.findMany({
+        where: {
+          commuteId: input.id,
+        },
+        orderBy: {
+          time: "asc",
+        },
+      });
+      const firstStopTime = updatedStops[0]?.time;
+
+      const currentCommute = await ctx.prisma.commute.findUnique({
+        where: {
+          id: input.id,
+        },
+      });
+
+      if (currentCommute && firstStopTime) {
+        const { date } = currentCommute;
+        const [hours, minutes] = firstStopTime?.split(":");
+        date.setHours(Number(hours), Number(minutes));
+
+        await ctx.prisma.commute.update({
+          data: {
+            date: date,
+          },
+          where: {
+            id: input.id,
           },
         });
       }
 
       const commute = await ctx.prisma.commute.update({
         data: {
-          ...(input.stops
-            ? {
-                stops: {
-                  create: input.stops.map((stop) => ({
-                    time: stop.time,
-                    locationId: stop.location,
-                  })),
-                },
-              }
-            : {}),
           seats: input.seats,
           comment: input.comment,
         },

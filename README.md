@@ -57,6 +57,14 @@ pnpm dk:start
 
 (you can check quickly if the container is running with: `docker ps`)
 
+## Connect with several accounts in dev
+
+To connect with a second account in dev mode, you can update your `GOOGLE_AUTHORIZED_DOMAIN` environment variable by simply adding to the string the domain of your personal email. 
+
+For exemple, you could have `'@bearstudio.fr,@gmail.com'`.
+
+You also have to update your `GOOGLE_CLIENT_ID` and your `GOOGLE_CLIENT_SECRET`, replace them with the value of the Google Cloud Cowat-dev project credentials.
+
 ## What's next? How do I make an app with this?
 
 We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
