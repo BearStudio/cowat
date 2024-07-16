@@ -386,7 +386,7 @@ export const commuteRouter = createTRPCRouter({
         });
 
         const inputStops = input.stops.map((stop) => ({
-            id: stop.id ? stop.id : '0',
+            id: stop.id ?? '0',
             locationId: stop.location,
             time: stop.time,
             commuteId: input.id
@@ -401,12 +401,10 @@ export const commuteRouter = createTRPCRouter({
         )
 
         const stopsToCreateOrModify = inputStops.filter(
-          (stop) => !stopsToDeleteIds.some(
-            (stopToDeleteId) => stop.id === stopToDeleteId
-          )
+          (stop) => !stopsToDeleteIds.includes(stop.id)
         )
 
-        await ctx.prisma.$transaction(stopsToCreateOrModify.map( (stopToCreateOrModify) => 
+        await ctx.prisma.$transaction(stopsToCreateOrModify.map((stopToCreateOrModify) => 
           ctx.prisma.stop.upsert({
             update: {
               time: stopToCreateOrModify.time,
