@@ -12,9 +12,9 @@ export const LocationForm = () => {
   const fields = useFormFields();
 
   return (
-    <>
-      <Stack spacing="5" mb="1">
-        <FieldInput label="Name" name="name" required="Please provide a name" />
+    <Stack spacing="5">
+      <FieldInput label="Name" name="name" required="Please provide a name" />
+      <Stack spacing={1}>
         <FieldTextarea
           label="Address"
           name="address"
@@ -26,17 +26,20 @@ export const LocationForm = () => {
             },
           ]}
         />
+        <Button
+          as={Link}
+          href={
+            fields.address?.value ? searchOnMaps(fields.address.value) : "#"
+          }
+          isDisabled={!fields.address?.value}
+          title="Open the address on Google Maps"
+          isExternal={!!fields.address?.value}
+          rightIcon={<Icon icon={ExternalLink} />}
+          w="fit-content"
+        >
+          Maps
+        </Button>
       </Stack>
-      <Button
-        as={Link}
-        href={fields.address?.value ? searchOnMaps(fields.address.value) : "#"}
-        isDisabled={!fields.address?.value}
-        title="Open the address on Google Maps"
-        isExternal={!!fields.address?.value}
-        rightIcon={<Icon icon={ExternalLink} />}
-      >
-        Maps
-      </Button>
-    </>
+    </Stack>
   );
 };

@@ -277,7 +277,7 @@ const Stop = ({
           >
             <ModalContent>
               <Flex align="center" justify="space-between">
-                <ModalHeader whiteSpace="nowrap">New location</ModalHeader>
+                <ModalHeader flex="1">New location</ModalHeader>
                 <ModalCloseButton position="static" mr={6} />
               </Flex>
               <ModalBody>
