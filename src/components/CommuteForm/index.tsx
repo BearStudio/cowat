@@ -100,7 +100,6 @@ export const CommuteForm = ({
             message: "Should be a number less than 10",
           },
         ]}
-        formatValue={(value) => parseInt(String(value ?? ""), 10)}
       />
       {["CREATE"].includes(mode) && (
         <>
