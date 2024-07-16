@@ -4,6 +4,7 @@ import { FieldInput } from "@/components/FieldInput";
 import { FieldSelect } from "@/components/FieldSelect";
 import { FieldTextarea } from "@/components/FieldTextarea";
 import { FieldTime } from "@/components/FieldTime";
+import { FieldHidden } from "@/components/FieldHidden";
 import { Icon } from "@/components/Icon";
 import { LocationForm } from "@/components/LocationForm";
 import type { RouterInputs } from "@/utils/api";
@@ -41,7 +42,6 @@ import { Plus, Trash } from "lucide-react";
 import { useRouter } from "next/router";
 import { Fragment } from "react";
 import dayjs from "dayjs";
-import { FieldHidden } from "../FieldHidden";
 
 type CommuteFormProps = {
   repeaterInitialValues: Array<object>;
@@ -131,10 +131,9 @@ export const CommuteForm = ({
       <>
         {stops.keys.map((key, index) => {
           const stop = commute.data?.stops[index];
-          let numberOfPassengersOnStop = 0;
-          if (stop) {
-            numberOfPassengersOnStop = getPassengers([stop]).length;
-          }
+          const numberOfPassengersOnStop = stop
+            ? getPassengers([stop])?.length
+            : 0;
           const isEditable = numberOfPassengersOnStop === 0;
           const isRemovable = stops.keys.length > 1 && isEditable;
           return (
@@ -218,10 +217,7 @@ const Stop = ({
         spacing={{ base: 2, md: 6 }}
       >
         <HStack align="flex-start" w="full">
-          <FieldHidden 
-            name={`stops[${index}].id`}
-            defaultValue={id}
-          />
+          <FieldHidden name={`stops[${index}].id`} defaultValue={id} />
           <FieldSelect
             label={`📍 Stop ${index + 1}`}
             name={`stops[${index}].location`}
