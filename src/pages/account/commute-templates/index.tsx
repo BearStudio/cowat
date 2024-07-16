@@ -8,7 +8,6 @@ import {
   Card,
   CardBody,
   CardFooter,
-  CardHeader,
   Center,
   Heading,
   HStack,
@@ -16,7 +15,6 @@ import {
   SimpleGrid,
   Spinner,
   Stack,
-  Text,
 } from "@chakra-ui/react";
 import type { Prisma } from "@prisma/client";
 import { ArrowLeft, Car, Pencil, Plus, Trash } from "lucide-react";
