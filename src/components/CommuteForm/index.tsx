@@ -88,7 +88,6 @@ export const CommuteForm = ({
       <FieldNumber
         label="💺 Seats"
         name="seats"
-        type="number"
         required="Please provide the number of available seats"
         validations={[
           {
