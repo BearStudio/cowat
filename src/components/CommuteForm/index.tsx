@@ -3,8 +3,12 @@ import { FieldDayPicker } from "@/components/FieldDatePicker";
 import { FieldSelect } from "@/components/FieldSelect";
 import { FieldTextarea } from "@/components/FieldTextarea";
 import { FieldTime } from "@/components/FieldTime";
+<<<<<<< HEAD
 import { FieldHidden } from "@/components/FieldHidden";
 import { FieldNumber } from "@/components/InputSpinner";
+=======
+import { FieldNumber } from "@/components/FieldNumber";
+>>>>>>> 7fbd7e5 (fix(#132): Rename InputSpinner file to FieldNumber)
 import { Icon } from "@/components/Icon";
 import { LocationForm } from "@/components/LocationForm";
 import type { RouterInputs } from "@/utils/api";
