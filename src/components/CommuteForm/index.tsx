@@ -33,7 +33,6 @@ import {
   ModalOverlay,
   Stack,
   useDisclosure,
-  Flex,
 } from "@chakra-ui/react";
 import {
   Formiz,
@@ -276,10 +275,8 @@ const Stop = ({
             }}
           >
             <ModalContent>
-              <Flex align="center" justify="space-between">
-                <ModalHeader flex="1">New location</ModalHeader>
-                <ModalCloseButton position="static" mr={6} />
-              </Flex>
+              <ModalHeader flex="1">New location</ModalHeader>
+              <ModalCloseButton />
               <ModalBody>
                 <LocationForm />
               </ModalBody>
