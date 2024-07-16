@@ -18,6 +18,9 @@ export const CommuteTemplateOverview = (
 ) => {
   return (
     <Stack divider={<StackDivider borderColor="blackAlpha.100" />} spacing="4">
+      <Text fontSize="lg" fontWeight="bold">
+        {props.commuteName}
+      </Text>
       {props.seats && (
         <Text>
           💺 {props.seats} seat{props.seats > 1 ? "s" : ""}

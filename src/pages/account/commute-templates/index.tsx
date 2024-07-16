@@ -95,7 +95,7 @@ type CommuteTemplateCardProps = {
   index: number;
 };
 
-const CommuteTemplateCard = ({ template, index }: CommuteTemplateCardProps) => {
+const CommuteTemplateCard = ({ template }: CommuteTemplateCardProps) => {
   const ctx = api.useContext();
 
   const removeCommuteTemplate = api.template.remove.useMutation({
@@ -106,11 +106,6 @@ const CommuteTemplateCard = ({ template, index }: CommuteTemplateCardProps) => {
 
   return (
     <Card shadow="card">
-      <CardHeader>
-        <Text fontSize="lg" fontWeight="bold">
-          Commute {index + 1}
-        </Text>
-      </CardHeader>
       <CardBody>
         <CommuteTemplateOverview {...template} />
       </CardBody>

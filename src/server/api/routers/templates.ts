@@ -15,6 +15,7 @@ export const templateRouter = createTRPCRouter({
           })
         ),
         comment: z.string().nullish(),
+        commuteName: z.string(),
       })
     )
     .mutation(async ({ input, ctx }) => {
@@ -27,6 +28,7 @@ export const templateRouter = createTRPCRouter({
               locationId: stop.location,
             })),
           },
+          commuteName: input.commuteName,
           seats: input.seats,
           comment: input.comment,
         },
