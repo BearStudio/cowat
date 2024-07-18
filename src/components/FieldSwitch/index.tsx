@@ -44,6 +44,7 @@ export const FieldSwitch = (props: FieldSwitchProps) => {
     isRequired: !!required,
     label,
     showError,
+    isHorizontallyStacked: true,
     ...rest,
   };
 
