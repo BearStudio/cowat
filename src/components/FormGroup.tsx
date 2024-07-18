@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import React from "react";
 
 import type { FormControlProps } from "@chakra-ui/react";
+import { HStack } from "@chakra-ui/react";
 import {
   FormControl,
   FormErrorMessage,
@@ -24,6 +25,7 @@ export type FormGroupProps = Omit<
   isRequired?: boolean;
   label?: ReactNode;
   showError?: boolean;
+  isHorizontallyStacked?: boolean;
 };
 
 export const FormGroup = ({
@@ -34,20 +36,32 @@ export const FormGroup = ({
   isRequired,
   label,
   showError,
+  isHorizontallyStacked,
   ...props
-}: FormGroupProps) => (
-  <FormControl isInvalid={showError} isRequired={isRequired} {...props}>
-    {!!label && <FormLabel htmlFor={id}>{label}</FormLabel>}
-    {children}
-    {!!helper && <FormHelperText>{helper}</FormHelperText>}
+}: FormGroupProps) => {
+  type LabelWrapperProps = { children: ReactNode };
+  const LabelWrapper = ({ children }: LabelWrapperProps) => (
+    <>
+      {isHorizontallyStacked && <HStack>{children}</HStack>}
+      {!isHorizontallyStacked && <>{children}</>}
+    </>
+  );
+  return (
+    <FormControl isInvalid={showError} isRequired={isRequired} {...props}>
+      <LabelWrapper>
+        {!!label && <FormLabel htmlFor={id}>{label}</FormLabel>}
+        {children}
+        {!!helper && <FormHelperText>{helper}</FormHelperText>}
+      </LabelWrapper>
 
-    {!!errorMessage && (
-      <FormErrorMessage id={`${id}-error`}>
-        <SlideFade in offsetY={-6}>
-          <Icon icon={FiAlertCircle} me="2" />
-          {errorMessage}
-        </SlideFade>
-      </FormErrorMessage>
-    )}
-  </FormControl>
-);
+      {!!errorMessage && (
+        <FormErrorMessage id={`${id}-error`}>
+          <SlideFade in offsetY={-6}>
+            <Icon icon={FiAlertCircle} me="2" />
+            {errorMessage}
+          </SlideFade>
+        </FormErrorMessage>
+      )}
+    </FormControl>
+  );
+};

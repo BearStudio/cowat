@@ -85,44 +85,48 @@ const ProfilePage = () => {
             }
             initialValues={profile.data}
           >
-            <Stack>
-              <FieldInput
-                name="slackMemberId"
-                label="Slack Member Id"
-                required="The Slack member id is required if you want to use Cowat"
-                formatValue={(value) => value?.trim()}
-              />
+            <Stack spacing="4">
+              <Stack>
+                <FieldInput
+                  name="slackMemberId"
+                  label="Slack Member Id"
+                  required="The Slack member id is required if you want to use Cowat"
+                  formatValue={(value) => value?.trim()}
+                />
 
-              <Alert variant="infoGray" borderRadius="md">
-                <AlertIcon />
-                <Box>
-                  <AlertTitle>
-                    Your slack member id can be copied from your slack account
-                    on desktop
-                  </AlertTitle>
+                <Alert variant="infoGray" borderRadius="md">
+                  <AlertIcon />
+                  <Box>
+                    <AlertTitle>
+                      Your slack member id can be copied from your slack account
+                      on desktop
+                    </AlertTitle>
 
-                  <AlertDescription alignContent="center">
-                    <Text>
-                      On your profile, click on
-                      <MoreVerticalIcon
-                        style={{ display: "inline", verticalAlign: "middle" }}
-                      />
-                      and select &quot;copy member ID&quot;
-                    </Text>
-                  </AlertDescription>
-                </Box>
-              </Alert>
+                    <AlertDescription alignContent="center">
+                      <Text>
+                        On your profile, click on
+                        <MoreVerticalIcon
+                          style={{ display: "inline", verticalAlign: "middle" }}
+                        />
+                        and select &quot;copy member ID&quot;
+                      </Text>
+                    </AlertDescription>
+                  </Box>
+                </Alert>
+              </Stack>
               <FieldInput name="phone" label="Phone number" />
-              <FieldSwitch name="isAutoAcceptEnabled" label="Auto-accept" />
-              <Alert variant="infoGray" borderRadius="md">
-                <AlertIcon />
-                <Box>
-                  <AlertDescription>
-                    When auto-accept is on, all booking requests made on your
-                    commutes will be automatically accepted
-                  </AlertDescription>
-                </Box>
-              </Alert>
+              <Stack>
+                <FieldSwitch name="isAutoAcceptEnabled" label="Auto-accept" />
+                <Alert variant="infoGray" borderRadius="md">
+                  <AlertIcon />
+                  <Box>
+                    <AlertDescription>
+                      When auto-accept is on, all booking requests made on your
+                      commutes will be automatically accepted
+                    </AlertDescription>
+                  </Box>
+                </Alert>
+              </Stack>
               <Button
                 variant="primary"
                 type="submit"
