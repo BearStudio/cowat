@@ -11,7 +11,9 @@ type CommuteTemplateOverviewProps = Prisma.CommuteTemplateGetPayload<{
       };
     };
   };
-}>;
+}> & {
+  index: number;
+};
 
 export const CommuteTemplateOverview = (
   props: CommuteTemplateOverviewProps
@@ -19,7 +21,7 @@ export const CommuteTemplateOverview = (
   return (
     <Stack divider={<StackDivider borderColor="blackAlpha.100" />} spacing="4">
       <Text fontSize="lg" fontWeight="bold">
-        {props.templateName}
+        {props.templateName ? props.templateName : `Commute ${props.index + 1}`}
       </Text>
       {props.seats && (
         <Text>
