@@ -85,9 +85,9 @@ export const CommuteForm = ({
         <>
           <FieldInput<string>
             label="Commute name"
-            name="commuteName"
+            name="templateName"
             type="string"
-            required="Please provide a valid commute name"
+            required="Please provide a valid template name"
           />
         </>
       )}
