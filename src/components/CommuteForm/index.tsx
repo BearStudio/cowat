@@ -130,7 +130,7 @@ export const CommuteForm = ({
       )}
       <>
         {stops.keys.map((key, index) => {
-          const stopIndex = !Number.isNaN(parseInt(key)) // index is not update when you delete stops above in the list, but key is
+          const stopIndex = Number.isInteger(parseInt(key)) // index is not update when you delete stops above in the list, but key is
             ? parseInt(key)
             : index;
           const stop = commute.data?.stops[stopIndex];
