@@ -151,14 +151,14 @@ const New: NextPage = () => {
       {!selectedTemplate && !commuteTemplates.isLoading && (
         <Stack spacing="4">
           <Heading size="lg">Select a template</Heading>
-          {commuteTemplates.data?.map((template) => (
+          {commuteTemplates.data?.map((template, index) => (
             <Card
               boxShadow="card"
               key={template.id}
               onClick={() => setSelectedTemplate(template.id)}
             >
               <CardBody>
-                <CommuteTemplateOverview {...template} />
+                <CommuteTemplateOverview {...template} index={index} />
               </CardBody>
             </Card>
           ))}
