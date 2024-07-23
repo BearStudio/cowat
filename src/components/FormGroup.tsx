@@ -1,8 +1,8 @@
 import type { ReactNode } from "react";
 import React from "react";
 
-import type { FormControlProps } from "@chakra-ui/react";
-import { HStack } from "@chakra-ui/react";
+import type { FormControlProps, StackDirection } from "@chakra-ui/react";
+import { Stack } from "@chakra-ui/react";
 import {
   FormControl,
   FormErrorMessage,
@@ -25,7 +25,7 @@ export type FormGroupProps = Omit<
   isRequired?: boolean;
   label?: ReactNode;
   showError?: boolean;
-  isHorizontallyStacked?: boolean;
+  displayDirection?: StackDirection;
 };
 
 export const FormGroup = ({
@@ -36,23 +36,22 @@ export const FormGroup = ({
   isRequired,
   label,
   showError,
-  isHorizontallyStacked,
+  displayDirection,
   ...props
 }: FormGroupProps) => {
-  type LabelWrapperProps = { children: ReactNode };
-  const LabelWrapper = ({ children }: LabelWrapperProps) => (
-    <>
-      {isHorizontallyStacked && <HStack spacing={1}>{children}</HStack>}
-      {!isHorizontallyStacked && <>{children}</>}
-    </>
-  );
+  const isDisplayRow =
+    displayDirection === "row" || displayDirection === "row-reverse";
   return (
     <FormControl isInvalid={showError} isRequired={isRequired} {...props}>
-      <LabelWrapper>
-        {!!label && <FormLabel htmlFor={id}>{label}</FormLabel>}
+      <Stack spacing={0} direction={displayDirection}>
+        {!!label && (
+          <FormLabel htmlFor={id} mb={isDisplayRow ? 0 : undefined}>
+            {label}
+          </FormLabel>
+        )}
         {children}
-        {!!helper && <FormHelperText>{helper}</FormHelperText>}
-      </LabelWrapper>
+      </Stack>
+      {!!helper && <FormHelperText>{helper}</FormHelperText>}
 
       {!!errorMessage && (
         <FormErrorMessage id={`${id}-error`}>
