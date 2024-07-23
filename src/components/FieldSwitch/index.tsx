@@ -44,19 +44,18 @@ export const FieldSwitch = (props: FieldSwitchProps) => {
     isRequired: !!required,
     label,
     showError,
-    isHorizontallyStacked: true,
     ...rest,
   };
 
   return (
-    <FormGroup {...formGroupProps}>
+    <FormGroup displayDirection="row" {...formGroupProps}>
       <Switch
-        style={{ paddingBottom: "0.4rem" }}
         isChecked={Boolean(value)}
         isDisabled={isValidating}
         size={size}
         autoFocus={autoFocus}
         onChange={(e) => setValue(e.target.checked)}
+        alignSelf="center"
         {...rest}
       />
     </FormGroup>
