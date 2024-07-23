@@ -51,6 +51,7 @@ export const FieldSwitch = (props: FieldSwitchProps) => {
   return (
     <FormGroup {...formGroupProps}>
       <Switch
+        style={{ paddingBottom: "0.4rem" }}
         isChecked={Boolean(value)}
         isDisabled={isValidating}
         size={size}

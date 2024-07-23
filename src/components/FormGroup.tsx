@@ -42,7 +42,7 @@ export const FormGroup = ({
   type LabelWrapperProps = { children: ReactNode };
   const LabelWrapper = ({ children }: LabelWrapperProps) => (
     <>
-      {isHorizontallyStacked && <HStack>{children}</HStack>}
+      {isHorizontallyStacked && <HStack spacing={1}>{children}</HStack>}
       {!isHorizontallyStacked && <>{children}</>}
     </>
   );

@@ -85,7 +85,7 @@ const ProfilePage = () => {
             }
             initialValues={profile.data}
           >
-            <Stack spacing="4">
+            <Stack spacing={4}>
               <Stack>
                 <FieldInput
                   name="slackMemberId"
@@ -115,7 +115,7 @@ const ProfilePage = () => {
                 </Alert>
               </Stack>
               <FieldInput name="phone" label="Phone number" />
-              <Stack>
+              <Stack spacing={0.5}>
                 <FieldSwitch name="isAutoAcceptEnabled" label="Auto-accept" />
                 <Alert variant="infoGray" borderRadius="md">
                   <AlertIcon />
