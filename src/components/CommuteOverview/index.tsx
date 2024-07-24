@@ -144,6 +144,18 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
 
   const timeZone = isBrowser ? window.localStorage.getItem("timezone") : null;
 
+  const sortedStops = props.stops.sort((first, last) => {
+    const stopDay = dayjs(props.date).format("YYYY-MM-DD");
+    const timeFirst = dayjs(`${stopDay} ${first.time}`);
+    const timeLast = dayjs(`${stopDay} ${last.time}`);
+
+    return timeFirst.isBefore(timeLast) ? -1 : 1;
+  });
+
+  const firstStopTime = sortedStops[0]?.time
+    ? dayjs(`${dayjs(props.date).format("YYYY-MM-DD")} ${sortedStops[0].time}`)
+    : null;
+
   return (
     <Card
       position="relative"
@@ -184,9 +196,11 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
                 <Text fontWeight="bold" fontSize="sm">
                   {timeZone !== null
                     ? ` ${dayjs
-                        .tz(props.date, timeZone)
+                        .tz(firstStopTime, timeZone)
                         .format(FULL_TEXT_DATE_WITH_TIME)}`
-                    : ` ${dayjs(props.date).format(FULL_TEXT_DATE_WITH_TIME)}`}
+                    : ` ${dayjs(firstStopTime).format(
+                        FULL_TEXT_DATE_WITH_TIME
+                      )}`}
                 </Text>
               </HStack>
               <Text fontSize="sm">
@@ -289,7 +303,7 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
                   </>
                 )}
 
-                {props.stops.map((stop) => {
+                {sortedStops.map((stop) => {
                   const passengers = stop.passengers.filter(
                     (passenger) =>
                       !["CANCELED", "REFUSED"].includes(passenger.requestStatus)
