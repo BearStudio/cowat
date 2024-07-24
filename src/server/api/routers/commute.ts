@@ -97,6 +97,9 @@ export const commuteRouter = createTRPCRouter({
       },
       include: {
         stops: {
+          orderBy: {
+            time: "asc",
+          },
           include: {
             location: true,
             passengers: {
@@ -157,6 +160,9 @@ export const commuteRouter = createTRPCRouter({
         },
         include: {
           stops: {
+            orderBy: {
+              time: "asc",
+            },
             include: {
               location: true,
               passengers: {
@@ -252,7 +258,17 @@ export const commuteRouter = createTRPCRouter({
       include: {
         createdBy: true,
         stops: {
-          include: { location: true, passengers: { include: { user: true } } },
+          orderBy: {
+            time: "asc",
+          },
+          include: {
+            location: true,
+            passengers: {
+              include: {
+                user: true,
+              },
+            },
+          },
         },
       },
       orderBy: {
@@ -348,6 +364,9 @@ export const commuteRouter = createTRPCRouter({
             },
           },
           stops: {
+            orderBy: {
+              time: "asc",
+            },
             include: {
               location: true,
               passengers: {
@@ -370,7 +389,7 @@ export const commuteRouter = createTRPCRouter({
             z.object({
               location: z.string(),
               time: z.string().nullish(),
-              id: z.string().nullish()
+              id: z.string().nullish(),
             })
           )
           .nullish(),
@@ -386,48 +405,48 @@ export const commuteRouter = createTRPCRouter({
         });
 
         const inputStops = input.stops.map((stop) => ({
-            id: stop.id ?? '0',
-            locationId: stop.location,
-            time: stop.time,
-            commuteId: input.id
-          }));
+          id: stop.id ?? "0",
+          locationId: stop.location,
+          time: stop.time,
+          commuteId: input.id,
+        }));
 
-        const inputStopsIds = inputStops.map((stop) => stop.id)
+        const inputStopsIds = inputStops.map((stop) => stop.id);
 
-        const stopsToDeleteIds = existingStops.filter(
-          (stop) => !inputStopsIds?.includes(stop.id)
-        ).map(
-          (stop) => stop.id
-        )
+        const stopsToDeleteIds = existingStops
+          .filter((stop) => !inputStopsIds?.includes(stop.id))
+          .map((stop) => stop.id);
 
         const stopsToCreateOrModify = inputStops.filter(
           (stop) => !stopsToDeleteIds.includes(stop.id)
-        )
+        );
 
-        await ctx.prisma.$transaction(stopsToCreateOrModify.map((stopToCreateOrModify) => 
-          ctx.prisma.stop.upsert({
-            update: {
-              time: stopToCreateOrModify.time,
-              locationId: stopToCreateOrModify.locationId
-            },
-            create: {
-              time: stopToCreateOrModify.time,
-              locationId: stopToCreateOrModify.locationId,
-              commuteId: stopToCreateOrModify.commuteId
-            },
-            where: {
-              id: stopToCreateOrModify.id
-            }
-          })
-        ))
+        await ctx.prisma.$transaction(
+          stopsToCreateOrModify.map((stopToCreateOrModify) =>
+            ctx.prisma.stop.upsert({
+              update: {
+                time: stopToCreateOrModify.time,
+                locationId: stopToCreateOrModify.locationId,
+              },
+              create: {
+                time: stopToCreateOrModify.time,
+                locationId: stopToCreateOrModify.locationId,
+                commuteId: stopToCreateOrModify.commuteId,
+              },
+              where: {
+                id: stopToCreateOrModify.id,
+              },
+            })
+          )
+        );
 
         await ctx.prisma.stop.deleteMany({
           where: {
             id: {
-              in: stopsToDeleteIds
-            }
-          }
-        })
+              in: stopsToDeleteIds,
+            },
+          },
+        });
       }
 
       const updatedStops = await ctx.prisma.stop.findMany({
