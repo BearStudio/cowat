@@ -60,6 +60,9 @@ export const templateRouter = createTRPCRouter({
       },
       include: {
         stops: {
+          orderBy: {
+            time: "asc",
+          },
           select: {
             id: true,
             location: true,
@@ -85,6 +88,9 @@ export const templateRouter = createTRPCRouter({
         },
         include: {
           stops: {
+            orderBy: {
+              time: "asc",
+            },
             select: {
               location: true,
               time: true,
