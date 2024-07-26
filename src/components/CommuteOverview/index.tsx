@@ -30,7 +30,7 @@ import {
   Tooltip,
   useDisclosure,
 } from "@chakra-ui/react";
-import type { Prisma } from "@prisma/client";
+import type { Prisma, RequestStatus } from "@prisma/client";
 import dayjs from "dayjs";
 import { CheckCircle2, Clock, Navigation, Pencil, Phone } from "lucide-react";
 import { useSession } from "next-auth/react";
@@ -72,33 +72,31 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
     },
   });
 
-  const passengerStop = props.stops.find((stop) =>
-    stop.passengers.some(
-      (passenger) =>
-        passenger.userId === session?.user?.id &&
-        passenger.requestStatus !== "CANCELED"
-    )
-  );
-
-  const isPassenger = !!session?.user?.id && !!passengerStop;
-  const passengerStatus = passengerStop?.passengers.find(
-    (passenger) => passenger.userId === session?.user?.id
-  )?.requestStatus;
   const isCurrentUserCreator =
     !!session?.user?.id && props.createdBy?.id === session?.user?.id;
 
-  const getIsPassengerOnStop = (
-    stop: CommuteOverviewProps["stops"][number]
+  const getIsPassengerOnStopByStatus = (
+    stop: CommuteOverviewProps["stops"][number],
+    status: RequestStatus
   ) => {
-    return (
-      isPassenger &&
-      stop.passengers.some(
-        (passenger) =>
-          passenger.userId === session?.user?.id &&
-          passenger.requestStatus !== "CANCELED"
-      )
+    return stop.passengers.some(
+      (passenger) =>
+        passenger.userId === session?.user?.id &&
+        passenger.requestStatus === status
     );
   };
+
+  const isPassengerAcceptedOnCommute = props.stops.some((stop) =>
+    getIsPassengerOnStopByStatus(stop, "ACCEPTED")
+  );
+  const isPassengerRequestedOnCommute =
+    !isPassengerAcceptedOnCommute &&
+    props.stops.some((stop) => getIsPassengerOnStopByStatus(stop, "REQUESTED"));
+
+  const isPassenger =
+    !!session?.user?.id &&
+    (isPassengerAcceptedOnCommute || isPassengerRequestedOnCommute);
+
   const myCommutesOnDate = api.commute.allMyCommutesOnDate.useQuery({
     date: props.date,
   });
@@ -108,9 +106,7 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
 
   const commuteCanBeBooked =
     !isCurrentUserCreator &&
-    (!isPassenger ||
-      passengerStatus === "CANCELED" ||
-      passengerStatus === "REFUSED") &&
+    !isPassenger &&
     !isFull &&
     dayjs().isBefore(dayjs(props.date));
 
@@ -131,11 +127,11 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
       return { light: "brand.500", dark: "brand.600" } as const;
     }
 
-    if (passengerStatus === "ACCEPTED") {
+    if (isPassengerAcceptedOnCommute) {
       return { light: "success.500", dark: "success.600" } as const;
     }
 
-    if (passengerStatus === "REQUESTED") {
+    if (isPassengerRequestedOnCommute) {
       return { light: "warning.500", dark: "warning.600" } as const;
     }
 
@@ -245,12 +241,12 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
                       {props.seats > 1 ? "s" : ""}
                     </Text>
                   </Flex>
-                  {passengerStatus === "ACCEPTED" && !props.isDeleted && (
+                  {isPassengerAcceptedOnCommute && !props.isDeleted && (
                     <Badge colorScheme="success" variant="solid">
                       Passenger <Icon icon={CheckCircle2} />
                     </Badge>
                   )}
-                  {passengerStatus === "REQUESTED" && !props.isDeleted && (
+                  {isPassengerRequestedOnCommute && !props.isDeleted && (
                     <Badge colorScheme="warning" variant="solid">
                       Passenger <Icon icon={Clock} />
                     </Badge>
@@ -365,16 +361,15 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
                         />
                       )}
                       {isPassenger &&
-                        getIsPassengerOnStop(stop) &&
-                        (passengerStatus === "REQUESTED" ||
-                          passengerStatus === "ACCEPTED") && (
+                        (getIsPassengerOnStopByStatus(stop, "REQUESTED") ||
+                          getIsPassengerOnStopByStatus(stop, "ACCEPTED")) && (
                           <HStack>
                             <Button
                               colorScheme="red"
                               onClick={() =>
                                 updateRequestStatus.mutate({
                                   stopId: stop.id,
-                                  passengerId: session.user?.id as string,
+                                  passengerId: session?.user?.id as string,
                                   requestStatus: "CANCELED",
                                 })
                               }
