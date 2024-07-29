@@ -52,6 +52,23 @@ export const commuteRouter = createTRPCRouter({
         },
       });
 
+      const firstStopTime = input.stops.map((stop) => stop.time).sort()[0];
+
+      if (firstStopTime) {
+        const updatedDate = new Date(commute.date);
+        const [hours, minutes] = firstStopTime.split(":");
+        updatedDate.setHours(Number(hours), Number(minutes));
+
+        await ctx.prisma.commute.update({
+          where: {
+            id: commute.id,
+          },
+          data: {
+            date: updatedDate,
+          },
+        });
+      }
+
       try {
         await slack.newCommute(commute);
       } catch {
