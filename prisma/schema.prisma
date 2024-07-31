@@ -67,15 +67,15 @@ enum StopStatus {
 }
 
 model PassengersOnStops {
-    user          User          @relation(fields: [userId], references: [id])
-    userId        String
-    stop          Stop          @relation(fields: [stopId], references: [id], onDelete: Cascade)
-    stopId        String
-    requestStatus RequestStatus @default(REQUESTED)
-    stopStatus    StopStatus    @default(UNKNOWN)
-    requestComment String?      @db.Text
+    user           User          @relation(fields: [userId], references: [id])
+    userId         String
+    stop           Stop          @relation(fields: [stopId], references: [id], onDelete: Cascade)
+    stopId         String
+    requestStatus  RequestStatus @default(REQUESTED)
+    stopStatus     StopStatus    @default(UNKNOWN)
+    requestComment String?       @db.Text
     // Passenger is late, number of minutes of delay.
-    delay         Int?
+    delay          Int?
 
     @@id([userId, stopId])
     @@index([userId])
@@ -83,16 +83,16 @@ model PassengersOnStops {
 }
 
 model CommuteTemplate {
-    id          String   @id @default(cuid())
-    createdAt   DateTime @default(now())
-    updatedAt   DateTime @updatedAt
-    isDeleted   Boolean  @default(false)
-    createdById String?
-    createdBy   User?    @relation(fields: [createdById], references: [id])
-    stops       Stop[]
-    seats       Int?
-    comment     String?  @db.Text
-    templateName String?   @db.Text
+    id           String   @id @default(cuid())
+    createdAt    DateTime @default(now())
+    updatedAt    DateTime @updatedAt
+    isDeleted    Boolean  @default(false)
+    createdById  String?
+    createdBy    User?    @relation(fields: [createdById], references: [id])
+    stops        Stop[]
+    seats        Int?
+    comment      String?  @db.Text
+    templateName String?  @db.Text
 
     @@index([createdById])
 }
@@ -161,21 +161,21 @@ enum UserRole {
 }
 
 model User {
-    id               String              @id @default(cuid())
-    name             String?
-    email            String?             @unique
-    emailVerified    DateTime?
-    image            String?
-    phone            String?
-    accounts         Account[]
-    sessions         Session[]
-    locations        Location[]
-    commuteTemplates CommuteTemplate[]
-    commutes         Commute[]
-    role             UserRole?           @default(USER)
-    passengerOn      PassengersOnStops[]
-    slackMemberId    String?
-    isAutoAcceptEnabled  Boolean             @default(false)
+    id                  String              @id @default(cuid())
+    name                String?
+    email               String?             @unique
+    emailVerified       DateTime?
+    image               String?
+    phone               String?
+    accounts            Account[]
+    sessions            Session[]
+    locations           Location[]
+    commuteTemplates    CommuteTemplate[]
+    commutes            Commute[]
+    role                UserRole?           @default(USER)
+    passengerOn         PassengersOnStops[]
+    slackMemberId       String?
+    isAutoAcceptEnabled Boolean             @default(false)
 
     @@unique([slackMemberId])
 }
