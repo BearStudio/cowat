@@ -19,7 +19,9 @@
     "db:init": "pnpm db:push",
     "db:push": "prisma db push",
     "db:ui": "prisma studio",
-    "db:seed": "prisma db seed"
+    "db:seed": "prisma db seed",
+    "db:migrate:dev": "prisma migrate dev",
+    "db:migrate:deploy": "prisma migrate deploy"
   },
   "dependencies": {
     "@chakra-ui/anatomy": "2.1.1",
