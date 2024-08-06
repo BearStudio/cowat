@@ -1,8 +1,6 @@
 services:
   postgres:
     image: postgres:latest
-    volumes:
-      - ./postgres:/var/lib/postgresql/data
     ports:
       - '${DOCKER_DATABASE_PORT:-5432}:5432'
     restart: no
