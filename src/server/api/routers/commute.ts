@@ -1,11 +1,11 @@
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { z } from "zod";
-import { slack } from "@/server/slack";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import { RequestStatus } from "@prisma/client";
 import { groupBy } from "remeda";
 import { ONLY_TIME, YEAR_MONTH_DAY } from "@/constants/dates";
+import { events } from "@/server/events";
 
 dayjs.extend(utc);
 
@@ -72,6 +72,7 @@ export const commuteRouter = createTRPCRouter({
             select: {
               slackMemberId: true,
               email: true,
+              name: true,
             },
           },
           stops: {
@@ -87,11 +88,7 @@ export const commuteRouter = createTRPCRouter({
         },
       });
 
-      try {
-        await slack.newCommute(commute);
-      } catch {
-        console.error("Can't send the Slack notification");
-      }
+      await events.newCommute(commute);
 
       return commute;
     }),
@@ -365,7 +362,7 @@ export const commuteRouter = createTRPCRouter({
             passenger.requestStatus === "ACCEPTED" ||
             passenger.requestStatus === "REQUESTED"
         )
-        .map(async (passenger) => await slack.commuteCanceled(passenger));
+        .map(async (passenger) => await events.commuteCanceled(passenger));
     }),
   commuteById: protectedProcedure
     .input(z.object({ id: z.string().cuid() }))

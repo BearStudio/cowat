@@ -7,6 +7,7 @@ import { templateRouter } from "@/server/api/routers/templates";
 import { adminRouter } from "@/server/api/routers/admin";
 import { driverRouter } from "@/server/api/routers/driver";
 import { passengerRouter } from "@/server/api/routers/passenger";
+import { subscriptionRouter } from "@/server/api/routers/subscription";
 
 /**
  * This is the primary router for your server.
@@ -22,6 +23,7 @@ export const appRouter = createTRPCRouter({
   admin: adminRouter,
   driver: driverRouter,
   passenger: passengerRouter,
+  subscription: subscriptionRouter,
 });
 
 // export type definition of API

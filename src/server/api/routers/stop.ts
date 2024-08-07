@@ -1,4 +1,4 @@
-import { slack } from "@/server/slack";
+import { events } from "@/server/events";
 import { getPassengers } from "@/utils/commutes";
 import { isValidRequestStatusTransition } from "@/utils/requestStatus";
 import type { PrismaClient, User } from "@prisma/client";
@@ -178,9 +178,9 @@ export async function book({
     });
   }
 
-  await slack.newBookingFrom(passengerOnStop);
+  await events.newBookingFrom(passengerOnStop);
   if (requestStatus === "ACCEPTED") {
-    await slack.bookingAutoAccepted(passengerOnStop);
+    await events.bookingAutoAccepted(passengerOnStop);
   }
 
   return passengerOnStop;
@@ -268,14 +268,14 @@ export const stopRouter = createTRPCRouter({
       });
 
       if (input.requestStatus === "CANCELED") {
-        await slack.bookingCanceled(passengerOnStopUpdated);
+        await events.bookingCanceled(passengerOnStopUpdated);
       }
 
       if (
         input.requestStatus === "ACCEPTED" ||
         input.requestStatus === "REFUSED"
       ) {
-        await slack.request(passengerOnStopUpdated);
+        await events.request(passengerOnStopUpdated);
       }
     }),
 });
