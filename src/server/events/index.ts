@@ -1,6 +1,6 @@
 import type { Prisma } from "@prisma/client";
 import { webhooks } from "@/server/events/webhooks";
-import { slack } from "@/server/slack";
+import { slack } from "@/server/events/slack";
 
 export type PassengerOnStopNotification = Prisma.PassengersOnStopsGetPayload<{
   include: {

@@ -3,44 +3,69 @@ import { z } from "zod";
 import { Events } from "@prisma/client";
 
 export const subscriptionRouter = createTRPCRouter({
-  getAll: protectedProcedure.query(async ({ ctx }) => {
-    const subscriptions = await ctx.prisma.subscription.findMany();
+  getAllSubscriptionsByUser: protectedProcedure.query(async ({ ctx }) => {
+    const subscriptions = await ctx.prisma.subscription.findMany({
+      where: {
+        userId: ctx.session.user.id,
+      },
+    });
 
     return subscriptions;
   }),
 
-  create: protectedProcedure
+  edit: protectedProcedure
     .input(
       z.object({
-        endpoint: z.string().url(),
-        triggeringEvent: z.nativeEnum(Events),
+        subscriptions: z.array(
+          z.object({
+            id: z.string().cuid().nullable(),
+            endpoint: z.string().url(),
+            triggeringEvent: z.nativeEnum(Events),
+          })
+        ),
       })
     )
     .mutation(async ({ input, ctx }) => {
-      const subscription = await ctx.prisma.subscription.create({
-        data: {
-          endpoint: input.endpoint,
-          triggeringEvent: input.triggeringEvent,
-          userId: ctx.session.user.id,
+      const currentSubscriptions = await ctx.prisma.subscription.findMany({
+        where: { userId: ctx.session.user.id },
+      });
+
+      const inputSubscriptionIds = input.subscriptions.map(
+        (subscription) => subscription.id
+      );
+
+      const subscriptionsToDeleteIds = currentSubscriptions
+        .filter(
+          (subscription) => !inputSubscriptionIds.includes(subscription.id)
+        )
+        .map((subscription) => subscription.id);
+
+      await ctx.prisma.subscription.deleteMany({
+        where: {
+          id: {
+            in: subscriptionsToDeleteIds,
+          },
         },
       });
 
-      return subscription;
+      return await ctx.prisma.$transaction(
+        input.subscriptions.map((subscriptionToCreateOrModify) =>
+          ctx.prisma.subscription.upsert({
+            where: {
+              id: subscriptionToCreateOrModify.id ?? "",
+              userId: ctx.session.user.id,
+            },
+            update: {
+              endpoint: subscriptionToCreateOrModify.endpoint,
+              triggeringEvent: subscriptionToCreateOrModify.triggeringEvent,
+            },
+            create: {
+              endpoint: subscriptionToCreateOrModify.endpoint,
+              triggeringEvent: subscriptionToCreateOrModify.triggeringEvent,
+              userId: ctx.session.user.id,
+            },
+          })
+        )
+      );
     }),
-
-  // getAllSubscriptionsByEvent: protectedProcedure
-  //   .input(
-  //     z.object({
-  //       triggeringEvent: z.nativeEnum(Events),
-  //     })
-  //   )
-  //   .query(async ({ input, ctx }) => {
-  //     const subscriptions = await ctx.prisma.subscription.findMany({
-  //       where: {
-  //         triggeringEvent: input.triggeringEvent,
-  //       },
-  //     });
-
-  //     return subscriptions;
-  //   }),
 });
