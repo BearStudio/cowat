@@ -31,7 +31,7 @@ const EditSubscriptions: NextPage = () => {
 
   const handleOnValidSubmit = (values: EditSubscriptionsInput) => {
     subscriptionMutation.mutate(
-      { ...values },
+      { subscriptions: values.subscriptions ?? [] },
       {
         onSuccess: () => {
           ctx.subscription.getAllSubscriptionsByUser.invalidate();
