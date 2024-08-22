@@ -21,7 +21,9 @@ import {
   descriptionByField,
   isValidEvent,
   returnFieldsByEvent,
+  urlRegex,
 } from "@/utils/subscriptions";
+import { isPattern } from "@formiz/validations";
 
 type TooltipForEventProps = {
   event: Events;
@@ -67,7 +69,7 @@ const SubscriptionForm = ({
   );
   return (
     <>
-      <HStack alignItems="start" spacing="0.5">
+      <HStack alignItems="start" spacing="1">
         <FieldHidden name={`subscriptions[${index}].id`} defaultValue={id} />
         <FieldSelect
           id={`select-${index}`}
@@ -91,6 +93,12 @@ const SubscriptionForm = ({
           label="Endpoint"
           placeholder="https://my.webhook.com/listener"
           required="Endpoint is required"
+          validations={[
+            {
+              handler: isPattern(urlRegex),
+              message: "Endpoint should be a valid url",
+            },
+          ]}
           pr="2"
         />
         <Box pt={8}>
