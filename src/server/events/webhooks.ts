@@ -38,7 +38,7 @@ const newCommute = async (
   const returnFields = returnFieldsByEvent["NEW_COMMUTE"];
 
   subscriptions?.map(async (subscription) => {
-    await ky.post(subscription.endpoint, {
+    await ky.post(subscription.url, {
       json: {
         [returnFields[0] ?? ""]: subscription.triggeringEvent,
         [returnFields[1] ?? ""]: commute.createdBy?.name,
@@ -62,7 +62,7 @@ const newBookingFrom = async (passengerOnStop: PassengerOnStopNotification) => {
   const returnFields = returnFieldsByEvent["NEW_BOOKING"];
 
   subscriptions?.map(async (subscription) => {
-    await ky.post(subscription.endpoint, {
+    await ky.post(subscription.url, {
       json: {
         [returnFields[0] ?? ""]: subscription.triggeringEvent,
         [returnFields[1] ?? ""]: passengerOnStop.stop?.commute?.createdBy?.name,
@@ -85,7 +85,7 @@ const request = async (passengerOnStop: PassengerOnStopNotification) => {
   const returnFields = returnFieldsByEvent["REQUEST"];
 
   subscriptions?.map(async (subscription) => {
-    await ky.post(subscription.endpoint, {
+    await ky.post(subscription.url, {
       json: {
         [returnFields[0] ?? ""]: subscription.triggeringEvent,
         [returnFields[1] ?? ""]: passengerOnStop.user.name,
@@ -112,7 +112,7 @@ const bookingAutoAccepted = async (
   const returnFields = returnFieldsByEvent["AUTO_ACCEPT"];
 
   subscriptions?.map(async (subscription) => {
-    await ky.post(subscription.endpoint, {
+    await ky.post(subscription.url, {
       json: {
         [returnFields[0] ?? ""]: subscription.triggeringEvent,
         [returnFields[1] ?? ""]: passengerOnStop.user.name,
@@ -137,7 +137,7 @@ const bookingCanceled = async (
   const returnFields = returnFieldsByEvent["BOOKING_CANCELED"];
 
   subscriptions?.map(async (subscription) => {
-    await ky.post(subscription.endpoint, {
+    await ky.post(subscription.url, {
       json: {
         [returnFields[0] ?? ""]: subscription.triggeringEvent,
         [returnFields[1] ?? ""]: passengerOnStop.stop?.commute?.createdBy?.name,
@@ -162,7 +162,7 @@ const commuteCanceled = async (
   const returnFields = returnFieldsByEvent["COMMUTE_CANCELED"];
 
   subscriptions?.map(async (subscription) => {
-    await ky.post(subscription.endpoint, {
+    await ky.post(subscription.url, {
       json: {
         [returnFields[0] ?? ""]: subscription.triggeringEvent,
         [returnFields[1] ?? ""]: passengerOnStop.user.name,

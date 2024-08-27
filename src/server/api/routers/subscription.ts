@@ -19,7 +19,8 @@ export const subscriptionRouter = createTRPCRouter({
         subscriptions: z.array(
           z.object({
             id: z.string().cuid().nullable(),
-            endpoint: z.string().url(),
+            name: z.string(),
+            url: z.string().url(),
             triggeringEvent: z.nativeEnum(Events),
           })
         ),
@@ -56,11 +57,13 @@ export const subscriptionRouter = createTRPCRouter({
               userId: ctx.session.user.id,
             },
             update: {
-              endpoint: subscriptionToCreateOrModify.endpoint,
+              name: subscriptionToCreateOrModify.name,
+              url: subscriptionToCreateOrModify.url,
               triggeringEvent: subscriptionToCreateOrModify.triggeringEvent,
             },
             create: {
-              endpoint: subscriptionToCreateOrModify.endpoint,
+              name: subscriptionToCreateOrModify.name,
+              url: subscriptionToCreateOrModify.url,
               triggeringEvent: subscriptionToCreateOrModify.triggeringEvent,
               userId: ctx.session.user.id,
             },

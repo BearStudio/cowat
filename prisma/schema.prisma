@@ -218,7 +218,8 @@ model VerificationToken {
 
 model Subscription {
     id              String @id @default(cuid())
-    endpoint        String
+    name            String
+    url             String
     triggeringEvent Events
     userId          String
     user            User   @relation(fields: [userId], references: [id])

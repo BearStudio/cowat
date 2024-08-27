@@ -4,7 +4,8 @@ CREATE TYPE "Events" AS ENUM ('NEW_BOOKING', 'NEW_COMMUTE', 'REQUEST', 'AUTO_ACC
 -- CreateTable
 CREATE TABLE "Subscription" (
     "id" TEXT NOT NULL,
-    "endpoint" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "url" TEXT NOT NULL,
     "triggeringEvent" "Events" NOT NULL,
     "userId" TEXT NOT NULL,
 

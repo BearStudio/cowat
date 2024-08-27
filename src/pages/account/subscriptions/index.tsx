@@ -40,7 +40,7 @@ const EditSubscriptions: NextPage = () => {
     );
   };
 
-  const defaultValues = { subscriptions: subscriptionsQuery.data ?? [] };
+  const initialValues = { subscriptions: subscriptionsQuery.data ?? [] };
 
   return (
     <LayoutAuthenticated
@@ -63,16 +63,16 @@ const EditSubscriptions: NextPage = () => {
           <title>Cowat - Edit Subscriptions</title>
         </Head>
         {subscriptionsQuery.isLoading && <Loader />}
-        {!subscriptionsQuery.isLoading && defaultValues && (
+        {!subscriptionsQuery.isLoading && initialValues && (
           <Formiz
             autoForm
-            initialValues={defaultValues}
+            initialValues={initialValues}
             onValidSubmit={handleOnValidSubmit}
           >
             <SimpleCard>
               <>
                 <SubscriptionsForm
-                  defaultValues={defaultValues.subscriptions}
+                  initialValues={initialValues.subscriptions}
                 />
                 <Button
                   variant="primary"
