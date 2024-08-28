@@ -2,7 +2,6 @@ import type { Prisma } from "@prisma/client";
 import ky from "ky";
 import { prisma } from "@/server/db";
 import type { PassengerOnStopNotification } from "@/server/events";
-import { returnFieldsByEvent } from "@/utils/subscriptions";
 
 const newCommute = async (
   commute: Prisma.CommuteGetPayload<{
@@ -35,16 +34,14 @@ const newCommute = async (
     address: stop.location?.address,
   }));
 
-  const returnFields = returnFieldsByEvent["NEW_COMMUTE"];
-
   subscriptions?.map(async (subscription) => {
     await ky.post(subscription.url, {
       json: {
-        [returnFields[0] ?? ""]: subscription.triggeringEvent,
-        [returnFields[1] ?? ""]: commute.createdBy?.name,
-        [returnFields[2] ?? ""]: commute.date,
-        [returnFields[3] ?? ""]: commute.seats,
-        [returnFields[4] ?? ""]: stops,
+        event: subscription.triggeringEvent,
+        driver: commute.createdBy?.name,
+        date: commute.date,
+        seats: commute.seats,
+        stops,
       },
     });
   });
@@ -59,15 +56,13 @@ const newBookingFrom = async (passengerOnStop: PassengerOnStopNotification) => {
     },
   });
 
-  const returnFields = returnFieldsByEvent["NEW_BOOKING"];
-
   subscriptions?.map(async (subscription) => {
     await ky.post(subscription.url, {
       json: {
-        [returnFields[0] ?? ""]: subscription.triggeringEvent,
-        [returnFields[1] ?? ""]: passengerOnStop.stop?.commute?.createdBy?.name,
-        [returnFields[2] ?? ""]: passengerOnStop.user.name,
-        [returnFields[3] ?? ""]: passengerOnStop?.stop?.commute?.date,
+        event: subscription.triggeringEvent,
+        user: passengerOnStop.stop?.commute?.createdBy?.name,
+        passenger: passengerOnStop.user.name,
+        date: passengerOnStop?.stop?.commute?.date,
       },
     });
   });
@@ -82,17 +77,15 @@ const request = async (passengerOnStop: PassengerOnStopNotification) => {
     },
   });
 
-  const returnFields = returnFieldsByEvent["REQUEST"];
-
   subscriptions?.map(async (subscription) => {
     await ky.post(subscription.url, {
       json: {
-        [returnFields[0] ?? ""]: subscription.triggeringEvent,
-        [returnFields[1] ?? ""]: passengerOnStop.user.name,
-        [returnFields[2] ?? ""]: passengerOnStop.requestStatus,
-        [returnFields[3] ?? ""]: passengerOnStop.stop?.commute?.createdBy?.name,
-        [returnFields[4] ?? ""]: passengerOnStop?.stop?.commute?.date,
-        [returnFields[5] ?? ""]: passengerOnStop.requestComment,
+        event: subscription.triggeringEvent,
+        user: passengerOnStop.user.name,
+        requestStatus: passengerOnStop.requestStatus,
+        driver: passengerOnStop.stop?.commute?.createdBy?.name,
+        date: passengerOnStop?.stop?.commute?.date,
+        comment: passengerOnStop.requestComment,
       },
     });
   });
@@ -109,15 +102,13 @@ const bookingAutoAccepted = async (
     },
   });
 
-  const returnFields = returnFieldsByEvent["AUTO_ACCEPT"];
-
   subscriptions?.map(async (subscription) => {
     await ky.post(subscription.url, {
       json: {
-        [returnFields[0] ?? ""]: subscription.triggeringEvent,
-        [returnFields[1] ?? ""]: passengerOnStop.user.name,
-        [returnFields[2] ?? ""]: passengerOnStop.stop?.commute?.createdBy?.name,
-        [returnFields[3] ?? ""]: passengerOnStop?.stop?.commute?.date,
+        event: subscription.triggeringEvent,
+        user: passengerOnStop.user.name,
+        driver: passengerOnStop.stop?.commute?.createdBy?.name,
+        date: passengerOnStop?.stop?.commute?.date,
       },
     });
   });
@@ -134,15 +125,13 @@ const bookingCanceled = async (
     },
   });
 
-  const returnFields = returnFieldsByEvent["BOOKING_CANCELED"];
-
   subscriptions?.map(async (subscription) => {
     await ky.post(subscription.url, {
       json: {
-        [returnFields[0] ?? ""]: subscription.triggeringEvent,
-        [returnFields[1] ?? ""]: passengerOnStop.stop?.commute?.createdBy?.name,
-        [returnFields[2] ?? ""]: passengerOnStop.user.name,
-        [returnFields[3] ?? ""]: passengerOnStop?.stop?.commute?.date,
+        event: subscription.triggeringEvent,
+        user: passengerOnStop.stop?.commute?.createdBy?.name,
+        passenger: passengerOnStop.user.name,
+        date: passengerOnStop?.stop?.commute?.date,
       },
     });
   });
@@ -159,15 +148,13 @@ const commuteCanceled = async (
     },
   });
 
-  const returnFields = returnFieldsByEvent["COMMUTE_CANCELED"];
-
   subscriptions?.map(async (subscription) => {
     await ky.post(subscription.url, {
       json: {
-        [returnFields[0] ?? ""]: subscription.triggeringEvent,
-        [returnFields[1] ?? ""]: passengerOnStop.user.name,
-        [returnFields[2] ?? ""]: passengerOnStop.stop?.commute?.createdBy?.name,
-        [returnFields[3] ?? ""]: passengerOnStop?.stop?.commute?.date,
+        event: subscription.triggeringEvent,
+        user: passengerOnStop.user.name,
+        driver: passengerOnStop.stop?.commute?.createdBy?.name,
+        date: passengerOnStop?.stop?.commute?.date,
       },
     });
   });
