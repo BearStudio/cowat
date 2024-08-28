@@ -7,7 +7,6 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { FieldInput } from "@/components/FieldInput";
-import { Fragment, useState } from "react";
 import { FieldSelect } from "@/components/FieldSelect";
 import { FieldHidden } from "@/components/FieldHidden";
 import { Events } from "@prisma/client";
@@ -20,12 +19,13 @@ import {
   urlRegex,
 } from "@/utils/subscriptions";
 import { isPattern } from "@formiz/validations";
+import { useFormFields } from "@formiz/core";
 
-type HelperForEventProps = {
+type EventQueryFieldsHelperProps = {
   event: Events;
 };
 
-const HelperForEvent = ({ event }: HelperForEventProps) => {
+const EventQueryFieldsHelper = ({ event }: EventQueryFieldsHelperProps) => {
   const returnFields = returnFieldsByEvent[event];
   return (
     <>
@@ -42,19 +42,12 @@ const HelperForEvent = ({ event }: HelperForEventProps) => {
 type SubscriptionFormProps = {
   index: number;
   id?: string;
-  defaultEvent?: Events;
   onRemove: () => void;
 };
 
-const SubscriptionForm = ({
-  index,
-  id,
-  defaultEvent,
-  onRemove,
-}: SubscriptionFormProps) => {
-  const [selectEventValue, setSelectEventValue] = useState<string>(
-    defaultEvent ?? ""
-  );
+const SubscriptionForm = ({ index, id, onRemove }: SubscriptionFormProps) => {
+  const fields = useFormFields();
+  const currentEvent = fields.subscriptions?.[index].triggeringEvent.value;
   return (
     <Stack>
       <FieldHidden name={`subscriptions[${index}].id`} defaultValue={id} />
@@ -70,21 +63,20 @@ const SubscriptionForm = ({
         label={"Event"}
         name={`subscriptions[${index}].triggeringEvent`}
         placeholder="Please select an event"
-        onChange={(event) => setSelectEventValue(event.target.value)}
         options={Object.keys(Events).map((event) => ({
           value: event,
           label: event,
         }))}
         required="Event is required"
       />
-      {isValidEvent(selectEventValue) && (
+      {isValidEvent(currentEvent) && (
         <Alert variant="infoGray" borderRadius="md">
           <AlertDescription>
             <strong>
               Query for this event will contains the following fields:
             </strong>
             <br />
-            <HelperForEvent event={selectEventValue} />
+            <EventQueryFieldsHelper event={currentEvent} />
           </AlertDescription>
         </Alert>
       )}

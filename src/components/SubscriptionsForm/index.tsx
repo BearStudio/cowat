@@ -45,7 +45,6 @@ const SubscriptionsForm = ({ initialValues }: SubscriptionsFormProps) => {
               <SubscriptionForm
                 id={initialValues[subscriptionIndex]?.id}
                 index={index}
-                defaultEvent={initialValues[subscriptionIndex]?.triggeringEvent}
                 onRemove={() => subscriptions.remove(index)}
               />
             </AccordionPanel>
