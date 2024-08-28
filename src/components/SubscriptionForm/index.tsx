@@ -47,7 +47,7 @@ type SubscriptionFormProps = {
 
 const SubscriptionForm = ({ index, id, onRemove }: SubscriptionFormProps) => {
   const fields = useFormFields();
-  const currentEvent = fields.subscriptions?.[index].triggeringEvent.value;
+  const currentEvent = fields.subscriptions?.[index]?.triggeringEvent.value;
   return (
     <Stack>
       <FieldHidden name={`subscriptions[${index}].id`} defaultValue={id} />
