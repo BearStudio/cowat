@@ -1,7 +1,6 @@
 import { Icon } from "@/components/Icon";
 import { Loader } from "@/components/Loader";
 import { SimpleCard } from "@/components/SimpleCard";
-import SubscriptionsForm from "@/components/SubscriptionsForm";
 import { LayoutAuthenticated } from "@/layout/LayoutAuthenticated";
 import { Formiz } from "@formiz/core";
 
@@ -12,10 +11,11 @@ import { ArrowLeft } from "lucide-react";
 import type { NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
+import { SubscriptionsForm } from "@/components/SubscriptionsForm";
 
-type EditSubscriptionsInput = RouterInputs["subscription"]["edit"];
+type PageEditSubscriptionsInput = RouterInputs["subscription"]["edit"];
 
-const EditSubscriptions: NextPage = () => {
+const PageEditSubscriptions: NextPage = () => {
   const ctx = api.useContext();
 
   const subscriptionsQuery =
@@ -23,7 +23,7 @@ const EditSubscriptions: NextPage = () => {
 
   const subscriptionMutation = api.subscription.edit.useMutation();
 
-  const handleOnValidSubmit = (values: EditSubscriptionsInput) => {
+  const handleOnValidSubmit = (values: PageEditSubscriptionsInput) => {
     subscriptionMutation.mutate(
       { subscriptions: values.subscriptions ?? [] },
       {
@@ -84,4 +84,4 @@ const EditSubscriptions: NextPage = () => {
   );
 };
 
-export default EditSubscriptions;
+export default PageEditSubscriptions;

@@ -1,11 +1,6 @@
 import { Events } from "@prisma/client";
 
-export const urlRegex = new RegExp(
-  /^(https?:\/\/)(([a-zA-Z0-9\-]+\.)+[a-zA-Z]{2,}|(\d{1,3}\.){3}\d{1,3})(:\d+)?(\/.*)?$/,
-  "g"
-);
-
-export const returnFieldsByEvent = {
+export const FIELDS_BY_EVENT: Record<Events, string[]> = {
   NEW_COMMUTE: ["event", "driver", "date", "seats", "stops"],
   NEW_BOOKING: ["event", "user", "passenger", "date"],
   REQUEST: ["event", "user", "requestStatus", "driver", "date", "comment"],
@@ -14,7 +9,7 @@ export const returnFieldsByEvent = {
   COMMUTE_CANCELED: ["event", "user", "driver", "date"],
 };
 
-export const descriptionByField = {
+export const DESCRIPTION_BY_FIELD: Record<string, string> = {
   event: "Selected event",
   driver: "Driver of the commute",
   date: "Date of the stop/commute",

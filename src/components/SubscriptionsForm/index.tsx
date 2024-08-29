@@ -11,7 +11,7 @@ import { useForm, useRepeater } from "@formiz/core";
 import { AddPlaceholder } from "@/components/AddPlaceholder";
 import { Icon } from "@/components/Icon";
 import { Plus } from "lucide-react";
-import SubscriptionForm from "@/components/SubscriptionForm";
+import { SubscriptionForm } from "@/components/SubscriptionForm";
 
 type Subscription =
   RouterOutputs["subscription"]["getAllSubscriptionsByUser"][number];
@@ -20,7 +20,9 @@ type SubscriptionsFormProps = {
   initialValues: Array<Subscription>;
 };
 
-const SubscriptionsForm = ({ initialValues }: SubscriptionsFormProps) => {
+export const SubscriptionsForm = ({
+  initialValues,
+}: SubscriptionsFormProps) => {
   const form = useForm();
   const subscriptions = useRepeater({
     name: "subscriptions",
@@ -57,5 +59,3 @@ const SubscriptionsForm = ({ initialValues }: SubscriptionsFormProps) => {
     </Accordion>
   );
 };
-
-export default SubscriptionsForm;

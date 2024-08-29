@@ -13,26 +13,25 @@ import { Events } from "@prisma/client";
 import { Icon } from "@/components/Icon";
 import { Trash } from "lucide-react";
 import {
-  descriptionByField,
+  DESCRIPTION_BY_FIELD,
   isValidEvent,
-  returnFieldsByEvent,
-  urlRegex,
+  FIELDS_BY_EVENT,
 } from "@/utils/subscriptions";
-import { isPattern } from "@formiz/validations";
 import { useFormFields } from "@formiz/core";
+import { z } from "zod";
 
 type EventQueryFieldsHelperProps = {
   event: Events;
 };
 
 const EventQueryFieldsHelper = ({ event }: EventQueryFieldsHelperProps) => {
-  const returnFields = returnFieldsByEvent[event];
+  const returnFields = FIELDS_BY_EVENT[event];
   return (
     <>
       {returnFields.map((field, index) => (
         <Text key={index}>
           <span style={{ fontWeight: "bold" }}>{field}: </span>
-          {descriptionByField[field as keyof typeof descriptionByField]}
+          {DESCRIPTION_BY_FIELD[field as keyof typeof DESCRIPTION_BY_FIELD]}
         </Text>
       ))}
     </>
@@ -45,7 +44,11 @@ type SubscriptionFormProps = {
   onRemove: () => void;
 };
 
-const SubscriptionForm = ({ index, id, onRemove }: SubscriptionFormProps) => {
+export const SubscriptionForm = ({
+  index,
+  id,
+  onRemove,
+}: SubscriptionFormProps) => {
   const fields = useFormFields();
   const currentEvent = fields.subscriptions?.[index]?.triggeringEvent.value;
   return (
@@ -87,7 +90,7 @@ const SubscriptionForm = ({ index, id, onRemove }: SubscriptionFormProps) => {
         required="URL is required"
         validations={[
           {
-            handler: isPattern(urlRegex),
+            handler: (value) => z.string().url().safeParse(value).success,
             message: "URL is not valid",
           },
         ]}
@@ -96,7 +99,6 @@ const SubscriptionForm = ({ index, id, onRemove }: SubscriptionFormProps) => {
       <Box pt="2">
         <Button
           variant="danger"
-          aria-label={`Remove stop ${index}`}
           leftIcon={<Icon icon={Trash} />}
           onClick={() => onRemove()}
         >
@@ -106,5 +108,3 @@ const SubscriptionForm = ({ index, id, onRemove }: SubscriptionFormProps) => {
     </Stack>
   );
 };
-
-export default SubscriptionForm;
