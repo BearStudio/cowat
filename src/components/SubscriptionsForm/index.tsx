@@ -53,7 +53,7 @@ export const SubscriptionsForm = ({
           </AccordionItem>
         );
       })}
-      <AddPlaceholder onClick={() => subscriptions.append()}>
+      <AddPlaceholder mt="2" onClick={() => subscriptions.append()}>
         <Icon icon={Plus} /> Add Subscription
       </AddPlaceholder>
     </Accordion>
