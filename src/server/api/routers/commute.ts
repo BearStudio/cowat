@@ -55,9 +55,14 @@ export const commuteRouter = createTRPCRouter({
       const firstStopTime = input.stops.map((stop) => stop.time).sort()[0];
 
       if (firstStopTime) {
-        const updatedDate = new Date(commute.date);
-        const [hours, minutes] = firstStopTime.split(":");
-        updatedDate.setHours(Number(hours), Number(minutes));
+        const [hours, minutes] = firstStopTime
+          .split(":")
+          .map((value) => Number(value));
+
+        const updatedDate = dayjs(commute.date)
+          .set("hours", hours ?? 0)
+          .set("minutes", minutes ?? 0)
+          .toDate();
 
         await ctx.prisma.commute.update({
           where: {
