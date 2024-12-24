@@ -51,7 +51,7 @@ const New: NextPage = () => {
 
   const dateString = dayjs(dateQueryParam?.toString()).format(DAY_MONTH_YEAR);
   const date = formValues.date
-    ? new Date(formValues.date)
+      ? new Date(formValues.date.tz("UTC",true))
     : new Date(dateQueryParam?.toString() || "");
 
   const myCommutesOnDate = api.commute.allMyCommutesOnDate.useQuery({
