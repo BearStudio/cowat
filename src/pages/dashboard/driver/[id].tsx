@@ -148,7 +148,6 @@ const Driver = () => {
                   >
                     <>
                       {commute.data?.stops.length} Stops •{" "}
-                      {console.log("Commute data stops : ", commute.data.stops)}
                       {getPassengers(commute.data.stops).length} Passengers{" "}
                     </>
                   </Text>

@@ -116,10 +116,11 @@ export const commuteRouter = createTRPCRouter({
     return commutes;
   }),
   allMyCommutesOnDate: protectedProcedure
-    .input(z.object({ date: z.date() }))
+    .input(z.object({ date: z.string() }))
     .query(async ({ ctx, input }) => {
-      const targetDate = dayjs(input?.date).startOf("day").tz("UTC",true).toDate();
-      const nextDay = dayjs(targetDate).add(1, "day").toDate();
+      const targetDate = new Date(input.date);
+      const nextDay = new Date(input.date);
+      nextDay.setDate(nextDay.getDate() + 1);
       const commutes = await ctx.prisma.commute.findMany({
         where: {
           AND: [
