@@ -110,7 +110,7 @@ model Commute {
     isDeleted   Boolean?      @default(false)
     createdBy   User?         @relation(fields: [createdById], references: [id])
     createdById String
-    date        DateTime
+    date        DateTime      @db.Date
     seats       Int
     // "ON_TIME | DELAYED"
     status      CommuteStatus @default(UNKNOWN)

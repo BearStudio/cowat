@@ -2,9 +2,10 @@ import SlackNotify from "slack-notify";
 import { env } from "@/env/server.mjs";
 import type { Prisma } from "@prisma/client";
 import dayjs from "dayjs";
-import { FULL_TEXT_DATE_WITH_TIME, TIMEZONE_NAME } from "@/constants/dates";
+import { FULL_TEXT_DATE } from "@/constants/dates";
 import { App, LogLevel } from "@slack/bolt";
 import { clientEnv } from "@/env/schema.mjs";
+import { getSortedStops } from "@/utils/stops";
 
 type PassengerOnStopNotification = Prisma.PassengersOnStopsGetPayload<{
   include: {
@@ -64,7 +65,9 @@ const newCommute = async (
     ? `<@${slackUserId}>`
     : commute.createdBy?.email;
 
-  const locationsSlack = commute.stops.map((stop) => ({
+  const sortedStops = getSortedStops(commute.stops);
+
+  const locationsSlack = sortedStops.map((stop) => ({
     type: "section",
     text: {
       type: "mrkdwn",
@@ -80,11 +83,9 @@ const newCommute = async (
         type: "section",
         text: {
           type: "mrkdwn",
-          text: `A new commute for *${dayjs(commute.date)
-            .tz("Europe/Paris")
-            .format(
-              FULL_TEXT_DATE_WITH_TIME
-            )} ${TIMEZONE_NAME}* has been created by ${createdBy} (💺 ${
+          text: `A new commute for *${dayjs(commute.date).format(
+            FULL_TEXT_DATE
+          )} * has been created by ${createdBy} (💺 ${
             commute.seats
           } seats available) \n <${
             clientEnv.NEXT_PUBLIC_BASE_URL
@@ -137,9 +138,9 @@ const newBookingFrom = async (passengerOnStop: PassengerOnStopNotification) => {
             type: "mrkdwn",
             text: `Hey, 🙋 ${passenger} requested a seat on your *${
               passengerOnStop.stop?.commute?.date
-                ? `${dayjs(passengerOnStop?.stop?.commute?.date)
-                    .tz("Europe/Paris")
-                    .format("dddd DD MMM HH:mm")} ${TIMEZONE_NAME}`
+                ? `${dayjs(passengerOnStop?.stop?.commute?.date).format(
+                    "dddd DD MMM"
+                  )} ${passengerOnStop.stop?.time}`
                 : ""
             }* commute. <${
               clientEnv.NEXT_PUBLIC_BASE_URL
@@ -183,9 +184,9 @@ const request = async (passengerOnStop: PassengerOnStopNotification) => {
       passengerOnStop.requestStatus === "ACCEPTED" ? "✅" : "❌"
     } ${driver} ${passengerOnStop.requestStatus.toLocaleLowerCase()} your request for *${
               passengerOnStop.stop.commute?.date
-                ? `${dayjs(passengerOnStop.stop.commute.date)
-                    .tz("Europe/Paris")
-                    .format("dddd DD MMM HH:mm")} ${TIMEZONE_NAME}`
+                ? `${dayjs(passengerOnStop.stop.commute.date).format(
+                    "dddd DD MMM"
+                  )} ${passengerOnStop.stop?.time}`
                 : ""
             }* commute
             ${
@@ -232,9 +233,9 @@ const bookingAutoAccepted = async (
             text: `Hey ${passenger},
     ✅${driver} automatically accepted your request for *${
               passengerOnStop.stop.commute?.date
-                ? `${dayjs(passengerOnStop.stop.commute.date)
-                    .tz("Europe/Paris")
-                    .format("dddd DD MMM HH:mm")} ${TIMEZONE_NAME}`
+                ? `${dayjs(passengerOnStop.stop.commute.date).format(
+                    "dddd DD MMM"
+                  )}  ${passengerOnStop.stop?.time}`
                 : ""
             }* commute.`,
           },
@@ -271,9 +272,9 @@ const bookingCanceled = async (
             type: "mrkdwn",
             text: `🙅 ${passenger} cancelled their booking for the *${
               passengerOnStop.stop.commute?.date
-                ? `${dayjs(passengerOnStop.stop.commute.date)
-                    .tz("Europe/Paris")
-                    .format("dddd DD MMM HH:mm")} ${TIMEZONE_NAME}`
+                ? `${dayjs(passengerOnStop.stop.commute.date).format(
+                    "dddd DD MMM"
+                  )}  ${passengerOnStop.stop?.time}`
                 : ""
             }* commute.`,
           },
@@ -310,9 +311,9 @@ const commuteCanceled = async (
             type: "mrkdwn",
             text: `🙅 ${driver} cancelled the *${
               passengerOnStop.stop.commute?.date
-                ? dayjs(passengerOnStop.stop.commute.date)
-                    .tz("Europe/Paris")
-                    .format("dddd DD MMM HH:mm")
+                ? `${dayjs(passengerOnStop.stop.commute.date).format(
+                    "dddd DD MMM"
+                  )} ${passengerOnStop.stop?.time}`
                 : ""
             }* commute you booked.`,
           },

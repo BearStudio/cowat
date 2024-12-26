@@ -1,5 +1,5 @@
 import { ConfirmModal } from "@/components/ConfirmModal";
-import { FULL_TEXT_DATE_WITH_TIME } from "@/constants/dates";
+import { FULL_TEXT_DATE } from "@/constants/dates";
 import type { RouterOutputs } from "@/utils/api";
 import { api } from "@/utils/api";
 import { getPassengers } from "@/utils/commutes";
@@ -20,6 +20,8 @@ export const ConfirmCancelCommuteModal = ({
     },
   });
   const passengers = getPassengers(commute.stops);
+  const firstStopTime = commute.stops.map((stop) => stop.time).sort()[0];
+
   return (
     <ConfirmModal
       onConfirm={() => {
@@ -32,7 +34,7 @@ export const ConfirmCancelCommuteModal = ({
       message={
         <>
           <strong>
-            {dayjs(commute.date).format(FULL_TEXT_DATE_WITH_TIME)}
+            {`${dayjs(commute.date).format(FULL_TEXT_DATE)} ${firstStopTime}`}
           </strong>{" "}
           commute
           <br />

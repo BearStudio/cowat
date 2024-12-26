@@ -1,8 +1,8 @@
-import { notify } from "@/server/slack";
-import type { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "@/server/db";
+import { notify } from "@/server/slack";
+import { getSortedStopsWithPassengers } from "@/utils/stops";
 import dayjs from "dayjs";
-import { TIMEZONE_NAME } from "@/constants/dates";
+import type { NextApiRequest, NextApiResponse } from "next";
 
 export default async function handler(
   request: NextApiRequest,
@@ -50,6 +50,10 @@ export default async function handler(
     },
   });
 
+  const commutesWithStopsSorted = commutes.map((commute) => {
+    commute.stops = getSortedStopsWithPassengers(commute.stops);
+  });
+
   const messageOfTheDay = {
     blocks: [
       {
@@ -73,11 +77,9 @@ export default async function handler(
                     type: "mrkdwn",
                     text: `*${
                       commute.createdBy?.name ?? commute.createdBy?.email
-                    }'s commute*\n${dayjs(commute.date)
-                      .tz("Europe/Paris")
-                      .format("dddd, MMMM DD hh:mm A")} ${TIMEZONE_NAME}\n${
-                      commute.stops.length
-                    } stop(s)\n${
+                    }'s commute*\n${dayjs(commute.date).format(
+                      "dddd, MMMM DD"
+                    )} \n${commute.stops.length} stop(s)\n${
                       commute.stops.flatMap((stop) => stop.passengers).length
                     } passenger(s)`,
                   },
@@ -93,7 +95,9 @@ export default async function handler(
                     type: "section",
                     text: {
                       type: "mrkdwn",
-                      text: `:round_pushpin: *${stop.location?.address}*\n${stop.location?.name}.`,
+                      text: `:round_pushpin: *${stop.location?.address}${
+                        stop.time ? ` - ${stop.time}` : ""
+                      }*\n${stop.location?.name}.`,
                     },
                   },
                   ...stop.passengers.map((passenger) => ({
