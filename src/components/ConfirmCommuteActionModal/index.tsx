@@ -67,6 +67,22 @@ export const ConfirmCommuteActionModal = ({
     });
   };
 
+  const firstStopTime = (commute: CommuteType) => {
+    return commute.stops.map((stop) => stop.time).sort()[0];
+  };
+
+  const stopTimeWhenPassenger = (commute: CommuteType) => {
+    for (let stop of commute.stops) {
+      if (
+        stop.passengers.some(
+          (passenger) => passenger.userId === session?.user?.id
+        )
+      ) {
+        return stop.time;
+      }
+    }
+  };
+
   return (
     <Modal isOpen size="lg" onClose={onClose} {...props}>
       <ModalOverlay />
@@ -94,8 +110,7 @@ export const ConfirmCommuteActionModal = ({
                       {commute.createdById === session?.user?.id ? (
                         <>
                           <Text>
-                            Driver for a commute at{" "}
-                            {dayjs(commute.date).format(ONLY_TIME)}
+                            Driver for a commute at {firstStopTime(commute)}
                           </Text>
                           <ConfirmCancelCommuteModal commute={commute} />
                         </>
@@ -103,7 +118,7 @@ export const ConfirmCommuteActionModal = ({
                         <>
                           <Text>
                             Passenger for {commute.createdBy?.name}&apos;s
-                            commute at {dayjs(commute.date).format(ONLY_TIME)}
+                            commute at {stopTimeWhenPassenger(commute)}
                           </Text>
                           <Button
                             variant="danger"

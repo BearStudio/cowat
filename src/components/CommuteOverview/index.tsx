@@ -97,7 +97,7 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
     (isPassengerAcceptedOnCommute || isPassengerRequestedOnCommute);
 
   const myCommutesOnDate = api.commute.allMyCommutesOnDate.useQuery({
-    date: props.date,
+    date: props.date.toString(),
   });
 
   const passengers = getPassengers(props.stops);
