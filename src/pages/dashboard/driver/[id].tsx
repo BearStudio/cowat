@@ -32,7 +32,6 @@ import { ArrowLeft, CheckCircle, Clock, ExternalLink } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { ConfirmModal } from "@/components/ConfirmModal";
-import { isBrowser } from "@/utils/ssr";
 
 const Driver = () => {
   const router = useRouter();
@@ -83,7 +82,8 @@ const Driver = () => {
       }
     );
   };
-  const timeZone = isBrowser ? window.localStorage.getItem("timezone") : null;
+
+  const firstStopTime = commute.data?.stops.map((stop) => stop.time).sort()[0];
 
   return (
     <LayoutAuthenticated
@@ -125,12 +125,7 @@ const Driver = () => {
             <CardHeader p="2">
               <Flex justify="space-between" align="center">
                 <Text fontWeight="bold" fontSize="sm">
-                  Departure at
-                  {timeZone !== null
-                    ? ` ${dayjs
-                        .tz(commute.data?.date, timeZone)
-                        .format("HH:mm A")}`
-                    : ` ${dayjs(commute.data?.date).format("HH:mm A")}`}
+                  Departure at {` ${firstStopTime}`}
                 </Text>
                 <Button
                   onClick={() => modal.onOpen()}
@@ -153,6 +148,7 @@ const Driver = () => {
                   >
                     <>
                       {commute.data?.stops.length} Stops •{" "}
+                      {console.log("Commute data stops : ", commute.data.stops)}
                       {getPassengers(commute.data.stops).length} Passengers{" "}
                     </>
                   </Text>
@@ -187,21 +183,13 @@ const Driver = () => {
             )}
           </Card>
           {commute.data?.stops.map((stop) => {
-            const stopDay = dayjs(commute.data?.date).format("YYYY-MM-DD");
-            const stopDate = dayjs(`${stopDay} ${stop.time}`);
             return (
               <Card key={stop.id}>
                 <CardHeader p="2">
                   <Stack>
                     <Text fontWeight="bold" fontSize="sm">
                       📍 {stop.location?.name} at
-                      {!!stop.time && (
-                        <>
-                          {timeZone !== null
-                            ? ` ${dayjs.tz(stopDate, timeZone).format("HH:mm")}`
-                            : ` ${stopDate.format("HH:mm")}`}
-                        </>
-                      )}
+                      {!!stop.time && ` ${stop.time}`}
                     </Text>
                     <Text
                       fontSize="xs"

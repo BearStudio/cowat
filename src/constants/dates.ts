@@ -3,4 +3,3 @@ export const DAY_MONTH_YEAR = "DD/MM/YYYY";
 export const FULL_TEXT_DATE = "dddd DD MMM";
 export const FULL_TEXT_DATE_WITH_TIME = "dddd DD MMM HH:mm";
 export const ONLY_TIME = "HH:mm";
-export const TIMEZONE_NAME = "(Europe/Paris)";

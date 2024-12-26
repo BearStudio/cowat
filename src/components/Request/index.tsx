@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { Icon } from "@/components/Icon";
-import { FULL_TEXT_DATE_WITH_TIME } from "@/constants/dates";
+import { FULL_TEXT_DATE } from "@/constants/dates";
 import { api } from "@/utils/api";
-import { isBrowser } from "@/utils/ssr";
 import {
   Avatar,
   Button,
@@ -45,10 +44,6 @@ export const Request = ({ request }: RequestProps) => {
     },
   });
 
-  const timeZone = isBrowser ? window.localStorage.getItem("timezone") : null;
-
-  const stopDay = dayjs(request.stop.commute?.date).format("YYYY-MM-DD");
-  const stopDate = dayjs(`${stopDay} ${request.stop.time}`);
   return (
     <Card>
       <CardBody>
@@ -62,27 +57,16 @@ export const Request = ({ request }: RequestProps) => {
                 <>
                   For{" "}
                   <Text as="span" fontWeight="bold">
-                    {timeZone !== null
-                      ? ` ${dayjs
-                          .tz(request.stop.commute?.date, timeZone)
-                          .format(FULL_TEXT_DATE_WITH_TIME)}`
-                      : ` ${dayjs(request.stop.commute?.date).format(
-                          FULL_TEXT_DATE_WITH_TIME
-                        )}`}
+                    {` ${dayjs(request.stop.commute?.date).format(
+                      FULL_TEXT_DATE
+                    )} ${request.stop.time}`}
                   </Text>{" "}
                   commute
                 </>
               </Text>
               <Text fontSize="xs">
                 📍
-                {!!request.stop.time && (
-                  <>
-                    {timeZone !== null
-                      ? ` ${dayjs.tz(stopDate, timeZone).format("HH:mm")}`
-                      : ` ${stopDate.format("HH:mm")}`}
-                    {" · "}
-                  </>
-                )}
+                {!!request.stop.time && ` ${request.stop.time} · `}
                 {request.stop.location?.name}
               </Text>
             </Stack>

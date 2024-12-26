@@ -7,7 +7,6 @@ import { getPassengers, havePassengerOnStop } from "@/utils/commutes";
 import { DRIVER_STATUS } from "@/utils/driverStatus";
 import { NOT_YET_PASSENGER_IF_INSIDE } from "@/utils/passengers";
 import { PASSENGER_STATUS } from "@/utils/passengerStatus";
-import { isBrowser } from "@/utils/ssr";
 import {
   Avatar,
   Badge,
@@ -75,7 +74,7 @@ const Passenger = () => {
     );
   };
 
-  const timeZone = isBrowser ? window.localStorage.getItem("timezone") : null;
+  const firstStopTime = commute.data?.stops.map((stop) => stop.time).sort()[0];
 
   return (
     <LayoutAuthenticated
@@ -114,12 +113,8 @@ const Passenger = () => {
             <CardHeader p="2">
               <Flex justify="space-between" align="center">
                 <Text fontWeight="bold" fontSize="sm">
-                  {commute.data.createdBy?.name}&apos;s departure at{" "}
-                  {timeZone !== null
-                    ? ` ${dayjs
-                        .tz(commute.data?.date, timeZone)
-                        .format("HH:mm A")}`
-                    : ` ${dayjs(commute.data?.date).format("HH:mm A")}`}
+                  {commute.data.createdBy?.name}&apos;s departure at
+                  {` ${firstStopTime}`}
                 </Text>
               </Flex>
             </CardHeader>
@@ -168,8 +163,6 @@ const Passenger = () => {
             <Divider color="gray.200" _dark={{ color: "gray.700" }} />
           </Card>
           {commute.data?.stops.map((stop) => {
-            const stopDay = dayjs(commute.data?.date).format("YYYY-MM-DD");
-            const stopDate = dayjs(`${stopDay} ${stop.time}`);
             return (
               <Card key={stop.id}>
                 <CardHeader p="2">
@@ -178,15 +171,7 @@ const Passenger = () => {
                       <Stack>
                         <Text fontWeight="bold" fontSize="sm">
                           📍 {stop.location?.name} at
-                          {!!stop.time && (
-                            <>
-                              {timeZone !== null
-                                ? ` ${dayjs
-                                    .tz(stopDate, timeZone)
-                                    .format("HH:mm")}`
-                                : ` ${stopDate.format("HH:mm")}`}
-                            </>
-                          )}
+                          {!!stop.time && ` ${stop.time}`}
                         </Text>
                         <Text
                           fontSize="xs"

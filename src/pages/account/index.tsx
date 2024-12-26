@@ -1,6 +1,5 @@
 import { ColorModeSelect } from "@/components/ColorModeSelect";
 import { Icon } from "@/components/Icon";
-import { TimezoneSelect } from "@/components/Timezone";
 
 import { LayoutAuthenticated } from "@/layout/LayoutAuthenticated";
 import { Button, Divider, Heading, Stack } from "@chakra-ui/react";
@@ -17,7 +16,6 @@ const AccountPage = () => {
         <title>Cowat - Account</title>
       </Head>
       <Stack spacing="4">
-        <TimezoneSelect />
         <ColorModeSelect />
         <Divider />
 
