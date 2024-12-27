@@ -3,7 +3,11 @@ import { LateModal } from "@/components/LateModal";
 import { Loader } from "@/components/Loader";
 import { LayoutAuthenticated } from "@/layout/LayoutAuthenticated";
 import { api } from "@/utils/api";
-import { getPassengers, havePassengerOnStop } from "@/utils/commutes";
+import {
+  getFirstStopTime,
+  getPassengers,
+  havePassengerOnStop,
+} from "@/utils/commutes";
 import { NOT_YET_PASSENGER_IF_INSIDE } from "@/utils/passengers";
 import { PASSENGER_STATUS } from "@/utils/passengerStatus";
 import { DRIVER_STATUS } from "@/utils/driverStatus";
@@ -83,8 +87,6 @@ const Driver = () => {
     );
   };
 
-  const firstStopTime = commute.data?.stops.map((stop) => stop.time).sort()[0];
-
   return (
     <LayoutAuthenticated
       hideNav
@@ -125,7 +127,7 @@ const Driver = () => {
             <CardHeader p="2">
               <Flex justify="space-between" align="center">
                 <Text fontWeight="bold" fontSize="sm">
-                  Departure at {` ${firstStopTime}`}
+                  Departure at {getFirstStopTime(commute.data)}
                 </Text>
                 <Button
                   onClick={() => modal.onOpen()}
@@ -187,8 +189,7 @@ const Driver = () => {
                 <CardHeader p="2">
                   <Stack>
                     <Text fontWeight="bold" fontSize="sm">
-                      📍 {stop.location?.name} at
-                      {!!stop.time && ` ${stop.time}`}
+                      📍 {stop.location?.name} at {!!stop.time && stop.time}
                     </Text>
                     <Text
                       fontSize="xs"

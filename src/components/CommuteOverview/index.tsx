@@ -1,7 +1,7 @@
 import { Icon } from "@/components/Icon";
 import { FULL_TEXT_DATE } from "@/constants/dates";
 import { api } from "@/utils/api";
-import { getPassengers } from "@/utils/commutes";
+import { getFirstStopTime, getPassengers } from "@/utils/commutes";
 import { NOT_YET_PASSENGER_IF_INSIDE } from "@/utils/passengers";
 import {
   Accordion,
@@ -109,8 +109,6 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
     !isFull &&
     dayjs().isBefore(dayjs(props.date));
 
-  const firstStopTime = props.stops.map((stop) => stop.time).sort()[0];
-
   const handleBookClick = (stopId: string) => {
     if (myCommutesOnDate.isSuccess && myCommutesOnDate.data?.length > 0) {
       confirmCommuteActionModal.onOpen();
@@ -179,7 +177,7 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
                 <Text fontWeight="bold" fontSize="sm">
                   {` ${dayjs(props.date).format(
                     FULL_TEXT_DATE
-                  )} ${firstStopTime}`}
+                  )} ${getFirstStopTime(props)}`}
                 </Text>
               </HStack>
               <Text fontSize="sm">
@@ -292,9 +290,7 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
                     <HStack key={stop.id}>
                       <Stack spacing={0} flex={1}>
                         <Text fontWeight="bold" fontSize="sm">
-                          📍
-                          {!!stop.time && ` ${stop.time} · `}
-                          {stop.location?.name}
+                          📍 {!!stop.time && stop.time} · {stop.location?.name}
                         </Text>
                         <Tooltip label={stop?.location?.address}>
                           <Text

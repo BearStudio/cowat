@@ -43,6 +43,9 @@ export const commuteRouter = createTRPCRouter({
             },
           },
           stops: {
+            orderBy: {
+              time: "asc",
+            },
             select: {
               id: true,
               location: true,
@@ -118,9 +121,11 @@ export const commuteRouter = createTRPCRouter({
   allMyCommutesOnDate: protectedProcedure
     .input(z.object({ date: z.string() }))
     .query(async ({ ctx, input }) => {
-      const targetDate = new Date(input.date);
-      const nextDay = new Date(input.date);
-      nextDay.setDate(nextDay.getDate() + 1);
+      // We force the date to UTC, to prevent dayjs from converting to the local timezone
+      const dateUtc =
+        input.date.split("GMT")[0] + "GMT+0000 (heure moyenne de Greenwich)";
+      const targetDate = dayjs(dateUtc).toDate();
+      const nextDay = dayjs(dateUtc).add(1, "day").toDate();
       const commutes = await ctx.prisma.commute.findMany({
         where: {
           AND: [

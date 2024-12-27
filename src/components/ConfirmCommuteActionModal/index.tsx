@@ -1,4 +1,3 @@
-import { ONLY_TIME } from "@/constants/dates";
 import type { RouterOutputs } from "@/utils/api";
 import { api } from "@/utils/api";
 import type { ModalProps } from "@chakra-ui/react";
@@ -15,9 +14,9 @@ import {
   Text,
 } from "@chakra-ui/react";
 import type { PassengersOnStops } from "@prisma/client";
-import dayjs from "dayjs";
 import { useSession } from "next-auth/react";
 import { ConfirmCancelCommuteModal } from "@/components/ConfirmCancelCommuteModal";
+import { getFirstStopTime } from "@/utils/commutes";
 
 type CommuteType = RouterOutputs["commute"]["commuteById"];
 
@@ -67,10 +66,6 @@ export const ConfirmCommuteActionModal = ({
     });
   };
 
-  const firstStopTime = (commute: CommuteType) => {
-    return commute.stops.map((stop) => stop.time).sort()[0];
-  };
-
   const stopTimeWhenPassenger = (commute: CommuteType) => {
     for (let stop of commute.stops) {
       if (
@@ -110,7 +105,7 @@ export const ConfirmCommuteActionModal = ({
                       {commute.createdById === session?.user?.id ? (
                         <>
                           <Text>
-                            Driver for a commute at {firstStopTime(commute)}
+                            Driver for a commute at {getFirstStopTime(commute)}
                           </Text>
                           <ConfirmCancelCommuteModal commute={commute} />
                         </>

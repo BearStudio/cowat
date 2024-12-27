@@ -1,4 +1,7 @@
 import type { PassengersOnStops, Stop, User } from "@prisma/client";
+import type { RouterOutputs } from "@/utils/api";
+
+type CommuteType = RouterOutputs["commute"]["commuteById"];
 
 /**
  * Get all the passengers of the given stops, wihtout the canceled ones.
@@ -61,4 +64,13 @@ export const havePassengerOnStop = (
       passenger.requestStatus !== "CANCELED" &&
       passenger.requestStatus !== "REFUSED"
   );
+};
+
+/**
+ * Get the earliest time of the commute
+ * @param commute The commute in which we want to find the earliest stop
+ * @returns The time of the earliest stop
+ */
+export const getFirstStopTime = (commute: CommuteType) => {
+  return commute?.stops.map((stop) => stop.time).sort()[0];
 };
