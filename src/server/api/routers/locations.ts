@@ -34,24 +34,56 @@ export const locationRouter = createTRPCRouter({
   delete: protectedProcedure
     .input(z.string())
     .mutation(async ({ ctx, input }) => {
+      const location = await ctx.prisma.location.update({
+        where: {
+          id: input,
+        },
+        data: {
+          isDeleted: true,
+        },
+      });
+    }),
+  get: protectedProcedure
+    .input(
+      z.object({
+        id: z.string().cuid(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
       const location = await ctx.prisma.location.findFirst({
         where: {
-          id: input,
+          id: input.id,
+          isDeleted: {
+            equals: false,
+          },
         },
       });
-
       if (!location) {
-        throw new TRPCError({ code: "NOT_FOUND" });
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: `Location ${input.id} not found`,
+        });
       }
-
-      if (location.createdById !== ctx.session.user.id) {
-        throw new TRPCError({ code: "FORBIDDEN" });
-      }
-
-      return ctx.prisma.location.delete({
+      return location;
+    }),
+  edit: protectedProcedure
+    .input(
+      z.object({
+        id: z.string().cuid(),
+        address: z.string(),
+        name: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const location = await ctx.prisma.location.update({
         where: {
-          id: input,
+          id: input.id,
+        },
+        data: {
+          address: input.address,
+          name: input.name,
         },
       });
+      return location;
     }),
 });
