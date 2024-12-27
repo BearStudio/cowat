@@ -1,9 +1,10 @@
 import { ConfirmModal } from "@/components/ConfirmModal";
 import { EmptyState } from "@/components/EmptyState";
 import { Icon } from "@/components/Icon";
+import { LocationForm } from "@/components/LocationForm";
 import { searchOnMaps } from "@/constants/google";
 import { LayoutAuthenticated } from "@/layout/LayoutAuthenticated";
-import type { RouterOutputs } from "@/utils/api";
+import type { RouterInputs, RouterOutputs } from "@/utils/api";
 import { api } from "@/utils/api";
 import {
   Button,
@@ -12,17 +13,28 @@ import {
   CardFooter,
   CardHeader,
   Divider,
+  Flex,
   Heading,
   HStack,
   IconButton,
   Link as ChakraLink,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
   SimpleGrid,
   Stack,
   Text,
+  useDisclosure,
 } from "@chakra-ui/react";
-import { ArrowLeft, ExternalLink, Plus, Trash } from "lucide-react";
+import { Formiz, useForm, useFormContext, useFormFields } from "@formiz/core";
+import { ArrowLeft, ExternalLink, Pencil, Plus, Trash } from "lucide-react";
 import Head from "next/head";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 const LocationsPage = () => {
   const myLocations = api.location.mine.useQuery();
@@ -76,11 +88,31 @@ type LocationCardProps = {
 
 const LocationCard = ({ location }: LocationCardProps) => {
   const ctx = api.useContext();
+  const router = useRouter();
+
   const deleteLocation = api.location.delete.useMutation({
     onSuccess: () => {
       ctx.location.invalidate();
     },
   });
+
+  const editLocationForm = useForm();
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const defaultValues = {
+    ...location,
+  };
+
+  const LocationMutation = api.location.edit.useMutation({
+    onSuccess: () => {
+      router.push("/account/locations");
+    },
+  });
+
+  const handleOnValidSubmit = (values: RouterInputs["location"]["edit"]) => {
+    LocationMutation.mutate({ ...values, id: location.id?.toString() ?? "" });
+  };
 
   return (
     <Card size="sm">
@@ -89,15 +121,22 @@ const LocationCard = ({ location }: LocationCardProps) => {
       </CardHeader>
       <CardBody>{location.address}</CardBody>
       <CardFooter justifyContent="space-between">
-        <Button
-          as={ChakraLink}
-          href={searchOnMaps(location.address)}
-          title="Open the address on Google Maps"
-          isExternal
-          rightIcon={<Icon icon={ExternalLink} />}
-        >
-          Maps
-        </Button>
+        <Flex gap="4">
+          <IconButton
+            aria-label="Edit location"
+            icon={<Icon icon={Pencil} />}
+            onClick={onOpen}
+          />
+          <Button
+            as={ChakraLink}
+            href={searchOnMaps(location.address)}
+            title="Open the address on Google Maps"
+            isExternal
+            rightIcon={<Icon icon={ExternalLink} />}
+          >
+            Maps
+          </Button>
+        </Flex>
         <ConfirmModal
           onConfirm={() => deleteLocation.mutate(location.id)}
           title="Delete this location?"
@@ -126,6 +165,34 @@ const LocationCard = ({ location }: LocationCardProps) => {
             isLoading={deleteLocation.isLoading}
           />
         </ConfirmModal>
+        {isOpen && (
+          <Modal isOpen onClose={onClose} size="sm">
+            <ModalOverlay />
+            <Formiz
+              connect={editLocationForm}
+              initialValues={defaultValues}
+              onValidSubmit={handleOnValidSubmit}
+            >
+              <ModalContent>
+                <ModalHeader flex="1">Edit location</ModalHeader>
+                <ModalCloseButton />
+                <ModalBody>
+                  <LocationForm />
+                </ModalBody>
+
+                <ModalFooter>
+                  <Button
+                    variant="primary"
+                    isLoading={LocationMutation.isLoading}
+                    onClick={() => editLocationForm.submit()}
+                  >
+                    Save
+                  </Button>
+                </ModalFooter>
+              </ModalContent>
+            </Formiz>
+          </Modal>
+        )}
       </CardFooter>
     </Card>
   );
