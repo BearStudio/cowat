@@ -2,9 +2,12 @@ import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { z } from "zod";
 import { slack } from "@/server/slack";
 import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
 import { RequestStatus } from "@prisma/client";
 import { groupBy } from "remeda";
 import { YEAR_MONTH_DAY } from "@/constants/dates";
+
+dayjs.extend(utc);
 
 export const commuteRouter = createTRPCRouter({
   createCommute: protectedProcedure
@@ -121,11 +124,8 @@ export const commuteRouter = createTRPCRouter({
   allMyCommutesOnDate: protectedProcedure
     .input(z.object({ date: z.string() }))
     .query(async ({ ctx, input }) => {
-      // We force the date to UTC, to prevent dayjs from converting to the local timezone
-      const dateUtc =
-        input.date.split("GMT")[0] + "GMT+0000 (heure moyenne de Greenwich)";
-      const targetDate = dayjs(dateUtc).toDate();
-      const nextDay = dayjs(dateUtc).add(1, "day").toDate();
+      const targetDate = dayjs.utc(input.date).toDate();
+      const nextDay = dayjs.utc(input.date).add(1, "day").toDate();
       const commutes = await ctx.prisma.commute.findMany({
         where: {
           AND: [

@@ -55,7 +55,7 @@ const New: NextPage = () => {
     : dateQueryParam?.toString() || "";
 
   const myCommutesOnDate = api.commute.allMyCommutesOnDate.useQuery({
-    date: date,
+    date: dayjs(date).format("YYYY-MM-DD"),
   });
 
   // Need to react to the params changes.
