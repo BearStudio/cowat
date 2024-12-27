@@ -1,8 +1,10 @@
 import { prisma } from "@/server/db";
 import { notify } from "@/server/slack";
-import { getSortedStopsWithPassengers } from "@/utils/stops";
 import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
 import type { NextApiRequest, NextApiResponse } from "next";
+
+dayjs.extend(utc);
 
 export default async function handler(
   request: NextApiRequest,
@@ -11,8 +13,8 @@ export default async function handler(
   const commutes = await prisma?.commute.findMany({
     where: {
       date: {
-        gte: dayjs().startOf("day").toDate(),
-        lte: dayjs().endOf("day").toDate(),
+        gte: dayjs.utc().startOf("day").toDate(),
+        lte: dayjs.utc().endOf("day").toDate(),
       },
       isDeleted: false,
     },
@@ -21,6 +23,9 @@ export default async function handler(
         select: { id: true, name: true, email: true, image: true },
       },
       stops: {
+        orderBy: {
+          time: "asc",
+        },
         include: {
           location: {
             select: {
@@ -48,10 +53,6 @@ export default async function handler(
         },
       },
     },
-  });
-
-  const commutesWithStopsSorted = commutes.map((commute) => {
-    commute.stops = getSortedStopsWithPassengers(commute.stops);
   });
 
   const messageOfTheDay = {

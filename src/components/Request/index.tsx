@@ -65,8 +65,8 @@ export const Request = ({ request }: RequestProps) => {
                 </>
               </Text>
               <Text fontSize="xs">
-                📍
-                {!!request.stop.time && ` ${request.stop.time} · `}
+                📍 {!!request.stop.time && request.stop.time}
+                {" · "}
                 {request.stop.location?.name}
               </Text>
             </Stack>

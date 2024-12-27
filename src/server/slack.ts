@@ -5,7 +5,6 @@ import dayjs from "dayjs";
 import { FULL_TEXT_DATE } from "@/constants/dates";
 import { App, LogLevel } from "@slack/bolt";
 import { clientEnv } from "@/env/schema.mjs";
-import { getSortedStops } from "@/utils/stops";
 
 type PassengerOnStopNotification = Prisma.PassengersOnStopsGetPayload<{
   include: {
@@ -65,9 +64,7 @@ const newCommute = async (
     ? `<@${slackUserId}>`
     : commute.createdBy?.email;
 
-  const sortedStops = getSortedStops(commute.stops);
-
-  const locationsSlack = sortedStops.map((stop) => ({
+  const locationsSlack = commute.stops.map((stop) => ({
     type: "section",
     text: {
       type: "mrkdwn",
