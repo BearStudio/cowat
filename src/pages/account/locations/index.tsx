@@ -30,7 +30,7 @@ import {
   Text,
   useDisclosure,
 } from "@chakra-ui/react";
-import { Formiz, useForm, useFormContext, useFormFields } from "@formiz/core";
+import { Formiz, useForm } from "@formiz/core";
 import { ArrowLeft, ExternalLink, Pencil, Plus, Trash } from "lucide-react";
 import Head from "next/head";
 import Link from "next/link";
@@ -107,6 +107,8 @@ const LocationCard = ({ location }: LocationCardProps) => {
   const LocationMutation = api.location.edit.useMutation({
     onSuccess: () => {
       router.push("/account/locations");
+      onClose();
+      window.location.reload();
     },
   });
 
