@@ -88,7 +88,6 @@ type LocationCardProps = {
 
 const LocationCard = ({ location }: LocationCardProps) => {
   const ctx = api.useContext();
-  const router = useRouter();
 
   const deleteLocation = api.location.delete.useMutation({
     onSuccess: () => {
@@ -104,16 +103,15 @@ const LocationCard = ({ location }: LocationCardProps) => {
     ...location,
   };
 
-  const LocationMutation = api.location.edit.useMutation({
+  const locationMutation = api.location.edit.useMutation({
     onSuccess: () => {
-      router.push("/account/locations");
       onClose();
-      window.location.reload();
+      ctx.location.invalidate();
     },
   });
 
   const handleOnValidSubmit = (values: RouterInputs["location"]["edit"]) => {
-    LocationMutation.mutate({ ...values, id: location.id?.toString() ?? "" });
+    locationMutation.mutate({ ...values, id: location.id?.toString() ?? "" });
   };
 
   return (
@@ -123,50 +121,50 @@ const LocationCard = ({ location }: LocationCardProps) => {
       </CardHeader>
       <CardBody>{location.address}</CardBody>
       <CardFooter justifyContent="space-between">
+        <Button
+          as={ChakraLink}
+          href={searchOnMaps(location.address)}
+          title="Open the address on Google Maps"
+          isExternal
+          rightIcon={<Icon icon={ExternalLink} />}
+        >
+          Maps
+        </Button>
         <Flex gap="4">
           <IconButton
             aria-label="Edit location"
             icon={<Icon icon={Pencil} />}
             onClick={onOpen}
           />
-          <Button
-            as={ChakraLink}
-            href={searchOnMaps(location.address)}
-            title="Open the address on Google Maps"
-            isExternal
-            rightIcon={<Icon icon={ExternalLink} />}
+          <ConfirmModal
+            onConfirm={() => deleteLocation.mutate(location.id)}
+            title="Delete this location?"
+            message={
+              <Stack pt={2}>
+                <Divider />
+                <HStack>
+                  <Text>📍</Text>
+                  <Stack spacing={0}>
+                    <Text fontWeight="bold">{location.name}</Text>
+                    <Text fontSize="sm" color="gray.500" wordBreak="break-word">
+                      {location.address}
+                    </Text>
+                  </Stack>
+                </HStack>
+                <Divider />
+              </Stack>
+            }
+            confirmText="Delete"
+            confirmVariant="danger"
           >
-            Maps
-          </Button>
+            <IconButton
+              variant="danger"
+              aria-label="Remove this location"
+              icon={<Icon icon={Trash} />}
+              isLoading={deleteLocation.isLoading}
+            />
+          </ConfirmModal>
         </Flex>
-        <ConfirmModal
-          onConfirm={() => deleteLocation.mutate(location.id)}
-          title="Delete this location?"
-          message={
-            <Stack pt={2}>
-              <Divider />
-              <HStack>
-                <Text>📍</Text>
-                <Stack spacing={0}>
-                  <Text fontWeight="bold">{location.name}</Text>
-                  <Text fontSize="sm" color="gray.500" wordBreak="break-word">
-                    {location.address}
-                  </Text>
-                </Stack>
-              </HStack>
-              <Divider />
-            </Stack>
-          }
-          confirmText="Delete"
-          confirmVariant="danger"
-        >
-          <IconButton
-            variant="danger"
-            aria-label="Remove this location"
-            icon={<Icon icon={Trash} />}
-            isLoading={deleteLocation.isLoading}
-          />
-        </ConfirmModal>
         {isOpen && (
           <Modal isOpen onClose={onClose} size="sm">
             <ModalOverlay />
@@ -185,7 +183,7 @@ const LocationCard = ({ location }: LocationCardProps) => {
                 <ModalFooter>
                   <Button
                     variant="primary"
-                    isLoading={LocationMutation.isLoading}
+                    isLoading={locationMutation.isLoading}
                     onClick={() => editLocationForm.submit()}
                   >
                     Save
