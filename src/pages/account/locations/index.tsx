@@ -34,7 +34,6 @@ import { Formiz, useForm } from "@formiz/core";
 import { ArrowLeft, ExternalLink, Pencil, Plus, Trash } from "lucide-react";
 import Head from "next/head";
 import Link from "next/link";
-import { useRouter } from "next/router";
 
 const LocationsPage = () => {
   const myLocations = api.location.mine.useQuery();
