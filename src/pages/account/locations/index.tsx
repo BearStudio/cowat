@@ -88,7 +88,7 @@ type LocationCardProps = {
 const LocationCard = ({ location }: LocationCardProps) => {
   const ctx = api.useContext();
 
-  const deleteLocation = api.location.delete.useMutation({
+  const deleteLocation = api.location.remove.useMutation({
     onSuccess: () => {
       ctx.location.invalidate();
     },
@@ -98,9 +98,7 @@ const LocationCard = ({ location }: LocationCardProps) => {
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const defaultValues = {
-    ...location,
-  };
+  const defaultValues = location;
 
   const locationMutation = api.location.edit.useMutation({
     onSuccess: () => {
