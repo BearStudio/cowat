@@ -67,7 +67,7 @@ export const ConfirmCommuteActionModal = ({
   };
 
   const stopTimeWhenPassenger = (commute: CommuteType) => {
-    for (let stop of commute.stops) {
+    for (const stop of commute.stops) {
       if (
         stop.passengers.some(
           (passenger) => passenger.userId === session?.user?.id
