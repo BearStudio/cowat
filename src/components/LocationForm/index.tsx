@@ -17,6 +17,7 @@ export const LocationForm = () => {
         label="Name"
         name="name"
         required="Please provide a name"
+        // TO DO : Bug : if we update and close the modal, the modification is saved in the form
         keepValue // Temporarily
       />
       <Stack spacing={1}>
@@ -30,6 +31,7 @@ export const LocationForm = () => {
               message: `Address length should be less than ${API_STRING_MAX_LENGTH}`,
             },
           ]}
+          // TO DO : Bug : if we update and close the modal, the modification is saved in the form
           keepValue // Temporarily
         />
         <Button
