@@ -34,7 +34,6 @@ import { Formiz, useForm } from "@formiz/core";
 import { ArrowLeft, ExternalLink, Pencil, Plus, Trash } from "lucide-react";
 import Head from "next/head";
 import Link from "next/link";
-import { useEffect } from "react";
 
 const LocationsPage = () => {
   const myLocations = api.location.mine.useQuery();
@@ -111,12 +110,6 @@ const LocationCard = ({ location }: LocationCardProps) => {
   const handleOnValidSubmit = (values: RouterInputs["location"]["edit"]) => {
     locationMutation.mutate({ ...values, id: location.id?.toString() ?? "" });
   };
-
-  useEffect(() => {
-    if (isOpen) {
-      editLocationForm.setValues(location);
-    }
-  }, [isOpen]);
 
   return (
     <Card size="sm">
