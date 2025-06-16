@@ -13,7 +13,12 @@ export const LocationForm = () => {
 
   return (
     <Stack spacing="5">
-      <FieldInput label="Name" name="name" required="Please provide a name" />
+      <FieldInput
+        label="Name"
+        name="name"
+        required="Please provide a name"
+        keepValue // Temporarily
+      />
       <Stack spacing={1}>
         <FieldTextarea
           label="Address"
@@ -25,6 +30,7 @@ export const LocationForm = () => {
               message: `Address length should be less than ${API_STRING_MAX_LENGTH}`,
             },
           ]}
+          keepValue // Temporarily
         />
         <Button
           as={Link}
