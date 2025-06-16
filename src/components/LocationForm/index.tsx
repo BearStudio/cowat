@@ -18,6 +18,7 @@ export const LocationForm = () => {
         name="name"
         required="Please provide a name"
         // TO DO : Bug : if we update and close the modal, the modification is saved in the form
+        // Waiting for Formiz update
         keepValue // Temporarily
       />
       <Stack spacing={1}>
@@ -32,6 +33,7 @@ export const LocationForm = () => {
             },
           ]}
           // TO DO : Bug : if we update and close the modal, the modification is saved in the form
+          // Waiting for Formiz update
           keepValue // Temporarily
         />
         <Button
