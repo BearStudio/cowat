@@ -18,7 +18,7 @@ export const commuteRouter = createTRPCRouter({
         stops: z.array(
           z.object({
             location: z.string(),
-            time: z.string()?.nullish(),
+            time: z.string(),
           })
         ),
         comment: z.string().nullish(),
@@ -394,7 +394,7 @@ export const commuteRouter = createTRPCRouter({
           .array(
             z.object({
               location: z.string(),
-              time: z.string().nullish(),
+              time: z.string(),
               id: z.string().nullish(),
             })
           )
