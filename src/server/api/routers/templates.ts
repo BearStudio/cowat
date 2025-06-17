@@ -11,7 +11,7 @@ export const templateRouter = createTRPCRouter({
         stops: z.array(
           z.object({
             location: z.string(),
-            time: z.string()?.nullish(),
+            time: z.string(),
           })
         ),
         comment: z.string().nullish(),
@@ -26,6 +26,11 @@ export const templateRouter = createTRPCRouter({
             create: input.stops.map((stop) => ({
               time: stop.time,
               locationId: stop.location,
+              // location: {
+              //   connect: {
+              //     id: stop.location,
+              //   },
+              // },
             })),
           },
           templateName: input.templateName,
@@ -128,7 +133,7 @@ export const templateRouter = createTRPCRouter({
         stops: z.array(
           z.object({
             location: z.string(),
-            time: z.string()?.nullish(),
+            time: z.string(),
           })
         ),
         comment: z.string().nullish(),
