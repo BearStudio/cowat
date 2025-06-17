@@ -18,7 +18,6 @@ import {
 import { LayoutAuthenticated } from "@/layout/LayoutAuthenticated";
 import { Icon } from "@/components/Icon";
 import { ArrowLeft } from "lucide-react";
-import type { Dayjs } from "dayjs";
 import dayjs from "dayjs";
 import { DAY_MONTH_YEAR } from "@/constants/dates";
 import { CommuteForm } from "@/components/CommuteForm";
@@ -29,6 +28,10 @@ import { SimpleCard } from "@/components/SimpleCard";
 import { ConfirmCommuteActionModal } from "@/components/ConfirmCommuteActionModal";
 
 type CreateCommuteInput = RouterInputs["commute"]["createCommute"];
+
+type CreateCommuteFormValues = Omit<CreateCommuteInput, "date"> & {
+  date: string;
+};
 
 const FROM_SCRATCH = "FROM_SCRATCH";
 
@@ -41,22 +44,6 @@ const New: NextPage = () => {
   >(undefined);
 
   const confirmCommuteModal = useDisclosure();
-
-  const form = useForm();
-
-  const formValues = useFormFields({
-    connect: form,
-    selector: (field) => field.value,
-  });
-
-  const dateString = dayjs(dateQueryParam?.toString()).format(DAY_MONTH_YEAR);
-  const date = formValues.date
-    ? new Date(formValues.date).toString()
-    : dateQueryParam?.toString() || "";
-
-  const myCommutesOnDate = api.commute.allMyCommutesOnDate.useQuery({
-    date: dayjs(date).format("YYYY-MM-DD"),
-  });
 
   // Need to react to the params changes.
   useEffect(() => {
@@ -83,10 +70,12 @@ const New: NextPage = () => {
 
   const stops = fromTemplate.data
     ? fromTemplate.data.stops.map((stop) => ({
-        ...stop,
-        location: stop.location?.id,
+        time: stop.time,
+        location: stop.location.id,
       }))
-    : [{}];
+    : [];
+
+  const dateString = dayjs(dateQueryParam?.toString()).format(DAY_MONTH_YEAR);
 
   const defaultValues = {
     ...fromTemplate.data,
@@ -100,18 +89,36 @@ const New: NextPage = () => {
     },
   });
 
-  const handleOnValidSubmit = (
-    values: Omit<CreateCommuteInput, "date"> & { date: Dayjs }
-  ) => {
+  const handleOnValidSubmit = (values: CreateCommuteFormValues) => {
     const { date, ...otherValues } = values;
 
     createCommute.mutate({
       ...otherValues,
       date: dayjs(
-        `${date.format("YYYY-MM-DD")} ${otherValues.stops[0]?.time}`
+        `${date} ${otherValues.stops[0]?.time}`,
+        "DD/MM/YYYY HH:mm"
       ).toDate(),
     });
   };
+
+  const form = useForm({
+    onValidSubmit: handleOnValidSubmit,
+    initialValues: defaultValues,
+  });
+
+  const formValues = useFormFields({
+    connect: form,
+    fields: ["date"] as const,
+    selector: (field) => field.value,
+  });
+
+  const date = formValues.date
+    ? new Date(formValues.date).toString()
+    : dateQueryParam?.toString() || "";
+
+  const myCommutesOnDate = api.commute.allMyCommutesOnDate.useQuery({
+    date: dayjs(date).format("YYYY-MM-DD"),
+  });
 
   const showForm =
     !!selectedTemplate &&
@@ -172,12 +179,7 @@ const New: NextPage = () => {
         </Stack>
       )}
       {showForm && (
-        <Formiz
-          onValidSubmit={handleOnValidSubmit}
-          autoForm
-          connect={form}
-          initialValues={defaultValues}
-        >
+        <Formiz autoForm connect={form}>
           <SimpleCard>
             <CommuteForm repeaterInitialValues={defaultValues.stops} />
             <Button

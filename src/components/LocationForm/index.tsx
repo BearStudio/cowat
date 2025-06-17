@@ -13,14 +13,7 @@ export const LocationForm = () => {
 
   return (
     <Stack spacing="5">
-      <FieldInput
-        label="Name"
-        name="name"
-        required="Please provide a name"
-        // TO DO : Bug : if we update and close the modal, the modification is saved in the form
-        // Waiting for Formiz update
-        keepValue // Temporarily
-      />
+      <FieldInput label="Name" name="name" required="Please provide a name" />
       <Stack spacing={1}>
         <FieldTextarea
           label="Address"
@@ -32,9 +25,6 @@ export const LocationForm = () => {
               message: `Address length should be less than ${API_STRING_MAX_LENGTH}`,
             },
           ]}
-          // TO DO : Bug : if we update and close the modal, the modification is saved in the form
-          // Waiting for Formiz update
-          keepValue // Temporarily
         />
         <Button
           as={Link}

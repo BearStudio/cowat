@@ -7,7 +7,7 @@ import { LayoutAuthenticated } from "@/layout/LayoutAuthenticated";
 import type { RouterInputs } from "@/utils/api";
 import { api } from "@/utils/api";
 import { Button, Heading, HStack, IconButton } from "@chakra-ui/react";
-import { Formiz } from "@formiz/core";
+import { Formiz, useForm } from "@formiz/core";
 import { ArrowLeft } from "lucide-react";
 import type { NextPage } from "next";
 import Head from "next/head";
@@ -41,14 +41,19 @@ const EditCommuteTemplates: NextPage = () => {
   const stops = template.data
     ? template.data.stops.map((stop) => ({
         ...stop,
-        location: stop.location?.id,
+        location: stop.location.id,
       }))
-    : [{}];
+    : [];
 
   const defaultValues = {
     ...template.data,
     stops,
   };
+
+  const editCommuteForm = useForm({
+    initialValues: defaultValues,
+    onValidSubmit: handleOnValidSubmit,
+  });
 
   return (
     <LayoutAuthenticated
@@ -71,11 +76,7 @@ const EditCommuteTemplates: NextPage = () => {
       </Head>
       {template.isLoading && <Loader />}
       {!template.isLoading && defaultValues && (
-        <Formiz
-          autoForm
-          initialValues={defaultValues}
-          onValidSubmit={handleOnValidSubmit}
-        >
+        <Formiz autoForm connect={editCommuteForm}>
           <SimpleCard>
             <CommuteForm
               repeaterInitialValues={defaultValues.stops}
