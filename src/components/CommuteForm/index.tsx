@@ -8,7 +8,7 @@ import { FieldNumber } from "@/components/FieldNumber";
 import { FieldInput } from "@/components/FieldInput";
 import { Icon } from "@/components/Icon";
 import { LocationForm } from "@/components/LocationForm";
-import type { RouterInputs } from "@/utils/api";
+import type { RouterInputs, RouterOutputs } from "@/utils/api";
 import { api } from "@/utils/api";
 import { getPassengers } from "@/utils/commutes";
 import {
@@ -33,10 +33,10 @@ import {
 } from "@chakra-ui/react";
 import {
   Formiz,
+  useCollection,
   useForm,
   useFormContext,
   useFormFields,
-  useRepeater,
 } from "@formiz/core";
 import { isMaxNumber, isMinNumber } from "@formiz/validations";
 import { Plus, Trash } from "lucide-react";
@@ -53,6 +53,8 @@ type CommuteFormProps = {
   mode?: "TEMPLATE" | "CREATE" | "EDIT";
 };
 
+type CommuteFormValues = RouterOutputs["commute"]["commuteById"];
+
 export const CommuteForm = ({
   repeaterInitialValues: initialValues,
   mode = "CREATE",
@@ -67,12 +69,11 @@ export const CommuteForm = ({
     }
   );
 
-  const form = useForm();
+  const form = useForm<CommuteFormValues>();
 
-  const stops = useRepeater({
-    name: "stops",
+  const stops = useCollection("stops", {
     connect: form,
-    initialValues,
+    defaultValue: initialValues,
   });
 
   const numberOfPassengers = getPassengers(commute.data?.stops ?? []).length;
@@ -186,15 +187,22 @@ const Stop = ({
 }: StopProps) => {
   const ctx = api.useContext();
   const form = useFormContext();
-  const formFields = useFormFields({ fields: ["stops"] });
+  const formFields = useFormFields({
+    fields: ["stops"] as const,
+    selector: "value",
+  });
 
-  const newLocationForm = useForm();
+  const newLocationForm = useForm({
+    onValidSubmit: (values: RouterInputs["location"]["create"]) => {
+      createLocation.mutate(values);
+    },
+  });
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const locations = api.location.mine.useQuery();
 
-  //Locations already used in a stop
+  // Locations already used in a stop
   const usedLocations = formFields.stops?.map(
     (field: { location: { value: string } }) => field?.location?.value
   );
@@ -205,7 +213,7 @@ const Stop = ({
       locations?.data?.filter(
         (location) =>
           !usedLocations?.includes(location.id) ||
-          location.id === formFields?.stops?.[index]?.location?.value
+          location.id === formFields.stops?.[index]?.location?.value
       ) ?? []
     );
   };
@@ -274,12 +282,7 @@ const Stop = ({
       {isOpen && (
         <Modal isOpen onClose={onClose} size="sm">
           <ModalOverlay />
-          <Formiz
-            connect={newLocationForm}
-            onValidSubmit={(values: RouterInputs["location"]["create"]) => {
-              createLocation.mutate(values);
-            }}
-          >
+          <Formiz connect={newLocationForm}>
             <ModalContent>
               <ModalHeader flex="1">New location</ModalHeader>
               <ModalCloseButton />

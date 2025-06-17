@@ -37,9 +37,9 @@ enum DriverStopStatus {
 
 model Stop {
     id                String              @id @default(cuid())
-    locationId        String?
-    location          Location?           @relation(fields: [locationId], references: [id])
-    time              String?
+    locationId        String
+    location          Location           @relation(fields: [locationId], references: [id])
+    time              String
     commute           Commute?            @relation(fields: [commuteId], references: [id])
     commuteId         String?
     commuteTemplate   CommuteTemplate?    @relation(fields: [commuteTemplateId], references: [id])

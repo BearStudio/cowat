@@ -19,7 +19,7 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
-import { Formiz } from "@formiz/core";
+import { Formiz, useForm } from "@formiz/core";
 import { ArrowLeft, MoreVerticalIcon } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Head from "next/head";
@@ -35,6 +35,18 @@ const ProfilePage = () => {
 
   const profileMutation = api.user.updateProfile.useMutation();
   const profile = api.user.profile.useQuery();
+
+  const updateProfileForm = useForm({
+    onValidSubmit: (values: UpdateProfileInput) =>
+      profileMutation.mutate(values, {
+        onSuccess: () => {
+          update();
+          ctx.user.profile.invalidate();
+          router.push("/account");
+        },
+      }),
+    initialValues: { phone: profile.data?.phone },
+  });
 
   return (
     <LayoutAuthenticated
@@ -72,19 +84,7 @@ const ProfilePage = () => {
             bg: "gray.800",
           }}
         >
-          <Formiz
-            autoForm
-            onValidSubmit={(values: UpdateProfileInput) =>
-              profileMutation.mutate(values, {
-                onSuccess: () => {
-                  update();
-                  ctx.user.profile.invalidate();
-                  router.push("/account");
-                },
-              })
-            }
-            initialValues={profile.data}
-          >
+          <Formiz connect={updateProfileForm} autoForm>
             <Stack spacing={4}>
               <Stack>
                 <FieldInput

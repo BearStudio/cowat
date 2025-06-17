@@ -94,8 +94,6 @@ const LocationCard = ({ location }: LocationCardProps) => {
     },
   });
 
-  const editLocationForm = useForm();
-
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const defaultValues = location;
@@ -110,6 +108,11 @@ const LocationCard = ({ location }: LocationCardProps) => {
   const handleOnValidSubmit = (values: RouterInputs["location"]["edit"]) => {
     locationMutation.mutate({ ...values, id: location.id?.toString() ?? "" });
   };
+
+  const editLocationForm = useForm({
+    initialValues: defaultValues,
+    onValidSubmit: handleOnValidSubmit,
+  });
 
   return (
     <Card size="sm">
@@ -165,11 +168,7 @@ const LocationCard = ({ location }: LocationCardProps) => {
         {isOpen && (
           <Modal isOpen onClose={onClose} size="sm">
             <ModalOverlay />
-            <Formiz
-              connect={editLocationForm}
-              initialValues={defaultValues}
-              onValidSubmit={handleOnValidSubmit}
-            >
+            <Formiz autoForm connect={editLocationForm}>
               <ModalContent>
                 <ModalHeader flex="1">Edit location</ModalHeader>
                 <ModalCloseButton />

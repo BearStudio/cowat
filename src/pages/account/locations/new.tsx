@@ -6,7 +6,7 @@ import { LayoutAuthenticated } from "@/layout/LayoutAuthenticated";
 import type { RouterInputs } from "@/utils/api";
 import { api } from "@/utils/api";
 import { Button, Heading, HStack, IconButton } from "@chakra-ui/react";
-import { Formiz } from "@formiz/core";
+import { Formiz, useForm } from "@formiz/core";
 import { ArrowLeft } from "lucide-react";
 import type { NextPage } from "next";
 import Head from "next/head";
@@ -28,6 +28,10 @@ const Locations: NextPage = () => {
     location.mutate(values);
   };
 
+  const createLocationForm = useForm({
+    onValidSubmit: handleOnValidSubmit,
+  });
+
   return (
     <LayoutAuthenticated
       hideNav
@@ -47,7 +51,7 @@ const Locations: NextPage = () => {
       <Head>
         <title>Cowat - New Location</title>
       </Head>
-      <Formiz autoForm onValidSubmit={handleOnValidSubmit}>
+      <Formiz autoForm connect={createLocationForm}>
         <SimpleCard>
           <LocationForm />
           <Button variant="primary" type="submit">
