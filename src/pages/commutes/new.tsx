@@ -116,9 +116,12 @@ const New: NextPage = () => {
     ? new Date(formValues.date).toString()
     : dateQueryParam?.toString() || "";
 
-  const myCommutesOnDate = api.commute.allMyCommutesOnDate.useQuery({
-    date: dayjs(date).format("YYYY-MM-DD"),
-  });
+  const myCommutesOnDate = api.commute.allMyCommutesOnDate.useQuery(
+    {
+      date: dayjs(date).format("YYYY-MM-DD"),
+    },
+    { enabled: dayjs(date).isValid() }
+  );
 
   const showForm =
     !!selectedTemplate &&

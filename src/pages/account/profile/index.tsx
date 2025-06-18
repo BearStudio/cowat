@@ -45,7 +45,11 @@ const ProfilePage = () => {
           router.push("/account");
         },
       }),
-    initialValues: { phone: profile.data?.phone },
+    initialValues: {
+      phone: profile.data?.phone,
+      slackMemberId: profile.data?.slackMemberId,
+      isAutoAcceptEnabled: profile?.data?.isAutoAcceptEnabled || false,
+    },
   });
 
   return (
