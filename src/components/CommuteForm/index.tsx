@@ -204,7 +204,7 @@ const Stop = ({
 
   // Locations already used in a stop
   const usedLocations = formFields.stops?.map(
-    (field: { location: { value: string } }) => field?.location?.value
+    (stop: { location: string }) => stop.location
   );
 
   const getSelectOptions = (index: number) => {
@@ -213,7 +213,7 @@ const Stop = ({
       locations?.data?.filter(
         (location) =>
           !usedLocations?.includes(location.id) ||
-          location.id === formFields.stops?.[index]?.location?.value
+          location.id === formFields.stops?.[index]?.location
       ) ?? []
     );
   };
