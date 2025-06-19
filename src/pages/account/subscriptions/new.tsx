@@ -6,7 +6,7 @@ import { LayoutAuthenticated } from "@/layout/LayoutAuthenticated";
 import type { RouterInputs } from "@/utils/api";
 import { api } from "@/utils/api";
 import { Button, Heading, HStack, IconButton } from "@chakra-ui/react";
-import { Formiz } from "@formiz/core";
+import { Formiz, useForm } from "@formiz/core";
 import { ArrowLeft } from "lucide-react";
 import type { NextPage } from "next";
 import Head from "next/head";
@@ -24,6 +24,10 @@ const Locations: NextPage = () => {
   const handleOnValidSubmit = (values: CreateSubscriptionInput) => {
     createSubscription.mutate(values);
   };
+
+  const createSubscriptionForm = useForm({
+    onValidSubmit: handleOnValidSubmit,
+  });
 
   return (
     <LayoutAuthenticated
@@ -44,7 +48,7 @@ const Locations: NextPage = () => {
       <Head>
         <title>Cowat - New Subscription</title>
       </Head>
-      <Formiz autoForm onValidSubmit={handleOnValidSubmit}>
+      <Formiz connect={createSubscriptionForm} autoForm>
         <SimpleCard>
           <SubscriptionForm />
           <Button variant="primary" type="submit">

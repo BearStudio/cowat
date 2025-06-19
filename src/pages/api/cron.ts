@@ -1,5 +1,5 @@
 import { prisma } from "@/server/db";
-import { notify } from "@/server/slack";
+import { notify } from "@/server/events/slack";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import type { NextApiRequest, NextApiResponse } from "next";
