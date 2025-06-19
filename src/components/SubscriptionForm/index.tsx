@@ -1,17 +1,8 @@
-import {
-  Alert,
-  AlertDescription,
-  Box,
-  Button,
-  Stack,
-  Text,
-} from "@chakra-ui/react";
+import { Alert, AlertDescription, Stack, Text } from "@chakra-ui/react";
 import { FieldInput } from "@/components/FieldInput";
 import { FieldSelect } from "@/components/FieldSelect";
-import { FieldHidden } from "@/components/FieldHidden";
+
 import { Events } from "@prisma/client";
-import { Icon } from "@/components/Icon";
-import { Trash } from "lucide-react";
 import {
   DESCRIPTION_BY_FIELD,
   isValidEvent,
@@ -38,33 +29,21 @@ const EventQueryFieldsHelper = ({ event }: EventQueryFieldsHelperProps) => {
   );
 };
 
-type SubscriptionFormProps = {
-  index: number;
-  id?: string;
-  onRemove: () => void;
-};
-
-export const SubscriptionForm = ({
-  index,
-  id,
-  onRemove,
-}: SubscriptionFormProps) => {
+export const SubscriptionForm = () => {
   const fields = useFormFields();
-  const currentEvent = fields.subscriptions?.[index]?.triggeringEvent.value;
+  const currentEvent = fields?.triggeringEvent?.value;
   return (
     <Stack>
-      <FieldHidden name={`subscriptions[${index}].id`} defaultValue={id} />
       <FieldInput
-        name={`subscriptions[${index}].name`}
+        name="name"
         label="Name"
         placeholder="New subscription"
         required="Name is required"
         pt="2"
       />
       <FieldSelect
-        id={`select-${index}`}
-        label={"Event"}
-        name={`subscriptions[${index}].triggeringEvent`}
+        label="Event"
+        name="triggeringEvent"
         placeholder="Please select an event"
         options={Object.keys(Events).map((event) => ({
           value: event,
@@ -84,7 +63,7 @@ export const SubscriptionForm = ({
         </Alert>
       )}
       <FieldInput
-        name={`subscriptions[${index}].url`}
+        name="url"
         label="URL"
         placeholder="https://my.webhook.com/listener"
         required="URL is required"
@@ -96,7 +75,7 @@ export const SubscriptionForm = ({
         ]}
         pt="2"
       />
-      <Box pt="2">
+      {/* <Box pt="2">
         <Button
           variant="danger"
           leftIcon={<Icon icon={Trash} />}
@@ -104,7 +83,7 @@ export const SubscriptionForm = ({
         >
           Delete this subscription
         </Button>
-      </Box>
+      </Box> */}
     </Stack>
   );
 };

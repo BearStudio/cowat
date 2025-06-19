@@ -3,7 +3,7 @@ import { z } from "zod";
 import { Events } from "@prisma/client";
 
 export const subscriptionRouter = createTRPCRouter({
-  getAllSubscriptionsByUser: protectedProcedure.query(async ({ ctx }) => {
+  mine: protectedProcedure.query(async ({ ctx }) => {
     const subscriptions = await ctx.prisma.subscription.findMany({
       where: {
         userId: ctx.session.user.id,

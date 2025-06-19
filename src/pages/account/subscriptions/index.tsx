@@ -1,40 +1,31 @@
+import { EmptyState } from "@/components/EmptyState";
 import { Icon } from "@/components/Icon";
-import { Loader } from "@/components/Loader";
 import { SimpleCard } from "@/components/SimpleCard";
 import { LayoutAuthenticated } from "@/layout/LayoutAuthenticated";
-import { Formiz } from "@formiz/core";
-
-import type { RouterInputs } from "@/utils/api";
-import { api } from "@/utils/api";
-import { Button, Heading, HStack, IconButton } from "@chakra-ui/react";
-import { ArrowLeft } from "lucide-react";
-import type { NextPage } from "next";
-import Head from "next/head";
+import { api, RouterOutputs } from "@/utils/api";
+import {
+  Box,
+  Card,
+  CardBody,
+  CardFooter,
+  CardHeader,
+  Heading,
+  HStack,
+  IconButton,
+  SimpleGrid,
+  Spinner,
+  Stack,
+  Text,
+  Tooltip,
+} from "@chakra-ui/react";
+import { ArrowLeft, Plus } from "lucide-react";
 import Link from "next/link";
-import { SubscriptionsForm } from "@/components/SubscriptionsForm";
+import { FC } from "react";
 
-type PageEditSubscriptionsInput = RouterInputs["subscription"]["edit"];
-
-const PageEditSubscriptions: NextPage = () => {
+const SubscriptionsPage = () => {
   const ctx = api.useContext();
 
-  const subscriptionsQuery =
-    api.subscription.getAllSubscriptionsByUser.useQuery();
-
-  const subscriptionMutation = api.subscription.edit.useMutation();
-
-  const handleOnValidSubmit = (values: PageEditSubscriptionsInput) => {
-    subscriptionMutation.mutate(
-      { subscriptions: values.subscriptions ?? [] },
-      {
-        onSuccess: () => {
-          ctx.subscription.getAllSubscriptionsByUser.invalidate();
-        },
-      }
-    );
-  };
-
-  const initialValues = { subscriptions: subscriptionsQuery.data ?? [] };
+  const subscriptionsQuery = api.subscription.mine.useQuery();
 
   return (
     <LayoutAuthenticated
@@ -48,40 +39,69 @@ const PageEditSubscriptions: NextPage = () => {
             as={Link}
             href="/account"
           />
-          <Heading size="md">Edit Subscriptions</Heading>
+          <Heading size="md" flex={1}>
+            Subscriptions
+          </Heading>
+          <IconButton
+            size="sm"
+            variant="primary"
+            aria-label="Create location"
+            icon={<Icon icon={Plus} />}
+            as={Link}
+            href="/account/subscriptions/new"
+          />
         </HStack>
       }
     >
       <>
-        <Head>
-          <title>Cowat - Edit Subscriptions</title>
-        </Head>
-        {subscriptionsQuery.isLoading && <Loader />}
-        {!subscriptionsQuery.isLoading && initialValues && (
-          <Formiz
-            autoForm
-            initialValues={initialValues}
-            onValidSubmit={handleOnValidSubmit}
-          >
-            <SimpleCard>
-              <>
-                <SubscriptionsForm
-                  initialValues={initialValues.subscriptions}
-                />
-                <Button
-                  variant="primary"
-                  type="submit"
-                  isLoading={subscriptionMutation.isLoading}
-                >
-                  Save
-                </Button>
-              </>
-            </SimpleCard>
-          </Formiz>
+        {subscriptionsQuery?.isLoading && <Spinner />}
+        {!subscriptionsQuery?.isLoading && subscriptionsQuery?.isError && (
+          <EmptyState>
+            Une erreur est survenue lors de la récupération des webhooks.
+          </EmptyState>
         )}
+        {!subscriptionsQuery?.isLoading &&
+          !subscriptionsQuery?.isError &&
+          subscriptionsQuery?.data?.length == 0 && (
+            <EmptyState>{"Vous n'avez aucun webhook enregistré."}</EmptyState>
+          )}
+        {!subscriptionsQuery?.isLoading &&
+          !subscriptionsQuery?.isError &&
+          subscriptionsQuery?.data?.length > 0 && (
+            <SimpleGrid>
+              {subscriptionsQuery?.data.map((subscription) => (
+                <SubscriptionCard
+                  key={subscription.id}
+                  subscription={subscription}
+                />
+              ))}
+            </SimpleGrid>
+          )}
       </>
     </LayoutAuthenticated>
   );
 };
 
-export default PageEditSubscriptions;
+type SubscriptionCardProps = {
+  subscription: RouterOutputs["subscription"]["mine"][number]; //TODO: typing
+};
+
+const SubscriptionCard = ({ subscription }: SubscriptionCardProps) => {
+  return (
+    <Card>
+      <CardHeader>
+        <Heading size="md">{subscription.name}</Heading>
+      </CardHeader>
+      <CardBody>
+        <Stack>
+          {/* <Tooltip></Tooltip> */}
+          <Text>{subscription.triggeringEvent}</Text>
+          <Text color="gray.500">{subscription.url}</Text>
+        </Stack>
+      </CardBody>
+      <CardFooter></CardFooter>
+    </Card>
+  );
+};
+
+export default SubscriptionsPage;
