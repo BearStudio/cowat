@@ -14,12 +14,15 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { SubscriptionForm } from "@/components/SubscriptionForm";
 
+type CreateSubscriptionInput = RouterInputs["subscription"]["create"];
+
 const Locations: NextPage = () => {
   const router = useRouter();
 
-  //TODO: typing
-  const handleOnValidSubmit = (values: any) => {
-    // TODO: add subscription
+  const createSubscription = api.subscription.create.useMutation();
+
+  const handleOnValidSubmit = (values: CreateSubscriptionInput) => {
+    createSubscription.mutate(values);
   };
 
   return (

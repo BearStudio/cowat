@@ -1,4 +1,4 @@
-import { Alert, AlertDescription, Stack, Text } from "@chakra-ui/react";
+import { Alert, AlertDescription, HStack, Stack, Text } from "@chakra-ui/react";
 import { FieldInput } from "@/components/FieldInput";
 import { FieldSelect } from "@/components/FieldSelect";
 
@@ -10,22 +10,29 @@ import {
 } from "@/utils/subscriptions";
 import { useFormFields } from "@formiz/core";
 import { z } from "zod";
+import { Icon } from "@/components/Icon";
+import { ArrowRight } from "lucide-react";
 
 type EventQueryFieldsHelperProps = {
   event: Events;
 };
 
-const EventQueryFieldsHelper = ({ event }: EventQueryFieldsHelperProps) => {
+export const EventQueryFieldsHelper = ({
+  event,
+}: EventQueryFieldsHelperProps) => {
   const returnFields = FIELDS_BY_EVENT[event];
   return (
-    <>
+    <Stack>
       {returnFields.map((field, index) => (
-        <Text key={index}>
-          <span style={{ fontWeight: "bold" }}>{field}: </span>
-          {DESCRIPTION_BY_FIELD[field as keyof typeof DESCRIPTION_BY_FIELD]}
-        </Text>
+        <HStack key={index} align="flex-start">
+          <Icon icon={ArrowRight} />
+          <Text>
+            <span style={{ fontWeight: "bold" }}>{field}: </span>
+            {DESCRIPTION_BY_FIELD[field as keyof typeof DESCRIPTION_BY_FIELD]}
+          </Text>
+        </HStack>
       ))}
-    </>
+    </Stack>
   );
 };
 

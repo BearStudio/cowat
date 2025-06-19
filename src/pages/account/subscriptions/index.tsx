@@ -1,10 +1,9 @@
 import { EmptyState } from "@/components/EmptyState";
 import { Icon } from "@/components/Icon";
-import { SimpleCard } from "@/components/SimpleCard";
+import { EventQueryFieldsHelper } from "@/components/SubscriptionForm";
 import { LayoutAuthenticated } from "@/layout/LayoutAuthenticated";
 import { api, RouterOutputs } from "@/utils/api";
 import {
-  Box,
   Card,
   CardBody,
   CardFooter,
@@ -18,9 +17,8 @@ import {
   Text,
   Tooltip,
 } from "@chakra-ui/react";
-import { ArrowLeft, Plus } from "lucide-react";
+import { ArrowLeft, Plus, Info, Edit, Trash } from "lucide-react";
 import Link from "next/link";
-import { FC } from "react";
 
 const SubscriptionsPage = () => {
   const ctx = api.useContext();
@@ -68,7 +66,7 @@ const SubscriptionsPage = () => {
         {!subscriptionsQuery?.isLoading &&
           !subscriptionsQuery?.isError &&
           subscriptionsQuery?.data?.length > 0 && (
-            <SimpleGrid>
+            <SimpleGrid columns={{ base: 1, md: 2 }} spacing="4">
               {subscriptionsQuery?.data.map((subscription) => (
                 <SubscriptionCard
                   key={subscription.id}
@@ -83,7 +81,7 @@ const SubscriptionsPage = () => {
 };
 
 type SubscriptionCardProps = {
-  subscription: RouterOutputs["subscription"]["mine"][number]; //TODO: typing
+  subscription: RouterOutputs["subscription"]["mine"][number];
 };
 
 const SubscriptionCard = ({ subscription }: SubscriptionCardProps) => {
@@ -94,12 +92,39 @@ const SubscriptionCard = ({ subscription }: SubscriptionCardProps) => {
       </CardHeader>
       <CardBody>
         <Stack>
-          {/* <Tooltip></Tooltip> */}
-          <Text>{subscription.triggeringEvent}</Text>
+          <HStack>
+            <Text>{subscription.triggeringEvent}</Text>
+            <Tooltip
+              label={
+                <Stack>
+                  <Text>
+                    Query for this event will contains the following fields:
+                  </Text>
+                  <EventQueryFieldsHelper
+                    event={subscription.triggeringEvent}
+                  />
+                </Stack>
+              }
+            >
+              <Icon icon={Info} />
+            </Tooltip>
+          </HStack>
           <Text color="gray.500">{subscription.url}</Text>
         </Stack>
       </CardBody>
-      <CardFooter></CardFooter>
+      <CardFooter justifyContent="flex-end">
+        <HStack>
+          <IconButton
+            icon={<Icon icon={Edit} />}
+            aria-label="Edit subscription"
+          />
+          <IconButton
+            variant="danger"
+            icon={<Icon icon={Trash} />}
+            aria-label="Delete subscription"
+          />
+        </HStack>
+      </CardFooter>
     </Card>
   );
 };

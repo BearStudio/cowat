@@ -71,4 +71,25 @@ export const subscriptionRouter = createTRPCRouter({
         )
       );
     }),
+
+  create: protectedProcedure
+    .input(
+      z.object({
+        name: z.string(),
+        url: z.string().url(),
+        triggeringEvent: z.nativeEnum(Events),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const subscription = await ctx.prisma.subscription.create({
+        data: {
+          name: input.name,
+          url: input.url,
+          triggeringEvent: input.triggeringEvent,
+          userId: ctx.session.user.id,
+        },
+      });
+
+      return subscription;
+    }),
 });
