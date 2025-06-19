@@ -26,11 +26,6 @@ export const templateRouter = createTRPCRouter({
             create: input.stops.map((stop) => ({
               time: stop.time,
               locationId: stop.location,
-              // location: {
-              //   connect: {
-              //     id: stop.location,
-              //   },
-              // },
             })),
           },
           templateName: input.templateName,
