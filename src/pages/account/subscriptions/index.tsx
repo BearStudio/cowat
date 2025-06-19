@@ -1,3 +1,4 @@
+import { ConfirmModal } from "@/components/ConfirmModal";
 import { EmptyState } from "@/components/EmptyState";
 import { Icon } from "@/components/Icon";
 import {
@@ -13,6 +14,7 @@ import {
   CardBody,
   CardFooter,
   CardHeader,
+  Divider,
   Heading,
   HStack,
   IconButton,
@@ -31,7 +33,7 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { Formiz, useForm } from "@formiz/core";
-import { ArrowLeft, Plus, Info, Trash, Pencil } from "lucide-react";
+import { ArrowLeft, Plus, Info, Trash, Pencil, Webhook } from "lucide-react";
 import Link from "next/link";
 
 const SubscriptionsPage = () => {
@@ -66,14 +68,12 @@ const SubscriptionsPage = () => {
       <>
         {subscriptionsQuery?.isLoading && <Spinner />}
         {!subscriptionsQuery?.isLoading && subscriptionsQuery?.isError && (
-          <EmptyState>
-            Une erreur est survenue lors de la récupération des webhooks.
-          </EmptyState>
+          <EmptyState>An error occured when fetching webhooks.</EmptyState>
         )}
         {!subscriptionsQuery?.isLoading &&
           !subscriptionsQuery?.isError &&
           subscriptionsQuery?.data?.length == 0 && (
-            <EmptyState>{"Vous n'avez aucun webhook enregistré."}</EmptyState>
+            <EmptyState>You have no webhook active.</EmptyState>
           )}
         {!subscriptionsQuery?.isLoading &&
           !subscriptionsQuery?.isError &&
@@ -114,6 +114,12 @@ const SubscriptionCard = ({ subscription }: SubscriptionCardProps) => {
     },
   });
 
+  const deleteSubscription = api.subscription.delete.useMutation({
+    onSuccess: () => {
+      ctx.subscription.mine.invalidate();
+    },
+  });
+
   return (
     <Card>
       <CardHeader>
@@ -148,11 +154,36 @@ const SubscriptionCard = ({ subscription }: SubscriptionCardProps) => {
             aria-label="Edit subscription"
             onClick={updateSubscriptionModal.onOpen}
           />
-          <IconButton
-            variant="danger"
-            icon={<Icon icon={Trash} />}
-            aria-label="Delete subscription"
-          />
+          <ConfirmModal
+            onConfirm={() => deleteSubscription.mutate(subscription.id)}
+            title="Delete this subscription?"
+            message={
+              <Stack pt={2}>
+                <Divider />
+                <HStack>
+                  <Icon icon={Webhook} />
+                  <Stack spacing={0}>
+                    <Text fontWeight="bold">{subscription.name}</Text>
+                    <Text fontSize="sm" wordBreak="break-word">
+                      {subscription.triggeringEvent}
+                    </Text>
+                    <Text fontSize="sm" color="gray.500" wordBreak="break-word">
+                      {subscription.url}
+                    </Text>
+                  </Stack>
+                </HStack>
+                <Divider />
+              </Stack>
+            }
+            confirmText="Delete"
+            confirmVariant="danger"
+          >
+            <IconButton
+              variant="danger"
+              icon={<Icon icon={Trash} />}
+              aria-label="Delete subscription"
+            />
+          </ConfirmModal>
         </HStack>
       </CardFooter>
       {updateSubscriptionModal.isOpen && (

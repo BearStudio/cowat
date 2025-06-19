@@ -7,6 +7,7 @@ export const subscriptionRouter = createTRPCRouter({
     const subscriptions = await ctx.prisma.subscription.findMany({
       where: {
         createdById: ctx.session.user.id,
+        isDeleted: false,
       },
     });
 
@@ -55,6 +56,18 @@ export const subscriptionRouter = createTRPCRouter({
         },
       });
 
+      return subscription;
+    }),
+
+  delete: protectedProcedure
+    .input(z.string().cuid())
+    .mutation(async ({ ctx, input }) => {
+      const subscription = await ctx.prisma.subscription.update({
+        where: {
+          id: input,
+        },
+        data: { isDeleted: true },
+      });
       return subscription;
     }),
 });
