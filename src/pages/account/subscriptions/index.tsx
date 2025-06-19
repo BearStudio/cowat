@@ -1,9 +1,14 @@
 import { EmptyState } from "@/components/EmptyState";
 import { Icon } from "@/components/Icon";
-import { EventQueryFieldsHelper } from "@/components/SubscriptionForm";
-import { LayoutAuthenticated } from "@/layout/LayoutAuthenticated";
-import { api, RouterOutputs } from "@/utils/api";
 import {
+  EventQueryFieldsHelper,
+  SubscriptionForm,
+} from "@/components/SubscriptionForm";
+import { LayoutAuthenticated } from "@/layout/LayoutAuthenticated";
+import type { RouterOutputs } from "@/utils/api";
+import { api } from "@/utils/api";
+import {
+  Button,
   Card,
   CardBody,
   CardFooter,
@@ -11,18 +16,25 @@ import {
   Heading,
   HStack,
   IconButton,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
   SimpleGrid,
   Spinner,
   Stack,
   Text,
   Tooltip,
+  useDisclosure,
 } from "@chakra-ui/react";
-import { ArrowLeft, Plus, Info, Edit, Trash } from "lucide-react";
+import { Formiz, useForm } from "@formiz/core";
+import { ArrowLeft, Plus, Info, Trash, Pencil } from "lucide-react";
 import Link from "next/link";
 
 const SubscriptionsPage = () => {
-  const ctx = api.useContext();
-
   const subscriptionsQuery = api.subscription.mine.useQuery();
 
   return (
@@ -85,6 +97,23 @@ type SubscriptionCardProps = {
 };
 
 const SubscriptionCard = ({ subscription }: SubscriptionCardProps) => {
+  const ctx = api.useContext();
+
+  const updateSubscriptionModal = useDisclosure();
+
+  const updateSubscriptionForm = useForm({
+    onValidSubmit: (values) =>
+      updateSubscription.mutate({ ...values, id: subscription.id }),
+    initialValues: subscription,
+  });
+
+  const updateSubscription = api.subscription.edit.useMutation({
+    onSuccess: () => {
+      updateSubscriptionModal.onClose();
+      ctx.subscription.mine.invalidate();
+    },
+  });
+
   return (
     <Card>
       <CardHeader>
@@ -115,8 +144,9 @@ const SubscriptionCard = ({ subscription }: SubscriptionCardProps) => {
       <CardFooter justifyContent="flex-end">
         <HStack>
           <IconButton
-            icon={<Icon icon={Edit} />}
+            icon={<Icon icon={Pencil} />}
             aria-label="Edit subscription"
+            onClick={updateSubscriptionModal.onOpen}
           />
           <IconButton
             variant="danger"
@@ -125,6 +155,34 @@ const SubscriptionCard = ({ subscription }: SubscriptionCardProps) => {
           />
         </HStack>
       </CardFooter>
+      {updateSubscriptionModal.isOpen && (
+        <Modal isOpen onClose={updateSubscriptionModal.onClose} size="lg">
+          <ModalOverlay />
+          <Formiz autoForm connect={updateSubscriptionForm}>
+            <ModalContent>
+              <ModalHeader flex="1">Edit subscription</ModalHeader>
+              <ModalCloseButton />
+              <ModalBody>
+                <SubscriptionForm />
+              </ModalBody>
+
+              <ModalFooter>
+                <Button
+                  variant="primary"
+                  onClick={() => updateSubscriptionForm.submit()}
+                  isDisabled={
+                    updateSubscriptionForm.isSubmitted &&
+                    !updateSubscriptionForm.isValid
+                  }
+                  isLoading={updateSubscription.isLoading}
+                >
+                  Save
+                </Button>
+              </ModalFooter>
+            </ModalContent>
+          </Formiz>
+        </Modal>
+      )}
     </Card>
   );
 };

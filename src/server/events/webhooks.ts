@@ -52,7 +52,7 @@ const newBookingFrom = async (passengerOnStop: PassengerOnStopNotification) => {
   const subscriptions = await prisma.subscription.findMany({
     where: {
       triggeringEvent: "NEW_BOOKING",
-      userId: driverId,
+      createdById: driverId,
     },
   });
 
@@ -73,7 +73,7 @@ const request = async (passengerOnStop: PassengerOnStopNotification) => {
   const subscriptions = await prisma.subscription.findMany({
     where: {
       triggeringEvent: "REQUEST",
-      userId: passengerId,
+      createdById: passengerId,
     },
   });
 
@@ -98,7 +98,7 @@ const bookingAutoAccepted = async (
   const subscriptions = await prisma.subscription.findMany({
     where: {
       triggeringEvent: "AUTO_ACCEPT",
-      userId: passengerId,
+      createdById: passengerId,
     },
   });
 
@@ -121,7 +121,7 @@ const bookingCanceled = async (
   const subscriptions = await prisma.subscription.findMany({
     where: {
       triggeringEvent: "BOOKING_CANCELED",
-      userId: driverId,
+      createdById: driverId,
     },
   });
 
@@ -144,7 +144,7 @@ const commuteCanceled = async (
   const subscriptions = await prisma.subscription.findMany({
     where: {
       triggeringEvent: "COMMUTE_CANCELED",
-      userId: passengerId,
+      createdById: passengerId,
     },
   });
 

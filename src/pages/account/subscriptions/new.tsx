@@ -1,6 +1,5 @@
 import { SimpleCard } from "@/components/SimpleCard";
 import { Icon } from "@/components/Icon";
-import { LocationForm } from "@/components/LocationForm";
 import { LayoutAuthenticated } from "@/layout/LayoutAuthenticated";
 
 import type { RouterInputs } from "@/utils/api";
@@ -19,7 +18,11 @@ type CreateSubscriptionInput = RouterInputs["subscription"]["create"];
 const Locations: NextPage = () => {
   const router = useRouter();
 
-  const createSubscription = api.subscription.create.useMutation();
+  const createSubscription = api.subscription.create.useMutation({
+    onSuccess: () => {
+      router.push("/account/subscriptions");
+    },
+  });
 
   const handleOnValidSubmit = (values: CreateSubscriptionInput) => {
     createSubscription.mutate(values);
@@ -51,7 +54,15 @@ const Locations: NextPage = () => {
       <Formiz connect={createSubscriptionForm} autoForm>
         <SimpleCard>
           <SubscriptionForm />
-          <Button variant="primary" type="submit">
+          <Button
+            variant="primary"
+            type="submit"
+            isDisabled={
+              createSubscriptionForm.isSubmitted &&
+              !createSubscriptionForm.isValid
+            }
+            isLoading={createSubscription.isLoading}
+          >
             Save
           </Button>
         </SimpleCard>

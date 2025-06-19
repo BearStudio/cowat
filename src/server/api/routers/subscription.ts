@@ -6,7 +6,7 @@ export const subscriptionRouter = createTRPCRouter({
   mine: protectedProcedure.query(async ({ ctx }) => {
     const subscriptions = await ctx.prisma.subscription.findMany({
       where: {
-        userId: ctx.session.user.id,
+        createdById: ctx.session.user.id,
       },
     });
 
@@ -16,60 +16,25 @@ export const subscriptionRouter = createTRPCRouter({
   edit: protectedProcedure
     .input(
       z.object({
-        subscriptions: z.array(
-          z.object({
-            id: z.string().cuid().nullable(),
-            name: z.string(),
-            url: z.string().url(),
-            triggeringEvent: z.nativeEnum(Events),
-          })
-        ),
+        id: z.string().cuid(),
+        name: z.string(),
+        url: z.string().url(),
+        triggeringEvent: z.nativeEnum(Events),
       })
     )
     .mutation(async ({ input, ctx }) => {
-      const currentSubscriptions = await ctx.prisma.subscription.findMany({
-        where: { userId: ctx.session.user.id },
-      });
-
-      const inputSubscriptionIds = input.subscriptions.map(
-        (subscription) => subscription.id
-      );
-
-      const subscriptionsToDeleteIds = currentSubscriptions
-        .filter(
-          (subscription) => !inputSubscriptionIds.includes(subscription.id)
-        )
-        .map((subscription) => subscription.id);
-
-      await ctx.prisma.subscription.deleteMany({
+      const subscription = await ctx.prisma.subscription.update({
         where: {
-          id: {
-            in: subscriptionsToDeleteIds,
-          },
+          id: input.id,
+        },
+        data: {
+          name: input.name,
+          url: input.url,
+          triggeringEvent: input.triggeringEvent,
         },
       });
 
-      return await ctx.prisma.$transaction(
-        input.subscriptions.map((subscriptionToCreateOrModify) =>
-          ctx.prisma.subscription.upsert({
-            where: {
-              id: subscriptionToCreateOrModify.id ?? "",
-              userId: ctx.session.user.id,
-            },
-            update: {
-              name: subscriptionToCreateOrModify.name,
-              url: subscriptionToCreateOrModify.url,
-              triggeringEvent: subscriptionToCreateOrModify.triggeringEvent,
-            },
-            create: {
-              name: subscriptionToCreateOrModify.name,
-              url: subscriptionToCreateOrModify.url,
-              triggeringEvent: subscriptionToCreateOrModify.triggeringEvent,
-              userId: ctx.session.user.id,
-            },
-          })
-        )
-      );
+      return subscription;
     }),
 
   create: protectedProcedure
@@ -86,7 +51,7 @@ export const subscriptionRouter = createTRPCRouter({
           name: input.name,
           url: input.url,
           triggeringEvent: input.triggeringEvent,
-          userId: ctx.session.user.id,
+          createdById: ctx.session.user.id,
         },
       });
 
