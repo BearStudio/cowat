@@ -1,41 +1,73 @@
 import { Events } from "@prisma/client";
+import dayjs from "dayjs";
 
 export const EVENTS_DETAILS: Record<
   Events,
-  { label: string; detail: string; fields: Array<EventField> }
+  {
+    label: string;
+    detail: string;
+    fields: Array<EventField>;
+    message: (
+      data: Partial<Record<EventField, string | object | number>>
+    ) => string;
+  }
 > = {
   NEW_COMMUTE: {
     label: "New commute",
     detail: "You will get notified when a new commute is created",
+    message: (data: Partial<Record<EventField, string | object | number>>) =>
+      `${data.driver} has created a commute on ${dayjs(
+        data.date?.toString()
+      ).format("DD/MM/YYYY HH:mm")}`,
     fields: ["event", "driver", "date", "seats", "stops"],
   },
   NEW_BOOKING: {
     label: "New booking",
     detail: "You will get notified when someone books your commute",
+    message: (data: Partial<Record<EventField, string | object | number>>) =>
+      `${data.passenger} has requested a booking for your commute on ${dayjs(
+        data.date?.toString()
+      ).format("DD/MM/YYYY HH:mm")}`,
     fields: ["event", "user", "passenger", "date"],
   },
   REQUEST: {
     label: "Request",
     detail:
       "You will get notified when the driver responds to your booking request",
+    message: (data: Partial<Record<EventField, string | object | number>>) =>
+      `${data.driver} has ${data.requestStatus} your commute on ${dayjs(
+        data.date?.toString()
+      ).format("DD/MM/YYYY HH:mm")}`,
     fields: ["event", "user", "requestStatus", "driver", "date", "comment"],
   },
   AUTO_ACCEPT: {
     label: "Auto-accept",
     detail:
       "You will get notified when a commute request is accepted automatically",
-    fields: ["event", "user", "driver", "date"],
+    message: (data: Partial<Record<EventField, string | object | number>>) =>
+      `${data.passenger} has booked your commute on ${dayjs(
+        data.date?.toString()
+      ).format("DD/MM/YYYY HH:mm")}`,
+    fields: ["event", "user", "passenger", "date"],
   },
   BOOKING_CANCELED: {
     label: "Booking cancelled",
     detail:
       "You will get notified when a passenger cancels his booking to your commute",
+    message: (data: Partial<Record<EventField, string | object | number>>) =>
+      `${data.passenger} has cancelled his booking for your commute on ${dayjs(
+        data.date?.toString()
+      ).format("DD/MM/YYYY HH:mm")}`,
     fields: ["event", "user", "passenger", "date"],
   },
   COMMUTE_CANCELED: {
     label: "Commute cancelled",
     detail:
       "You will get notified when the driver cancels a commute you booked",
+    message: (data: Partial<Record<EventField, string | object | number>>) =>
+      `${data.driver} has cancelled your commute on ${dayjs(
+        data.date?.toString()
+      ).format("DD/MM/YYYY HH:mm")}`,
     fields: ["event", "user", "driver", "date"],
   },
 };
@@ -66,6 +98,45 @@ export const EVENT_FIELDS_DESCRIPTIONS = {
 };
 
 type EventField = keyof typeof EVENT_FIELDS_DESCRIPTIONS;
+
+const DOMAIN_CONTENT_KEY = {
+  discord: "content",
+  slack: "text",
+} as const;
+
+type DomainContentKey = keyof typeof DOMAIN_CONTENT_KEY;
+
+export const getWebhookDomain = (webhookUrl: string): DomainContentKey => {
+  const supportedDomains = Object.keys(
+    DOMAIN_CONTENT_KEY
+  ) as DomainContentKey[];
+
+  // use slack by default, which adds the message in a "text" field
+  let webhookDomain = "slack";
+  supportedDomains.forEach((domain) => {
+    if (webhookUrl.includes(domain)) {
+      webhookDomain = domain;
+    }
+  });
+  return webhookDomain as DomainContentKey;
+};
+
+export const buildWebhookBody = (
+  webhookUrl: string,
+  baseBody: Partial<Record<EventField, string | object | number>>
+) => {
+  const domainContentKey = DOMAIN_CONTENT_KEY[getWebhookDomain(webhookUrl)];
+
+  const enventMessage =
+    EVENTS_DETAILS[baseBody.event as Events].message(baseBody);
+
+  return {
+    json: {
+      ...baseBody,
+      [domainContentKey]: enventMessage,
+    },
+  };
+};
 
 export const isValidEvent = (event: string): event is Events => {
   return Object.keys(Events).includes(event);

@@ -2,6 +2,7 @@ import type { Prisma } from "@prisma/client";
 import ky from "ky";
 import { prisma } from "@/server/db";
 import type { PassengerOnStopNotification } from "@/server/events";
+import { buildWebhookBody } from "@/utils/subscriptions";
 
 const newCommute = async (
   commute: Prisma.CommuteGetPayload<{
@@ -35,15 +36,14 @@ const newCommute = async (
   }));
 
   subscriptions?.map(async (subscription) => {
-    await ky.post(subscription.url, {
-      json: {
-        event: subscription.triggeringEvent,
-        driver: commute.createdBy?.name,
-        date: commute.date,
-        seats: commute.seats,
-        stops,
-      },
+    const requestBody = buildWebhookBody(subscription.url, {
+      event: subscription.triggeringEvent,
+      driver: commute.createdBy?.name || "",
+      date: commute.date,
+      seats: commute.seats,
+      stops,
     });
+    await ky.post(subscription.url, requestBody);
   });
 };
 
@@ -57,14 +57,13 @@ const newBookingFrom = async (passengerOnStop: PassengerOnStopNotification) => {
   });
 
   subscriptions?.map(async (subscription) => {
-    await ky.post(subscription.url, {
-      json: {
-        event: subscription.triggeringEvent,
-        user: passengerOnStop.stop?.commute?.createdBy?.name,
-        passenger: passengerOnStop.user.name,
-        date: passengerOnStop?.stop?.commute?.date,
-      },
+    const requestBody = buildWebhookBody(subscription.url, {
+      event: subscription.triggeringEvent,
+      user: passengerOnStop.stop?.commute?.createdBy?.name || "",
+      passenger: passengerOnStop.user.name || "",
+      date: passengerOnStop?.stop?.commute?.date,
     });
+    await ky.post(subscription.url, requestBody);
   });
 };
 
@@ -78,16 +77,15 @@ const request = async (passengerOnStop: PassengerOnStopNotification) => {
   });
 
   subscriptions?.map(async (subscription) => {
-    await ky.post(subscription.url, {
-      json: {
-        event: subscription.triggeringEvent,
-        user: passengerOnStop.user.name,
-        requestStatus: passengerOnStop.requestStatus,
-        driver: passengerOnStop.stop?.commute?.createdBy?.name,
-        date: passengerOnStop?.stop?.commute?.date,
-        comment: passengerOnStop.requestComment,
-      },
+    const requestBody = buildWebhookBody(subscription.url, {
+      event: subscription.triggeringEvent,
+      user: passengerOnStop.user.name || "",
+      requestStatus: passengerOnStop.requestStatus,
+      driver: passengerOnStop.stop?.commute?.createdBy?.name || "",
+      date: passengerOnStop?.stop?.commute?.date || "",
+      comment: passengerOnStop.requestComment || "",
     });
+    await ky.post(subscription.url, requestBody);
   });
 };
 
@@ -103,14 +101,13 @@ const bookingAutoAccepted = async (
   });
 
   subscriptions?.map(async (subscription) => {
-    await ky.post(subscription.url, {
-      json: {
-        event: subscription.triggeringEvent,
-        user: passengerOnStop.user.name,
-        driver: passengerOnStop.stop?.commute?.createdBy?.name,
-        date: passengerOnStop?.stop?.commute?.date,
-      },
+    const requestBody = buildWebhookBody(subscription.url, {
+      event: subscription.triggeringEvent,
+      user: passengerOnStop.user.name || "",
+      passenger: passengerOnStop.stop?.commute?.createdBy?.name || "",
+      date: passengerOnStop?.stop?.commute?.date,
     });
+    await ky.post(subscription.url, requestBody);
   });
 };
 
@@ -126,14 +123,13 @@ const bookingCanceled = async (
   });
 
   subscriptions?.map(async (subscription) => {
-    await ky.post(subscription.url, {
-      json: {
-        event: subscription.triggeringEvent,
-        user: passengerOnStop.stop?.commute?.createdBy?.name,
-        passenger: passengerOnStop.user.name,
-        date: passengerOnStop?.stop?.commute?.date,
-      },
+    const requestBody = buildWebhookBody(subscription.url, {
+      event: subscription.triggeringEvent,
+      user: passengerOnStop.stop?.commute?.createdBy?.name || "",
+      passenger: passengerOnStop.user.name || "",
+      date: passengerOnStop?.stop?.commute?.date,
     });
+    await ky.post(subscription.url, requestBody);
   });
 };
 
@@ -149,14 +145,13 @@ const commuteCanceled = async (
   });
 
   subscriptions?.map(async (subscription) => {
-    await ky.post(subscription.url, {
-      json: {
-        event: subscription.triggeringEvent,
-        user: passengerOnStop.user.name,
-        driver: passengerOnStop.stop?.commute?.createdBy?.name,
-        date: passengerOnStop?.stop?.commute?.date,
-      },
+    const requestBody = buildWebhookBody(subscription.url, {
+      event: subscription.triggeringEvent,
+      user: passengerOnStop.user.name || "",
+      driver: passengerOnStop.stop?.commute?.createdBy?.name || "",
+      date: passengerOnStop?.stop?.commute?.date,
     });
+    await ky.post(subscription.url, requestBody);
   });
 };
 
