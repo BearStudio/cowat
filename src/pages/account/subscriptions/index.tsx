@@ -1,13 +1,12 @@
 import { ConfirmModal } from "@/components/ConfirmModal";
 import { EmptyState } from "@/components/EmptyState";
 import { Icon } from "@/components/Icon";
-import {
-  EventQueryFieldsHelper,
-  SubscriptionForm,
-} from "@/components/SubscriptionForm";
+import { SubscriptionForm } from "@/components/SubscriptionForm";
+import { SubscriptionHelper } from "@/components/SubscriptionForm/SubscriptionHelper";
 import { LayoutAuthenticated } from "@/layout/LayoutAuthenticated";
 import type { RouterOutputs } from "@/utils/api";
 import { api } from "@/utils/api";
+import { EVENTS_DETAILS } from "@/utils/subscriptions";
 import {
   Button,
   Card,
@@ -25,11 +24,16 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  Popover,
+  PopoverArrow,
+  PopoverBody,
+  PopoverCloseButton,
+  PopoverContent,
+  PopoverTrigger,
   SimpleGrid,
   Spinner,
   Stack,
   Text,
-  Tooltip,
   useDisclosure,
 } from "@chakra-ui/react";
 import { Formiz, useForm } from "@formiz/core";
@@ -128,21 +132,23 @@ const SubscriptionCard = ({ subscription }: SubscriptionCardProps) => {
       <CardBody>
         <Stack>
           <HStack>
-            <Text>{subscription.triggeringEvent}</Text>
-            <Tooltip
-              label={
-                <Stack>
-                  <Text>
-                    Query for this event will contains the following fields:
-                  </Text>
-                  <EventQueryFieldsHelper
-                    event={subscription.triggeringEvent}
-                  />
-                </Stack>
-              }
-            >
-              <Icon icon={Info} />
-            </Tooltip>
+            <Text>{EVENTS_DETAILS[subscription.triggeringEvent].label}</Text>
+            <Popover>
+              <PopoverTrigger>
+                <IconButton
+                  variant="ghost"
+                  icon={<Icon icon={Info} />}
+                  aria-label="event-details"
+                />
+              </PopoverTrigger>
+              <PopoverContent>
+                <PopoverArrow />
+                <PopoverCloseButton />
+                <PopoverBody>
+                  <SubscriptionHelper event={subscription.triggeringEvent} />
+                </PopoverBody>
+              </PopoverContent>
+            </Popover>
           </HStack>
           <Text color="gray.500">{subscription.url}</Text>
         </Stack>
