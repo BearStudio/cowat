@@ -178,9 +178,11 @@ export async function book({
     });
   }
 
-  await events.newBookingFrom(passengerOnStop);
   if (requestStatus === "ACCEPTED") {
     await events.bookingAutoAccepted(passengerOnStop);
+    await events.request(passengerOnStop);
+  } else {
+    await events.newBookingFrom(passengerOnStop);
   }
 
   return passengerOnStop;

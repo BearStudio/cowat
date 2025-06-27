@@ -95,12 +95,12 @@ const request = async (passengerOnStop: PassengerOnStopNotification) => {
 const bookingAutoAccepted = async (
   passengerOnStop: PassengerOnStopNotification
 ) => {
-  const passengerId = passengerOnStop.user.id;
+  const driverId = passengerOnStop.stop?.commute?.createdById;
   const subscriptions = await prisma.subscription.findMany({
     where: {
       triggeringEvent: "AUTO_ACCEPT",
       isDeleted: false,
-      createdById: passengerId,
+      createdById: driverId,
     },
   });
 
