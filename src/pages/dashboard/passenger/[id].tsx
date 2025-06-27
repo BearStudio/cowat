@@ -115,7 +115,7 @@ const Passenger = () => {
               <Flex justify="space-between" align="center">
                 <Text fontWeight="bold" fontSize="sm">
                   {commute.data.createdBy?.name}&apos;s departure at{" "}
-                  {getFirstStopTime(commute.data)}
+                  {getFirstStopTime(commute.data.stops)}
                 </Text>
               </Flex>
             </CardHeader>

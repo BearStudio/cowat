@@ -1,7 +1,7 @@
 import type { PassengersOnStops, Stop, User } from "@prisma/client";
 import type { RouterOutputs } from "@/utils/api";
 
-type CommuteType = RouterOutputs["commute"]["commuteById"];
+type CommuteStops = RouterOutputs["commute"]["commuteById"]["stops"];
 type PassengerWithUser = PassengersOnStops & { user: User };
 type StopWithPassengers = Stop & { passengers: PassengerWithUser[] };
 
@@ -29,9 +29,7 @@ export const getPassengers = (
   );
 };
 
-export const getAllPassengers = (
-  stops: StopWithPassengers[]
-) => {
+export const getAllPassengers = (stops: StopWithPassengers[]) => {
   return stops.flatMap((stop) =>
     stop.passengers.filter(
       (passenger) =>
@@ -45,9 +43,7 @@ export const getAllPassengers = (
  * Get all the passengers of the given stops, only accepted ones.
  * @returns The passengers of the given stops, only accepted ones.
  */
-export const getAcceptedPassengers = (
-  stops: StopWithPassengers[]
-) => {
+export const getAcceptedPassengers = (stops: StopWithPassengers[]) => {
   return stops.flatMap((stop) =>
     stop.passengers.filter(
       (passenger) => passenger.requestStatus === "ACCEPTED"
@@ -77,6 +73,6 @@ export const havePassengerOnStop = (
  * @param commute The commute in which we want to find the earliest stop
  * @returns The time of the earliest stop
  */
-export const getFirstStopTime = (commute: CommuteType) => {
-  return commute?.stops.map((stop) => stop.time).sort()[0];
+export const getFirstStopTime = (stops: CommuteStops) => {
+  return stops?.map((stop) => stop.time).sort()[0] || "";
 };

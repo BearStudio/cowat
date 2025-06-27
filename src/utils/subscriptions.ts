@@ -1,5 +1,11 @@
 import { Events } from "@prisma/client";
+import { getFirstStopTime } from "@/utils/commutes";
 import dayjs from "dayjs";
+import type { RouterOutputs } from "@/utils/api";
+
+type WebhookBody = Partial<
+  Record<EventField, string | object | number | Array<unknown>>
+>;
 
 export const EVENTS_DETAILS: Record<
   Events,
@@ -7,67 +13,67 @@ export const EVENTS_DETAILS: Record<
     label: string;
     detail: string;
     fields: Array<EventField>;
-    message: (
-      data: Partial<Record<EventField, string | object | number>>
-    ) => string;
+    message: (data: WebhookBody) => string;
   }
 > = {
   NEW_COMMUTE: {
     label: "New commute",
     detail: "You will get notified when a new commute is created",
-    message: (data: Partial<Record<EventField, string | object | number>>) =>
-      `${data.driver} has created a commute on ${dayjs(
-        data.date?.toString()
-      ).format("DD/MM/YYYY HH:mm")}`,
+    message: (data: WebhookBody) =>
+      `${data.driver} has created a commute on ${buildCommuteDateTime(data)}`,
     fields: ["event", "driver", "date", "seats", "stops"],
   },
   NEW_BOOKING: {
     label: "New booking",
     detail: "You will get notified when someone books your commute",
-    message: (data: Partial<Record<EventField, string | object | number>>) =>
-      `${data.passenger} has requested a booking for your commute on ${dayjs(
-        data.date?.toString()
-      ).format("DD/MM/YYYY HH:mm")}`,
+    message: (data: WebhookBody) =>
+      `${
+        data.passenger
+      } has requested a booking for your commute on ${buildCommuteDateTime(
+        data
+      )}`,
     fields: ["event", "user", "passenger", "date"],
   },
   REQUEST: {
     label: "Request",
     detail:
       "You will get notified when the driver responds to your booking request",
-    message: (data: Partial<Record<EventField, string | object | number>>) =>
-      `${data.driver} has ${data.requestStatus} your commute on ${dayjs(
-        data.date?.toString()
-      ).format("DD/MM/YYYY HH:mm")}`,
+    message: (data: WebhookBody) =>
+      `${data.driver} has ${
+        data.requestStatus
+      } your booking request for the commute on ${buildCommuteDateTime(data)}`,
     fields: ["event", "user", "requestStatus", "driver", "date", "comment"],
   },
   AUTO_ACCEPT: {
     label: "Auto-accept",
     detail:
       "You will get notified when a commute request is accepted automatically",
-    message: (data: Partial<Record<EventField, string | object | number>>) =>
-      `${data.passenger} has booked your commute on ${dayjs(
-        data.date?.toString()
-      ).format("DD/MM/YYYY HH:mm")}`,
+    message: (data: WebhookBody) =>
+      `${data.passenger} has booked your commute on ${buildCommuteDateTime(
+        data
+      )}`,
     fields: ["event", "user", "passenger", "date"],
   },
   BOOKING_CANCELED: {
     label: "Booking cancelled",
     detail:
       "You will get notified when a passenger cancels his booking to your commute",
-    message: (data: Partial<Record<EventField, string | object | number>>) =>
-      `${data.passenger} has cancelled his booking for your commute on ${dayjs(
-        data.date?.toString()
-      ).format("DD/MM/YYYY HH:mm")}`,
+    message: (data: WebhookBody) =>
+      `${
+        data.passenger
+      } has cancelled his booking for your commute on ${buildCommuteDateTime(
+        data
+      )}`,
     fields: ["event", "user", "passenger", "date"],
   },
   COMMUTE_CANCELED: {
     label: "Commute cancelled",
     detail:
       "You will get notified when the driver cancels a commute you booked",
-    message: (data: Partial<Record<EventField, string | object | number>>) =>
-      `${data.driver} has cancelled your commute on ${dayjs(
-        data.date?.toString()
-      ).format("DD/MM/YYYY HH:mm")}`,
+    message: (data: WebhookBody) =>
+      `${data.driver} has cancelled your commute on ${buildCommuteDateTime(
+        data
+      )}`,
     fields: ["event", "user", "driver", "date"],
   },
 };
@@ -121,10 +127,7 @@ export const getWebhookDomain = (webhookUrl: string): DomainContentKey => {
   return webhookDomain as DomainContentKey;
 };
 
-export const buildWebhookBody = (
-  webhookUrl: string,
-  baseBody: Partial<Record<EventField, string | object | number>>
-) => {
+export const buildWebhookBody = (webhookUrl: string, baseBody: WebhookBody) => {
   const domainContentKey = DOMAIN_CONTENT_KEY[getWebhookDomain(webhookUrl)];
 
   const enventMessage =
@@ -140,4 +143,11 @@ export const buildWebhookBody = (
 
 export const isValidEvent = (event: string): event is Events => {
   return Object.keys(Events).includes(event);
+};
+
+const buildCommuteDateTime = (data: WebhookBody) => {
+  console.log({ date: dayjs(data.date as Date).format("DD/MM/YYYY") });
+  return `${dayjs(data.date as Date).format("DD/MM/YYYY")} ${getFirstStopTime(
+    data?.stops as RouterOutputs["commute"]["commuteById"]["stops"]
+  )}`;
 };

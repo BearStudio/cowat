@@ -106,7 +106,8 @@ export const ConfirmCommuteActionModal = ({
                       {commute.createdById === session?.user?.id ? (
                         <>
                           <Text>
-                            Driver for a commute at {getFirstStopTime(commute)}
+                            Driver for a commute at{" "}
+                            {getFirstStopTime(commute.stops)}
                           </Text>
                           <ConfirmCancelCommuteModal commute={commute} />
                         </>
