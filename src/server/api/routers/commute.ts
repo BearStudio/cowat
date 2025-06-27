@@ -389,6 +389,7 @@ export const commuteRouter = createTRPCRouter({
     .input(
       z.object({
         id: z.string().cuid(),
+        date: z.date(),
         seats: z.number().min(1),
         stops: z
           .array(
@@ -474,6 +475,7 @@ export const commuteRouter = createTRPCRouter({
         data: {
           seats: input.seats,
           comment: input.comment,
+          date: input.date,
         },
         where: {
           createdById: ctx.session.user.id,

@@ -1,8 +1,8 @@
 import { ConfirmModal } from "@/components/ConfirmModal";
-import { FULL_TEXT_DATE } from "@/constants/dates";
+import { FULL_TEXT_DATE_WITH_TIME } from "@/constants/dates";
 import type { RouterOutputs } from "@/utils/api";
 import { api } from "@/utils/api";
-import { getFirstStopTime, getPassengers } from "@/utils/commutes";
+import { getPassengers } from "@/utils/commutes";
 import { Button, chakra } from "@chakra-ui/react";
 import dayjs from "dayjs";
 
@@ -33,9 +33,7 @@ export const ConfirmCancelCommuteModal = ({
       message={
         <>
           <strong>
-            {`${dayjs(commute.date).format(FULL_TEXT_DATE)} ${getFirstStopTime(
-              commute
-            )}`}
+            {dayjs(commute.date).format(FULL_TEXT_DATE_WITH_TIME)}
           </strong>{" "}
           commute
           <br />

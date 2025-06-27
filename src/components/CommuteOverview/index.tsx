@@ -1,7 +1,7 @@
 import { Icon } from "@/components/Icon";
 import { FULL_TEXT_DATE } from "@/constants/dates";
 import { api } from "@/utils/api";
-import { getFirstStopTime, getPassengers } from "@/utils/commutes";
+import { getPassengers } from "@/utils/commutes";
 import { NOT_YET_PASSENGER_IF_INSIDE } from "@/utils/passengers";
 import {
   Accordion,
@@ -175,9 +175,9 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
             <Stack spacing={0}>
               <HStack>
                 <Text fontWeight="bold" fontSize="sm">
-                  {` ${dayjs(props.date).format(
-                    FULL_TEXT_DATE
-                  )} ${getFirstStopTime(props)}`}
+                  {` ${dayjs(props.date).format(FULL_TEXT_DATE)} ${dayjs(
+                    props.date
+                  ).format("HH:mm")}`}
                 </Text>
               </HStack>
               <Text fontSize="sm">
