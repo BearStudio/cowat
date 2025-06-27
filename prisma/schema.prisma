@@ -38,7 +38,7 @@ enum DriverStopStatus {
 model Stop {
     id                String              @id @default(cuid())
     locationId        String
-    location          Location           @relation(fields: [locationId], references: [id])
+    location          Location            @relation(fields: [locationId], references: [id])
     time              String
     commute           Commute?            @relation(fields: [commuteId], references: [id])
     commuteId         String?
@@ -110,7 +110,7 @@ model Commute {
     isDeleted   Boolean?      @default(false)
     createdBy   User?         @relation(fields: [createdById], references: [id])
     createdById String
-    date        DateTime      @db.Date
+    date        DateTime
     seats       Int
     // "ON_TIME | DELAYED"
     status      CommuteStatus @default(UNKNOWN)

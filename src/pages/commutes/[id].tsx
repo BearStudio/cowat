@@ -8,6 +8,7 @@ import type { RouterInputs } from "@/utils/api";
 import { api } from "@/utils/api";
 import { Button, Heading, HStack, IconButton } from "@chakra-ui/react";
 import { Formiz, useForm } from "@formiz/core";
+import dayjs from "dayjs";
 import { ArrowLeft } from "lucide-react";
 import type { NextPage } from "next";
 import Head from "next/head";
@@ -36,8 +37,19 @@ const EditCommute: NextPage = () => {
   });
 
   const handleOnValidSubmit = (values: EditCommuteInput) => {
+    const { ...otherValues } = values;
+
     commuteMutation.mutate(
-      { ...values, id: id?.toString() ?? "" },
+      {
+        ...values,
+        date: dayjs(
+          `${dayjs(commute.data?.date).format("DD/MM/YYYY")} ${
+            otherValues.stops?.[0]?.time
+          }`,
+          "DD/MM/YYYY HH:mm"
+        ).toDate(),
+        id: id?.toString() ?? "",
+      },
       {
         onSuccess: () => {
           ctx.commute.commuteById.invalidate();
