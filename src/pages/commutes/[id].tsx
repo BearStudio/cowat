@@ -68,6 +68,7 @@ const EditCommute: NextPage = () => {
   const defaultValues = {
     ...commute.data,
     stops,
+    commuteType: commute.data?.commuteType as "ROUND" | "OUTBOUND" | "RETURN",
   };
 
   const editCommuteForm = useForm({
