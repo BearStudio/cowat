@@ -119,6 +119,7 @@ model Commute {
     date        DateTime
     seats       Int
     commuteType CommuteType   @default(OUTBOUND)
+    returnTime DateTime?
     // "ON_TIME | DELAYED"
     status      CommuteStatus @default(UNKNOWN)
     // If the driver is late, number of minutes of delay
