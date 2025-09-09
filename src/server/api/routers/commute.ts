@@ -22,6 +22,7 @@ export const commuteRouter = createTRPCRouter({
           })
         ),
         comment: z.string().nullish(),
+        commuteType: z.enum(["ROUND", "OUTBOUND", "RETURN"]),
       })
     )
     .mutation(async ({ input, ctx }) => {
@@ -37,6 +38,7 @@ export const commuteRouter = createTRPCRouter({
             })),
           },
           comment: input.comment,
+          commuteType: input.commuteType,
         },
         include: {
           createdBy: {
@@ -401,6 +403,7 @@ export const commuteRouter = createTRPCRouter({
           )
           .nullish(),
         comment: z.string().nullish(),
+        commuteType: z.enum(["ROUND", "OUTBOUND", "RETURN"]),
       })
     )
     .mutation(async ({ input, ctx }) => {
@@ -476,6 +479,7 @@ export const commuteRouter = createTRPCRouter({
           seats: input.seats,
           comment: input.comment,
           date: input.date,
+          commuteType: input.commuteType,
         },
         where: {
           createdById: ctx.session.user.id,

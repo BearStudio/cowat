@@ -103,6 +103,12 @@ enum CommuteStatus {
     DELAYED
 }
 
+enum CommuteType {
+  ROUND
+  OUTBOUND
+  RETURN
+}
+
 model Commute {
     id          String        @id @default(cuid())
     createdAt   DateTime      @default(now())
@@ -112,6 +118,7 @@ model Commute {
     createdById String
     date        DateTime
     seats       Int
+    commuteType CommuteType   @default(OUTBOUND)
     // "ON_TIME | DELAYED"
     status      CommuteStatus @default(UNKNOWN)
     // If the driver is late, number of minutes of delay

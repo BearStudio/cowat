@@ -66,6 +66,7 @@ async function main() {
         },
       },
       createdById: ivan?.id,
+      commuteType: "ROUND",
     },
   });
   const newTodayCommuteFromIvan = await prisma.commute.create({
@@ -79,6 +80,7 @@ async function main() {
         },
       },
       createdById: ivan?.id,
+      commuteType: "RETURN",
     },
     include: {
       stops: {
@@ -97,6 +99,7 @@ async function main() {
         },
       },
       createdById: yoann?.id,
+      commuteType: "OUTBOUND",
     },
     include: {
       stops: {
@@ -118,6 +121,7 @@ async function main() {
       },
       createdById: yoann?.id,
       isDeleted: true,
+      commuteType: "OUTBOUND",
     },
   });
 
