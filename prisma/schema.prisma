@@ -66,6 +66,12 @@ enum StopStatus {
     DELAYED
 }
 
+enum TripType {
+    ROUND
+    OUTBOUND
+    RETURN
+}
+
 model PassengersOnStops {
     user           User          @relation(fields: [userId], references: [id])
     userId         String
@@ -74,6 +80,7 @@ model PassengersOnStops {
     requestStatus  RequestStatus @default(REQUESTED)
     stopStatus     StopStatus    @default(UNKNOWN)
     requestComment String?       @db.Text
+    tripType       TripType      @default(OUTBOUND)
     // Passenger is late, number of minutes of delay.
     delay          Int?
 
