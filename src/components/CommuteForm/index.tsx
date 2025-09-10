@@ -19,6 +19,7 @@ import {
   Box,
   Button,
   Divider,
+  Flex,
   HStack,
   IconButton,
   Modal,
@@ -51,6 +52,7 @@ type CommuteFormProps = {
    * the date selection.
    */
   mode?: "TEMPLATE" | "CREATE" | "EDIT";
+  form: ReturnType<typeof useForm>;
 };
 
 type CommuteFormValues = RouterOutputs["commute"]["commuteById"];
@@ -58,6 +60,7 @@ type CommuteFormValues = RouterOutputs["commute"]["commuteById"];
 export const CommuteForm = ({
   repeaterInitialValues: initialValues,
   mode = "CREATE",
+  form,
 }: CommuteFormProps) => {
   const router = useRouter();
   const { id } = router.query;
@@ -69,7 +72,11 @@ export const CommuteForm = ({
     }
   );
 
-  const form = useForm<CommuteFormValues>();
+  const values = useFormFields({
+    connect: form,
+    fields: ["commuteType"] as const,
+    selector: "value",
+  });
 
   const stops = useCollection("stops", {
     connect: form,
@@ -106,6 +113,43 @@ export const CommuteForm = ({
           },
         ]}
       />
+      <FieldSelect
+        label="Type of trip"
+        name="commuteType"
+        required="Please select the type of trip"
+        options={[
+          { value: "ROUND", label: "Round trip" },
+          { value: "OUTBOUND", label: "One-way" },
+          { value: "RETURN", label: "Return" },
+        ]}
+        defaultValue="ROUND"
+      />
+      {values.commuteType === "ROUND" && (
+        <Flex>
+          <FieldTime
+            label="🕑 Departure time"
+            name="departureTime"
+            keepValue={false}
+          />
+          <FieldTime
+            label="🕑 Return time"
+            name="returnTime"
+            keepValue={false}
+          />
+        </Flex>
+      )}
+
+      {values.commuteType === "OUTBOUND" && (
+        <FieldTime
+          label="🕑 Departure time"
+          name="departureTime"
+          keepValue={false}
+        />
+      )}
+
+      {values.commuteType === "RETURN" && (
+        <FieldTime label="🕑 Return time" name="returnTime" keepValue={false} />
+      )}
       {["CREATE"].includes(mode) && (
         <>
           <FieldDayPicker

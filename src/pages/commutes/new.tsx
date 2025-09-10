@@ -94,6 +94,14 @@ const New: NextPage = () => {
 
     createCommute.mutate({
       ...otherValues,
+      departureTime: dayjs(
+        `${date} ${otherValues.departureTime}`,
+        "DD/MM/YYYY HH:mm"
+      ).toDate(),
+      returnTime: dayjs(
+        `${date} ${otherValues.returnTime}`,
+        "DD/MM/YYYY HH:mm"
+      ).toDate(),
       date: dayjs(
         `${date} ${otherValues.stops[0]?.time}`,
         "DD/MM/YYYY HH:mm"
@@ -184,7 +192,10 @@ const New: NextPage = () => {
       {showForm && (
         <Formiz autoForm connect={form}>
           <SimpleCard>
-            <CommuteForm repeaterInitialValues={defaultValues.stops} />
+            <CommuteForm
+              repeaterInitialValues={defaultValues.stops}
+              form={form}
+            />
             <Button
               variant="primary"
               onClick={handleSave}
