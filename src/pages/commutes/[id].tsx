@@ -102,6 +102,7 @@ const EditCommute: NextPage = () => {
             <CommuteForm
               mode="EDIT"
               repeaterInitialValues={defaultValues.stops}
+              form={editCommuteForm}
             />
             <Button
               variant="primary"

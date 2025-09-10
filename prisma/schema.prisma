@@ -127,6 +127,7 @@ model Commute {
     date        DateTime
     seats       Int
     commuteType CommuteType   @default(OUTBOUND)
+    departureTime DateTime?
     returnTime DateTime?
     // "ON_TIME | DELAYED"
     status      CommuteStatus @default(UNKNOWN)
