@@ -100,6 +100,7 @@ model CommuteTemplate {
     seats        Int?
     comment      String?  @db.Text
     templateName String?  @db.Text
+    commuteType  CommuteType @default(OUTBOUND)
 
     @@index([createdById])
 }
