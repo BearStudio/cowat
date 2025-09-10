@@ -273,7 +273,9 @@ const Passenger = () => {
                       variant="primary"
                       size="sm"
                       w="full"
-                      onClick={() => hereOnStop.mutate({ id: stop.id })}
+                      onClick={() =>
+                        hereOnStop.mutate({ id: stop.id, tripType: "OUTBOUND" })
+                      }
                       isLoading={hereOnStop.isLoading}
                     >
                       I&apos;m here
