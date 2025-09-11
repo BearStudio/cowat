@@ -37,11 +37,23 @@ const EditCommute: NextPage = () => {
   });
 
   const handleOnValidSubmit = (values: EditCommuteInput) => {
-    const { ...otherValues } = values;
+    const { departureTime, returnTime, date, ...otherValues } = values;
 
     commuteMutation.mutate(
       {
-        ...values,
+        ...otherValues,
+        departureTime: departureTime
+          ? dayjs(
+              `${dayjs(date).format("YYYY-MM-DD")} ${departureTime}`,
+              "YYYY-MM-DD HH:mm"
+            ).toDate()
+          : null,
+        returnTime: returnTime
+          ? dayjs(
+              `${dayjs(date).format("YYYY-MM-DD")} ${returnTime}`,
+              "YYYY-MM-DD HH:mm"
+            ).toDate()
+          : null,
         date: dayjs(
           `${dayjs(commute.data?.date).format("DD/MM/YYYY")} ${
             otherValues.stops?.[0]?.time
