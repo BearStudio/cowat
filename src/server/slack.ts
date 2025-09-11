@@ -2,7 +2,7 @@ import SlackNotify from "slack-notify";
 import { env } from "@/env/server.mjs";
 import type { Prisma } from "@prisma/client";
 import dayjs from "dayjs";
-import { FULL_TEXT_DATE } from "@/constants/dates";
+import { FULL_TEXT_DATE, ONLY_TIME } from "@/constants/dates";
 import { App, LogLevel } from "@slack/bolt";
 import { clientEnv } from "@/env/schema.mjs";
 
@@ -74,6 +74,14 @@ const newCommute = async (
     },
   }));
 
+  const commuteTypeLabels = {
+    OUTBOUND: "One-way",
+    ROUND: "Round",
+    RETURN: "Return",
+  };
+
+  const typeLabel = commuteTypeLabels[commute.commuteType];
+
   return notify.send({
     blocks: [
       {
@@ -84,9 +92,26 @@ const newCommute = async (
             FULL_TEXT_DATE
           )} * has been created by ${createdBy} (💺 ${
             commute.seats
-          } seats available) \n <${
-            clientEnv.NEXT_PUBLIC_BASE_URL
-          }/dashboard|See all commutes>`,
+          } seats available) \n Trip type : *${typeLabel}*${
+            commute.departureTime || commute.returnTime
+              ? ` (${
+                  commute.departureTime
+                    ? `Departure : *${dayjs(commute.departureTime).format(
+                        ONLY_TIME
+                      )}*`
+                    : ""
+                }${commute.departureTime && commute.returnTime ? " and " : ""}${
+                  commute.returnTime
+                    ? `Return : *${dayjs(commute.returnTime).format(
+                        ONLY_TIME
+                      )}*`
+                    : ""
+                })`
+              : ""
+          }
+
+            \n <${clientEnv.NEXT_PUBLIC_BASE_URL}/dashboard|See all commutes>
+            `,
         },
       },
       {
