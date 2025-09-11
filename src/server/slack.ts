@@ -5,6 +5,7 @@ import dayjs from "dayjs";
 import { FULL_TEXT_DATE, ONLY_TIME } from "@/constants/dates";
 import { App, LogLevel } from "@slack/bolt";
 import { clientEnv } from "@/env/schema.mjs";
+import { commuteTypeLabels } from "@/constants/commuteType";
 
 type PassengerOnStopNotification = Prisma.PassengersOnStopsGetPayload<{
   include: {
@@ -74,14 +75,6 @@ const newCommute = async (
     },
   }));
 
-  const commuteTypeLabels = {
-    OUTBOUND: "One-way",
-    ROUND: "Round",
-    RETURN: "Return",
-  };
-
-  const typeLabel = commuteTypeLabels[commute.commuteType];
-
   return notify.send({
     blocks: [
       {
@@ -92,7 +85,9 @@ const newCommute = async (
             FULL_TEXT_DATE
           )} * has been created by ${createdBy} (💺 ${
             commute.seats
-          } seats available) \n Trip type : *${typeLabel}*${
+          } seats available) \n Trip type : *${
+            commuteTypeLabels[commute.commuteType]
+          }*${
             commute.departureTime || commute.returnTime
               ? ` (${
                   commute.departureTime
