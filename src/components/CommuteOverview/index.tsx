@@ -1,5 +1,5 @@
 import { Icon } from "@/components/Icon";
-import { FULL_TEXT_DATE } from "@/constants/dates";
+import { FULL_TEXT_DATE, ONLY_TIME } from "@/constants/dates";
 import { api } from "@/utils/api";
 import { getPassengers } from "@/utils/commutes";
 import { NOT_YET_PASSENGER_IF_INSIDE } from "@/utils/passengers";
@@ -37,6 +37,7 @@ import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { ConfirmCommuteActionModal } from "@/components/ConfirmCommuteActionModal";
 import { ConfirmCancelCommuteModal } from "@/components/ConfirmCancelCommuteModal";
+import { commuteTypeLabels } from "@/constants/commuteType";
 
 export type CommuteOverviewProps = Prisma.CommuteGetPayload<{
   include: {
@@ -221,6 +222,33 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
               }}
             >
               <Stack spacing="0" w="full">
+                <Flex flex="1" align="center" justify="space-between">
+                  <Text fontWeight="medium" fontSize="sm">
+                    {`${commuteTypeLabels[props.commuteType]} 
+                    ${
+                      props.departureTime || props.returnTime
+                        ? `(${
+                            props.departureTime
+                              ? `Departure : ${dayjs(
+                                  props.departureTime
+                                ).format(ONLY_TIME)}`
+                              : ""
+                          } 
+                      ${
+                        props.departureTime && props.returnTime ? " and " : ""
+                      }    
+                      ${
+                        props.returnTime
+                          ? `Return : ${dayjs(props.returnTime).format(
+                              ONLY_TIME
+                            )}`
+                          : ""
+                      })`
+                        : ""
+                    }
+                    `}
+                  </Text>
+                </Flex>
                 <Flex flex="1" align="center" justify="space-between">
                   <Flex align="center">
                     <AccordionIcon />
