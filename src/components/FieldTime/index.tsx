@@ -11,6 +11,7 @@ import {
 } from "@chakra-ui/react";
 import type { FieldProps } from "@formiz/core";
 import { useField } from "@formiz/core";
+import dayjs from "dayjs";
 
 export type FieldTimeProps = FieldProps<string> &
   FormGroupProps & { placeholder?: string };
@@ -19,6 +20,9 @@ export const FieldTime = (props: FieldTimeProps) => {
   const { errorMessage, id, shouldDisplayError, setValue, value, otherProps } =
     useField(props, {
       formatValue: (value) => {
+        if ((value as any) instanceof Date) {
+          return dayjs(value).format("HH:mm");
+        }
         const [h, m] = value?.split(":") ?? [];
         if (!h || !m) {
           return null;
@@ -41,7 +45,12 @@ export const FieldTime = (props: FieldTimeProps) => {
     ...rest,
   };
 
-  const [hours, minutes] = value?.split(":") ?? [];
+  const [hours, minutes] =
+    ((value as any) instanceof Date
+      ? dayjs(value).format("HH:mm")
+      : value
+    )?.split(":") ?? [];
+
   const [placeholderHours, placeholderMinutes] = placeholder?.split(":") ?? [];
 
   return (
