@@ -22,6 +22,7 @@ import type {
 import { RequestStatus } from "@prisma/client";
 import dayjs from "dayjs";
 import { Check, X } from "lucide-react";
+import { commuteTypeLabels } from "@/constants/commuteType";
 
 type RequestProps = {
   request: PassengersOnStops & {
@@ -64,6 +65,7 @@ export const Request = ({ request }: RequestProps) => {
                   commute
                 </>
               </Text>
+              <Text>{`${commuteTypeLabels[request.tripType]} `}</Text>
               <Text fontSize="xs">
                 📍 {!!request.stop.time && request.stop.time}
                 {" · "}
@@ -94,6 +96,7 @@ export const Request = ({ request }: RequestProps) => {
                   requestStatus: RequestStatus.ACCEPTED,
                   stopId: request.stopId,
                   requestComment: textareaValue,
+                  tripType: request.tripType,
                 })
               }
             >
@@ -110,6 +113,7 @@ export const Request = ({ request }: RequestProps) => {
                   requestStatus: RequestStatus.REFUSED,
                   stopId: request.stopId,
                   requestComment: textareaValue,
+                  tripType: request.tripType,
                 })
               }
             >
