@@ -9,6 +9,7 @@ import { createTRPCRouter, protectedProcedure } from "../trpc";
 
 const bookInput = z.object({
   stopId: z.string(),
+  tripType: z.enum(["ROUND", "OUTBOUND", "RETURN"]),
 });
 
 export async function book({
@@ -148,6 +149,7 @@ export async function book({
           },
         },
         requestStatus: requestStatus,
+        tripType: input.tripType,
       },
       include: {
         stop: {
@@ -191,6 +193,7 @@ export const stopRouter = createTRPCRouter({
         passengerId: z.string(),
         requestStatus: z.nativeEnum(RequestStatus),
         requestComment: z.string().nullish(),
+        tripType: z.enum(["ROUND", "OUTBOUND", "RETURN"]),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -236,6 +239,7 @@ export const stopRouter = createTRPCRouter({
         data: {
           requestStatus: input.requestStatus,
           requestComment: input.requestComment,
+          tripType: input.tripType,
         },
         include: {
           stop: {
