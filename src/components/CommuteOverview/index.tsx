@@ -29,10 +29,22 @@ import {
   useBreakpointValue,
   Tooltip,
   useDisclosure,
+  ButtonGroup,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
 } from "@chakra-ui/react";
-import type { Prisma, RequestStatus } from "@prisma/client";
+import type { Prisma, RequestStatus, TripType } from "@prisma/client";
 import dayjs from "dayjs";
-import { CheckCircle2, Clock, Navigation, Pencil, Phone } from "lucide-react";
+import {
+  CheckCircle2,
+  ChevronDownIcon,
+  Clock,
+  Navigation,
+  Pencil,
+  Phone,
+} from "lucide-react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { ConfirmCommuteActionModal } from "@/components/ConfirmCommuteActionModal";
@@ -110,11 +122,11 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
     !isFull &&
     dayjs().isBefore(dayjs(props.date));
 
-  const handleBookClick = (stopId: string) => {
+  const handleBookClick = (stopId: string, tripType: TripType) => {
     if (myCommutesOnDate.isSuccess && myCommutesOnDate.data?.length > 0) {
       confirmCommuteActionModal.onOpen();
     } else {
-      bookCommute.mutate({ stopId });
+      bookCommute.mutate({ stopId, tripType });
     }
   };
 
@@ -316,55 +328,118 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
 
                   return (
                     <HStack key={stop.id}>
-                      <Stack spacing={0} flex={1}>
-                        <Text fontWeight="bold" fontSize="sm">
-                          📍 {!!stop.time && stop.time} · {stop.location?.name}
-                        </Text>
-                        <Tooltip label={stop?.location?.address}>
-                          <Text
-                            fontSize="sm"
-                            color="gray.600"
-                            _dark={{ color: "gray.300" }}
-                            wordBreak="break-word"
-                            noOfLines={3}
-                          >
-                            {stop?.location?.address}
+                      <Stack key={stop.id} spacing={2} w="full">
+                        <Stack spacing={0} flex={1}>
+                          <Text fontWeight="bold" fontSize="sm">
+                            📍 {!!stop.time && stop.time} ·{" "}
+                            {stop.location?.name}
                           </Text>
-                        </Tooltip>
-                        {!!passengers.length && !props.isDeleted && (
-                          <Wrap pt="1">
-                            {passengers.map((passenger) => (
-                              <Tag
-                                size="sm"
-                                key={passenger.userId}
-                                colorScheme={
-                                  passenger.requestStatus === "ACCEPTED"
-                                    ? "success"
-                                    : undefined
+                          <Tooltip label={stop?.location?.address}>
+                            <Text
+                              fontSize="sm"
+                              color="gray.600"
+                              _dark={{ color: "gray.300" }}
+                              wordBreak="break-word"
+                              noOfLines={3}
+                            >
+                              {stop?.location?.address}
+                            </Text>
+                          </Tooltip>
+                          {!!passengers.length && !props.isDeleted && (
+                            <Wrap pt="1">
+                              {passengers.map((passenger) => (
+                                <Tag
+                                  size="sm"
+                                  key={passenger.userId}
+                                  colorScheme={
+                                    passenger.requestStatus === "ACCEPTED"
+                                      ? "success"
+                                      : undefined
+                                  }
+                                >
+                                  {passenger.user.name ?? passenger.user.email}
+                                </Tag>
+                              ))}
+                            </Wrap>
+                          )}
+                        </Stack>
+                        {commuteCanBeBooked && (
+                          <>
+                            {props.commuteType === "OUTBOUND" && (
+                              <Button
+                                type="submit"
+                                variant="primary"
+                                onClick={() =>
+                                  handleBookClick(stop.id, "OUTBOUND")
                                 }
+                                isLoading={bookCommute.isLoading}
                               >
-                                {passenger.user.name ?? passenger.user.email}
-                              </Tag>
-                            ))}
-                          </Wrap>
+                                Book
+                              </Button>
+                            )}
+                            {props.commuteType === "RETURN" && (
+                              <Button
+                                type="submit"
+                                variant="primary"
+                                onClick={() =>
+                                  handleBookClick(stop.id, "RETURN")
+                                }
+                                isLoading={bookCommute.isLoading}
+                              >
+                                Book
+                              </Button>
+                            )}
+                            {props.commuteType === "ROUND" && (
+                              <ButtonGroup>
+                                <Button
+                                  type="submit"
+                                  variant="primary"
+                                  onClick={() =>
+                                    handleBookClick(stop.id, "ROUND")
+                                  }
+                                  isLoading={bookCommute.isLoading}
+                                >
+                                  Book
+                                </Button>
+                                <Menu>
+                                  <MenuButton
+                                    as={Button}
+                                    rightIcon={<ChevronDownIcon />}
+                                  >
+                                    Options
+                                  </MenuButton>
+                                  <MenuList>
+                                    <MenuItem
+                                      onClick={() =>
+                                        handleBookClick(stop.id, "OUTBOUND")
+                                      }
+                                    >
+                                      One-way
+                                    </MenuItem>
+                                    <MenuItem
+                                      onClick={() =>
+                                        handleBookClick(stop.id, "RETURN")
+                                      }
+                                    >
+                                      Return
+                                    </MenuItem>
+                                  </MenuList>
+                                </Menu>
+                              </ButtonGroup>
+                            )}
+                          </>
                         )}
                       </Stack>
-                      {commuteCanBeBooked && (
-                        <Button
-                          variant="primary"
-                          onClick={() => handleBookClick(stop.id)}
-                          isLoading={bookCommute.isLoading}
-                        >
-                          Book
-                        </Button>
-                      )}
                       {confirmCommuteActionModal.isOpen && (
                         <ConfirmCommuteActionModal
                           title="Confirm booking"
                           confirmText="Book"
                           onClose={confirmCommuteActionModal.onClose}
                           onConfirm={() =>
-                            bookCommute.mutate({ stopId: stop.id })
+                            bookCommute.mutate({
+                              stopId: stop.id,
+                              tripType: props.commuteType,
+                            })
                           }
                           myCommutes={myCommutesOnDate.data || []}
                         />
@@ -380,6 +455,7 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
                                   stopId: stop.id,
                                   passengerId: session?.user?.id as string,
                                   requestStatus: "CANCELED",
+                                  tripType: props.commuteType,
                                 })
                               }
                               isLoading={updateRequestStatus.isLoading}
