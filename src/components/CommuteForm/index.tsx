@@ -129,11 +129,13 @@ export const CommuteForm = ({
           <FieldTime
             label="🕑 Home departure"
             name="departureTime"
+            required="Please provide a departure time"
             keepValue={false}
           />
           <FieldTime
             label="🕑 Work departure"
             name="returnTime"
+            required="Please provide a departure time"
             keepValue={false}
           />
         </Flex>
@@ -143,6 +145,7 @@ export const CommuteForm = ({
         <FieldTime
           label="🕑 Home departure"
           name="departureTime"
+          required="Please provide a departure time"
           keepValue={false}
         />
       )}
@@ -151,6 +154,7 @@ export const CommuteForm = ({
         <FieldTime
           label="🕑 Work departure"
           name="returnTime"
+          required="Please provide a departure time"
           keepValue={false}
         />
       )}
