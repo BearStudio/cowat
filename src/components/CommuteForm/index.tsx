@@ -126,37 +126,53 @@ export const CommuteForm = ({
       />
       {values.commuteType === "ROUND" && (
         <Flex>
+          <Flex direction="column" flex={1}>
+            <FieldTime
+              label="🕑 Home departure"
+              name="departureTime"
+              required="Please provide a departure time"
+              keepValue={false}
+              mb={4}
+            />
+            <LocationField name="departureLocation" label="📍 Home location" />
+          </Flex>
+          <Flex direction="column" flex={1}>
+            <FieldTime
+              label="🕑 Work departure"
+              name="returnTime"
+              required="Please provide a departure time"
+              keepValue={false}
+              mb={4}
+            />
+            <LocationField name="returnLocation" label="📍 Work location" />
+          </Flex>
+        </Flex>
+      )}
+
+      {values.commuteType === "OUTBOUND" && (
+        <Flex>
           <FieldTime
             label="🕑 Home departure"
             name="departureTime"
             required="Please provide a departure time"
             keepValue={false}
+            flex={1}
           />
+          <LocationField name="departureLocation" label="📍 Home location" />
+        </Flex>
+      )}
+
+      {values.commuteType === "RETURN" && (
+        <Flex>
           <FieldTime
             label="🕑 Work departure"
             name="returnTime"
             required="Please provide a departure time"
             keepValue={false}
+            flex={1}
           />
+          <LocationField name="returnLocation" label="📍 Work location" />
         </Flex>
-      )}
-
-      {values.commuteType === "OUTBOUND" && (
-        <FieldTime
-          label="🕑 Home departure"
-          name="departureTime"
-          required="Please provide a departure time"
-          keepValue={false}
-        />
-      )}
-
-      {values.commuteType === "RETURN" && (
-        <FieldTime
-          label="🕑 Work departure"
-          name="returnTime"
-          required="Please provide a departure time"
-          keepValue={false}
-        />
       )}
       {["CREATE"].includes(mode) && (
         <>
@@ -342,6 +358,86 @@ const Stop = ({
                 <LocationForm />
               </ModalBody>
 
+              <ModalFooter>
+                <Button
+                  variant="primary"
+                  isLoading={createLocation.isLoading}
+                  onClick={() => newLocationForm.submit()}
+                >
+                  Save
+                </Button>
+              </ModalFooter>
+            </ModalContent>
+          </Formiz>
+        </Modal>
+      )}
+    </>
+  );
+};
+
+type LocationFieldProps = {
+  name: string;
+  label: string;
+};
+
+const LocationField = ({ name, label }: LocationFieldProps) => {
+  const ctx = api.useContext();
+  const form = useFormContext();
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const newLocationForm = useForm({
+    onValidSubmit: (values: RouterInputs["location"]["create"]) => {
+      createLocation.mutate(values);
+    },
+  });
+
+  const locations = api.location.mine.useQuery();
+
+  const getSelectOptions = () =>
+    locations?.data?.map((location) => ({
+      label: location.name,
+      value: location.id,
+    })) ?? [];
+
+  const createLocation = api.location.create.useMutation({
+    onSuccess: async ({ id }) => {
+      await ctx.location.invalidate();
+      form.setValues({
+        [name]: id,
+      });
+      onClose();
+    },
+  });
+
+  return (
+    <>
+      <HStack flex={1} align="flex-start" w="fit-content">
+        <FieldSelect
+          label={label}
+          name={name}
+          placeholder="Please select a location"
+          options={getSelectOptions()}
+          required="Location is required"
+        />
+        <Box pt={8}>
+          <IconButton
+            aria-label="Add a location"
+            icon={<Icon icon={Plus} />}
+            onClick={onOpen}
+          />
+        </Box>
+      </HStack>
+
+      {isOpen && (
+        <Modal isOpen onClose={onClose} size="sm">
+          <ModalOverlay />
+          <Formiz connect={newLocationForm}>
+            <ModalContent>
+              <ModalHeader flex="1">New location</ModalHeader>
+              <ModalCloseButton />
+              <ModalBody>
+                <LocationForm />
+              </ModalBody>
               <ModalFooter>
                 <Button
                   variant="primary"

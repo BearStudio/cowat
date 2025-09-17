@@ -5,7 +5,7 @@ import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import { RequestStatus } from "@prisma/client";
 import { groupBy } from "remeda";
-import { YEAR_MONTH_DAY } from "@/constants/dates";
+import { ONLY_TIME, YEAR_MONTH_DAY } from "@/constants/dates";
 
 dayjs.extend(utc);
 
@@ -15,8 +15,10 @@ export const commuteRouter = createTRPCRouter({
       z.object({
         seats: z.number().min(1),
         date: z.date(),
-        departureTime: z.date(),
-        returnTime: z.date(),
+        departureTime: z.date().nullish(),
+        returnTime: z.date().nullish(),
+        departureLocation: z.string().nullish(),
+        returnLocation: z.string().nullish(),
         stops: z.array(
           z.object({
             location: z.string(),
@@ -36,10 +38,30 @@ export const commuteRouter = createTRPCRouter({
           returnTime: input.returnTime,
           createdById: ctx.session.user.id,
           stops: {
-            create: input.stops.map((stop) => ({
-              time: stop.time,
-              locationId: stop.location,
-            })),
+            create: [
+              ...(input.departureLocation
+                ? [
+                    {
+                      time: dayjs(input.departureTime).format(ONLY_TIME),
+                      locationId: input.departureLocation,
+                    },
+                  ]
+                : []),
+              ...(input.commuteType !== "OUTBOUND" &&
+              input.returnLocation &&
+              input.returnTime
+                ? [
+                    {
+                      time: dayjs(input.returnTime).format(ONLY_TIME),
+                      locationId: input.returnLocation,
+                    },
+                  ]
+                : []),
+              ...input.stops.map((stop) => ({
+                time: stop.time,
+                locationId: stop.location,
+              })),
+            ],
           },
           comment: input.comment,
           commuteType: input.commuteType,
