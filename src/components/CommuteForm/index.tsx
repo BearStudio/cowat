@@ -127,12 +127,12 @@ export const CommuteForm = ({
       {values.commuteType === "ROUND" && (
         <Flex>
           <FieldTime
-            label="🕑 Departure time"
+            label="🕑 Home departure"
             name="departureTime"
             keepValue={false}
           />
           <FieldTime
-            label="🕑 Return time"
+            label="🕑 Work departure"
             name="returnTime"
             keepValue={false}
           />
@@ -141,14 +141,18 @@ export const CommuteForm = ({
 
       {values.commuteType === "OUTBOUND" && (
         <FieldTime
-          label="🕑 Departure time"
+          label="🕑 Home departure"
           name="departureTime"
           keepValue={false}
         />
       )}
 
       {values.commuteType === "RETURN" && (
-        <FieldTime label="🕑 Return time" name="returnTime" keepValue={false} />
+        <FieldTime
+          label="🕑 Work departure"
+          name="returnTime"
+          keepValue={false}
+        />
       )}
       {["CREATE"].includes(mode) && (
         <>
