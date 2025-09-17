@@ -101,6 +101,8 @@ model CommuteTemplate {
     comment      String?  @db.Text
     templateName String?  @db.Text
     commuteType  CommuteType @default(OUTBOUND)
+    departureTime DateTime?
+    returnTime DateTime?
 
     @@index([createdById])
 }
