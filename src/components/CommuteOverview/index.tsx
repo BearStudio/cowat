@@ -234,30 +234,30 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
               }}
             >
               <Stack spacing="0" w="full">
-                <Flex flex="1" align="center" justify="space-between">
+                <Flex flex="1" align="center">
                   <Text fontWeight="medium" fontSize="sm">
-                    {`${commuteTypeLabels[props.commuteType]} 
-                    ${
-                      props.departureTime || props.returnTime
-                        ? `(${
-                            props.departureTime
-                              ? `Departure : ${dayjs(
-                                  props.departureTime
-                                ).format(ONLY_TIME)}`
-                              : ""
-                          } 
+                    {`Type : ${commuteTypeLabels[props.commuteType]}`}
+                  </Text>
+                </Flex>
+                <Flex flex="1" align="center">
+                  <Text fontWeight="medium" fontSize="sm">
+                    {`${
+                      props.departureTime
+                        ? `Home departure : ${dayjs(props.departureTime).format(
+                            ONLY_TIME
+                          )}`
+                        : ""
+                    } 
                       ${
-                        props.departureTime && props.returnTime ? " and " : ""
+                        props.departureTime && props.returnTime ? "and" : ""
                       }    
                       ${
                         props.returnTime
-                          ? `Return : ${dayjs(props.returnTime).format(
+                          ? `Work departure : ${dayjs(props.returnTime).format(
                               ONLY_TIME
                             )}`
                           : ""
-                      })`
-                        : ""
-                    }
+                      }
                     `}
                   </Text>
                 </Flex>
