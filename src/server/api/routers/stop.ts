@@ -42,7 +42,10 @@ export async function book({
     },
   });
 
-  const passengers = getPassengers(relatedCommute?.commute?.stops ?? []);
+  const passengers = getPassengers(
+    relatedCommute?.commute?.stops ?? [],
+    input.tripType
+  );
 
   const stopCreatorId = relatedCommute?.commute?.createdById;
 
@@ -55,7 +58,10 @@ export async function book({
   }
 
   // Checking if the commute is complete
-  if (relatedCommute?.commute?.seats === passengers.length) {
+  if (
+    relatedCommute?.commute?.seatsOutbound === passengers.length ||
+    relatedCommute?.commute?.seatsReturn === passengers.length
+  ) {
     throw new TRPCError({
       code: "BAD_REQUEST",
       message: "This commute is complete, booking aren't allowed anymore",

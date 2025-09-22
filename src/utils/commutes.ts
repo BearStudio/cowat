@@ -16,13 +16,15 @@ export const getPassengers = (
         }
       >;
     }
-  >
+  >,
+  tripType: "ROUND" | "OUTBOUND" | "RETURN"
 ) => {
   return stops.flatMap((stop) =>
     stop.passengers.filter(
       (passenger) =>
         passenger.requestStatus !== "CANCELED" &&
-        passenger.requestStatus !== "REFUSED"
+        passenger.requestStatus !== "REFUSED" &&
+        passenger.tripType === tripType
     )
   );
 };

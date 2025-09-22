@@ -84,7 +84,11 @@ const newCommute = async (
           text: `A new commute for *${dayjs(commute.date).format(
             FULL_TEXT_DATE
           )} * has been created by ${createdBy} (💺 ${
-            commute.seats
+            (commute.commuteType === "OUTBOUND" ? commute.seatsOutbound : "",
+            commute.commuteType === "RETURN" ? commute.seatsReturn : "",
+            commute.commuteType === "ROUND"
+              ? `Alley ${commute.seatsOutbound} and return : ${commute.seatsReturn}`
+              : "")
           } seats available) \n Trip type : *${
             commuteTypeLabels[commute.commuteType]
           }*${
