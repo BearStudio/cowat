@@ -13,7 +13,8 @@ export const commuteRouter = createTRPCRouter({
   createCommute: protectedProcedure
     .input(
       z.object({
-        seats: z.number().min(1),
+        seatsOutbound: z.number().min(1).nullish(),
+        seatsReturn: z.number().min(1).nullish(),
         date: z.date(),
         departureTime: z.date().nullish(),
         returnTime: z.date().nullish(),
@@ -32,7 +33,8 @@ export const commuteRouter = createTRPCRouter({
     .mutation(async ({ input, ctx }) => {
       const commute = await ctx.prisma.commute.create({
         data: {
-          seats: input.seats,
+          seatsOutbound: input.seatsOutbound,
+          seatsReturn: input.seatsReturn,
           date: input.date,
           departureTime: input.departureTime,
           returnTime: input.returnTime,
@@ -420,7 +422,8 @@ export const commuteRouter = createTRPCRouter({
         date: z.date(),
         departureTime: z.date(),
         returnTime: z.date(),
-        seats: z.number().min(1),
+        seatsOutbound: z.number().min(1).nullish(),
+        seatsReturn: z.number().min(1).nullish(),
         stops: z
           .array(
             z.object({
@@ -504,7 +507,8 @@ export const commuteRouter = createTRPCRouter({
 
       const commute = await ctx.prisma.commute.update({
         data: {
-          seats: input.seats,
+          seatsOutbound: input.seatsOutbound,
+          seatsReturn: input.seatsReturn,
           comment: input.comment,
           date: input.date,
           departureTime: input.departureTime,

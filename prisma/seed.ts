@@ -57,7 +57,8 @@ async function main() {
   // Create commutes with 1 location
   const newCommuteFromIvan = await prisma.commute.create({
     data: {
-      seats: 2,
+      seatsOutbound: 2,
+      seatsReturn: 2,
       date: dayjs().add(3, "days").toDate(),
       returnTime: dayjs().add(3, "days").hour(18).minute(0).toDate(),
       stops: {
@@ -72,7 +73,7 @@ async function main() {
   });
   const newTodayCommuteFromIvan = await prisma.commute.create({
     data: {
-      seats: 2,
+      seatsReturn: 2,
       date: dayjs().toDate(),
       returnTime: dayjs().add(3, "days").hour(16).minute(0).toDate(),
       stops: {
@@ -92,7 +93,7 @@ async function main() {
   });
   const newCommuteFromYoann = await prisma.commute.create({
     data: {
-      seats: 3,
+      seatsOutbound: 2,
       date: dayjs().toDate(),
       returnTime: dayjs().add(3, "days").hour(17).minute(0).toDate(),
       stops: {
@@ -114,7 +115,7 @@ async function main() {
   // Deleted one to make sure it doesn't show in the interface
   const newDeletedFromYoann = await prisma.commute.create({
     data: {
-      seats: 3,
+      seatsOutbound: 2,
       date: dayjs().add(4, "days").toDate(),
       returnTime: dayjs().add(3, "days").hour(16).minute(30).toDate(),
       stops: {

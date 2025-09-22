@@ -97,7 +97,8 @@ model CommuteTemplate {
     createdById  String?
     createdBy    User?    @relation(fields: [createdById], references: [id])
     stops        Stop[]
-    seats        Int?
+    seatsOutbound Int?
+    seatsReturn  Int?
     comment      String?  @db.Text
     templateName String?  @db.Text
     commuteType  CommuteType @default(OUTBOUND)
@@ -127,7 +128,8 @@ model Commute {
     createdBy   User?         @relation(fields: [createdById], references: [id])
     createdById String
     date        DateTime
-    seats       Int
+    seatsOutbound Int?
+    seatsReturn  Int?
     commuteType CommuteType   @default(OUTBOUND)
     departureTime DateTime?
     returnTime DateTime?

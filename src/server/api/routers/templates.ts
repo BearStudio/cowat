@@ -7,7 +7,8 @@ export const templateRouter = createTRPCRouter({
   createCommuteTemplate: protectedProcedure
     .input(
       z.object({
-        seats: z.number().min(1),
+        seatsOutbound: z.number().min(1).nullish(),
+        seatsReturn: z.number().min(1).nullish(),
         stops: z.array(
           z.object({
             location: z.string(),
@@ -30,7 +31,8 @@ export const templateRouter = createTRPCRouter({
             })),
           },
           templateName: input.templateName,
-          seats: input.seats,
+          seatsOutbound: input.seatsOutbound,
+          seatsReturn: input.seatsReturn,
           commuteType: input.commuteType,
           comment: input.comment,
         },
@@ -126,7 +128,8 @@ export const templateRouter = createTRPCRouter({
     .input(
       z.object({
         id: z.string().cuid(),
-        seats: z.number().min(1),
+        seatsOutbound: z.number().min(1).nullish(),
+        seatsReturn: z.number().min(1).nullish(),
         stops: z.array(
           z.object({
             location: z.string(),
@@ -157,7 +160,8 @@ export const templateRouter = createTRPCRouter({
             })),
           },
           templateName: input.templateName,
-          seats: input.seats,
+          seatsOutbound: input.seatsOutbound,
+          seatsReturn: input.seatsReturn,
           commuteType: input.commuteType,
           comment: input.comment,
         },
