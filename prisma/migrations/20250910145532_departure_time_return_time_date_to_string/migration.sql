@@ -1,3 +1,0 @@
--- AlterTable
-ALTER TABLE "Commute" ALTER COLUMN "returnTime" SET DATA TYPE TEXT,
-ALTER COLUMN "departureTime" SET DATA TYPE TEXT;

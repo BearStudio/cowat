@@ -87,7 +87,7 @@ const newCommute = async (
             (commute.commuteType === "OUTBOUND" ? commute.seatsOutbound : "",
             commute.commuteType === "RETURN" ? commute.seatsReturn : "",
             commute.commuteType === "ROUND"
-              ? `Alley ${commute.seatsOutbound} and return : ${commute.seatsReturn}`
+              ? `Alley : ${commute.seatsOutbound} seats and return : ${commute.seatsReturn}`
               : "")
           } seats available) \n Trip type : *${
             commuteTypeLabels[commute.commuteType]
