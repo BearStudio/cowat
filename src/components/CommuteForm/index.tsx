@@ -85,7 +85,7 @@ export const CommuteForm = ({
 
   const numberOfPassengers = getPassengers(
     commute.data?.stops ?? [],
-    commute.data?.commuteType
+    commute.data?.commuteType ?? "ROUND"
   ).length;
 
   const arePassengersOnStops = numberOfPassengers > 0;
@@ -215,7 +215,8 @@ export const CommuteForm = ({
             : index;
           const stop = commute.data?.stops[stopIndex];
           const numberOfPassengersOnStop = stop
-            ? getPassengers([stop], commute.data?.commuteType)?.length
+            ? getPassengers([stop], commute.data?.commuteType ?? "ROUND")
+                ?.length
             : 0;
           const isEditable = numberOfPassengersOnStop === 0;
           const isRemovable = stops.keys.length > 1 && isEditable;

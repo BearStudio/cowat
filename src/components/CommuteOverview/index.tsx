@@ -114,6 +114,8 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
   });
 
   const passengers = getPassengers(props.stops, props.commuteType);
+  const outboundPassengers = getPassengers(props.stops, "OUTBOUND");
+  const returnPassengers = getPassengers(props.stops, "RETURN");
   const isFull = passengers.length === props.seats;
 
   const commuteCanBeBooked =
@@ -267,13 +269,23 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
                     <Text fontWeight="medium" fontSize="sm">
                       {props.stops.length} stop
                       {props.stops.length > 1 ? "s" : ""} ·{" "}
-                      {
-                        passengers.filter(
-                          (passenger) => passenger.requestStatus !== "REFUSED"
-                        ).length
-                      }
-                      /{props.seats} seat
-                      {props.seats > 1 ? "s" : ""}
+                      {props.commuteType === "ROUND" ? (
+                        <>
+                          One-way : {outboundPassengers.length}/{props.seats}{" "}
+                          seats · Return : {returnPassengers.length}/
+                          {props.seats} seats
+                        </>
+                      ) : (
+                        <>
+                          {
+                            passengers.filter(
+                              (passenger) =>
+                                passenger.requestStatus !== "REFUSED"
+                            ).length
+                          }
+                          /{props.seats} seat{props.seats > 1 ? "s" : ""}
+                        </>
+                      )}
                     </Text>
                   </Flex>
                   {isPassengerAcceptedOnCommute && !props.isDeleted && (
