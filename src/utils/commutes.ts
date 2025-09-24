@@ -24,7 +24,13 @@ export const getPassengers = (
       (passenger) =>
         passenger.requestStatus !== "CANCELED" &&
         passenger.requestStatus !== "REFUSED" &&
-        passenger.tripType === tripType
+        ((tripType === "OUTBOUND" &&
+          (passenger.tripType === "OUTBOUND" ||
+            passenger.tripType === "ROUND")) ||
+          (tripType === "RETURN" &&
+            (passenger.tripType === "RETURN" ||
+              passenger.tripType === "ROUND")) ||
+          (tripType === "ROUND" && passenger.tripType === "ROUND"))
     )
   );
 };
