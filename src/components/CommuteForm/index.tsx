@@ -320,7 +320,6 @@ const Stop = ({
                 value: location.id,
               })) ?? []
             }
-            required="Stop is required"
           />
           <Box pt={8}>
             <IconButton
@@ -336,9 +335,6 @@ const Stop = ({
             label="🕑 Pick up time"
             name={`stops[${index}].time`}
             isDisabled={!isEditable}
-            required={
-              index === 0 ? "The first pick up time is required" : false
-            }
           />
           <Box pt={8}>
             <IconButton
@@ -346,7 +342,6 @@ const Stop = ({
               aria-label={`Remove stop ${index}`}
               icon={<Icon icon={Trash} />}
               onClick={() => onRemove()}
-              isDisabled={!isRemovable}
             />
           </Box>
         </HStack>

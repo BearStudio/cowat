@@ -19,12 +19,14 @@ export const commuteRouter = createTRPCRouter({
         returnTime: z.date().nullish(),
         departureLocation: z.string().nullish(),
         returnLocation: z.string().nullish(),
-        stops: z.array(
-          z.object({
-            location: z.string(),
-            time: z.string(),
-          })
-        ),
+        stops: z
+          .array(
+            z.object({
+              location: z.string(),
+              time: z.string(),
+            })
+          )
+          .nullish(),
         comment: z.string().nullish(),
         commuteType: z.enum(["ROUND", "OUTBOUND", "RETURN"]),
       })
@@ -57,10 +59,10 @@ export const commuteRouter = createTRPCRouter({
                     },
                   ]
                 : []),
-              ...input.stops.map((stop) => ({
+              ...(input.stops?.map((stop) => ({
                 time: stop.time,
                 locationId: stop.location,
-              })),
+              })) ?? []),
             ],
           },
           comment: input.comment,
