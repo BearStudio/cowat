@@ -58,10 +58,7 @@ export async function book({
   }
 
   // Checking if the commute is complete
-  if (
-    relatedCommute?.commute?.seatsOutbound === passengers.length ||
-    relatedCommute?.commute?.seatsReturn === passengers.length
-  ) {
+  if (relatedCommute?.commute?.seats === passengers.length) {
     throw new TRPCError({
       code: "BAD_REQUEST",
       message: "This commute is complete, booking aren't allowed anymore",

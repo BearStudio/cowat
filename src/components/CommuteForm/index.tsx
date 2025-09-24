@@ -101,6 +101,21 @@ export const CommuteForm = ({
           />
         </>
       )}
+      <FieldNumber
+        label="💺 Seats"
+        name="seats"
+        required="Please provide the number of available seats"
+        validations={[
+          {
+            handler: isMinNumber(numberOfPassengers ?? 0),
+            message: `Should be a number over ${numberOfPassengers}`,
+          },
+          {
+            handler: isMaxNumber(10),
+            message: "Should be a number less than 10",
+          },
+        ]}
+      />
       <FieldSelect
         label="Type of trip"
         name="commuteType"
@@ -113,24 +128,8 @@ export const CommuteForm = ({
         defaultValue="ROUND"
       />
       {values.commuteType === "ROUND" && (
-        <Flex gap={5}>
+        <Flex gap={4}>
           <Flex direction="column" flex={1}>
-            <FieldNumber
-              label="💺 Alley seats"
-              name="seatsOutbound"
-              required="Please provide the number of available seats"
-              validations={[
-                {
-                  handler: isMinNumber(numberOfPassengers ?? 0),
-                  message: `Should be a number over ${numberOfPassengers}`,
-                },
-                {
-                  handler: isMaxNumber(10),
-                  message: "Should be a number less than 10",
-                },
-              ]}
-              mb={4}
-            />
             <FieldTime
               label="🕑 Home departure"
               name="departureTime"
@@ -141,22 +140,6 @@ export const CommuteForm = ({
             <LocationField name="departureLocation" label="📍 Home location" />
           </Flex>
           <Flex direction="column" flex={1}>
-            <FieldNumber
-              label="💺 Return seats"
-              name="seatsReturn"
-              required="Please provide the number of available seats"
-              validations={[
-                {
-                  handler: isMinNumber(numberOfPassengers ?? 0),
-                  message: `Should be a number over ${numberOfPassengers}`,
-                },
-                {
-                  handler: isMaxNumber(10),
-                  message: "Should be a number less than 10",
-                },
-              ]}
-              mb={4}
-            />
             <FieldTime
               label="🕑 Work departure"
               name="returnTime"
@@ -170,63 +153,29 @@ export const CommuteForm = ({
       )}
 
       {values.commuteType === "OUTBOUND" && (
-        <Stack>
-          <FieldNumber
-            label="💺 Alley seats"
-            name="seatsOutbound"
-            required="Please provide the number of available seats"
-            validations={[
-              {
-                handler: isMinNumber(numberOfPassengers ?? 0),
-                message: `Should be a number over ${numberOfPassengers}`,
-              },
-              {
-                handler: isMaxNumber(10),
-                message: "Should be a number less than 10",
-              },
-            ]}
+        <Flex>
+          <FieldTime
+            label="🕑 Home departure"
+            name="departureTime"
+            required="Please provide a departure time"
+            keepValue={false}
+            flex={1}
           />
-          <Flex>
-            <FieldTime
-              label="🕑 Home departure"
-              name="departureTime"
-              required="Please provide a departure time"
-              keepValue={false}
-              flex={1}
-            />
-            <LocationField name="departureLocation" label="📍 Home location" />
-          </Flex>
-        </Stack>
+          <LocationField name="departureLocation" label="📍 Home location" />
+        </Flex>
       )}
 
       {values.commuteType === "RETURN" && (
-        <Stack>
-          <FieldNumber
-            label="💺 Return seats"
-            name="seatsReturn"
-            required="Please provide the number of available seats"
-            validations={[
-              {
-                handler: isMinNumber(numberOfPassengers ?? 0),
-                message: `Should be a number over ${numberOfPassengers}`,
-              },
-              {
-                handler: isMaxNumber(10),
-                message: "Should be a number less than 10",
-              },
-            ]}
+        <Flex>
+          <FieldTime
+            label="🕑 Work departure"
+            name="returnTime"
+            required="Please provide a departure time"
+            keepValue={false}
+            flex={1}
           />
-          <Flex>
-            <FieldTime
-              label="🕑 Work departure"
-              name="returnTime"
-              required="Please provide a departure time"
-              keepValue={false}
-              flex={1}
-            />
-            <LocationField name="returnLocation" label="📍 Work location" />
-          </Flex>
-        </Stack>
+          <LocationField name="returnLocation" label="📍 Work location" />
+        </Flex>
       )}
       {["CREATE"].includes(mode) && (
         <>
