@@ -8,12 +8,14 @@ export const templateRouter = createTRPCRouter({
     .input(
       z.object({
         seats: z.number().min(1),
-        stops: z.array(
-          z.object({
-            location: z.string(),
-            time: z.string(),
-          })
-        ),
+        stops: z
+          .array(
+            z.object({
+              location: z.string(),
+              time: z.string(),
+            })
+          )
+          .nullish(),
         commuteType: z.enum(["ROUND", "OUTBOUND", "RETURN"]),
         comment: z.string().nullish(),
         templateName: z.string().nullish(),
@@ -24,7 +26,7 @@ export const templateRouter = createTRPCRouter({
         data: {
           createdById: ctx.session.user.id,
           stops: {
-            create: input.stops.map((stop) => ({
+            create: input.stops?.map((stop) => ({
               time: stop.time,
               locationId: stop.location,
             })),
@@ -127,12 +129,14 @@ export const templateRouter = createTRPCRouter({
       z.object({
         id: z.string().cuid(),
         seats: z.number().min(1),
-        stops: z.array(
-          z.object({
-            location: z.string(),
-            time: z.string(),
-          })
-        ),
+        stops: z
+          .array(
+            z.object({
+              location: z.string(),
+              time: z.string(),
+            })
+          )
+          .nullish(),
         commuteType: z.enum(["ROUND", "OUTBOUND", "RETURN"]),
         comment: z.string().nullish(),
         templateName: z.string().nullish(),
@@ -151,7 +155,7 @@ export const templateRouter = createTRPCRouter({
         data: {
           createdById: ctx.session.user.id,
           stops: {
-            create: input.stops.map((stop) => ({
+            create: input.stops?.map((stop) => ({
               time: stop.time,
               locationId: stop.location,
             })),

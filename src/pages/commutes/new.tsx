@@ -102,10 +102,12 @@ const New: NextPage = () => {
         `${date} ${otherValues.returnTime}`,
         "DD/MM/YYYY HH:mm"
       ).toDate(),
-      date: dayjs(
-        `${date} ${otherValues.stops[0]?.time}`,
-        "DD/MM/YYYY HH:mm"
-      ).toDate(),
+      date: otherValues.stops
+        ? dayjs(
+            `${date} ${otherValues.stops[0]?.time}`,
+            "DD/MM/YYYY HH:mm"
+          ).toDate()
+        : dayjs(date, "DD/MM/YYYY").toDate(),
     });
   };
 
