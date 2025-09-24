@@ -1,5 +1,6 @@
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { TRPCError } from "@trpc/server";
+import dayjs from "dayjs";
 
 import { z } from "zod";
 
@@ -19,6 +20,8 @@ export const templateRouter = createTRPCRouter({
         commuteType: z.enum(["ROUND", "OUTBOUND", "RETURN"]),
         comment: z.string().nullish(),
         templateName: z.string().nullish(),
+        departureTime: z.string(),
+        returnTime: z.string(),
       })
     )
     .mutation(async ({ input, ctx }) => {
@@ -35,6 +38,8 @@ export const templateRouter = createTRPCRouter({
           seats: input.seats,
           commuteType: input.commuteType,
           comment: input.comment,
+          departureTime: dayjs(input.departureTime, "HH:mm").toDate(),
+          returnTime: dayjs(input.returnTime, "HH:mm").toDate(),
         },
         include: {
           createdBy: {
@@ -140,6 +145,8 @@ export const templateRouter = createTRPCRouter({
         commuteType: z.enum(["ROUND", "OUTBOUND", "RETURN"]),
         comment: z.string().nullish(),
         templateName: z.string().nullish(),
+        departureTime: z.string(),
+        returnTime: z.string(),
       })
     )
     .mutation(async ({ input, ctx }) => {
@@ -164,6 +171,8 @@ export const templateRouter = createTRPCRouter({
           seats: input.seats,
           commuteType: input.commuteType,
           comment: input.comment,
+          departureTime: dayjs(input.departureTime, "HH:mm").toDate(),
+          returnTime: dayjs(input.returnTime, "HH:mm").toDate(),
         },
         where: {
           id: input.id,
