@@ -113,18 +113,8 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
     date: dayjs(props.date).format("YYYY-MM-DD"),
   });
 
-  const outboundPassengers = getPassengers(props.stops, "OUTBOUND");
-  const returnPassengers = getPassengers(props.stops, "RETURN");
-  const roundPassengers = getPassengers(props.stops, "ROUND");
-
-  const isFull =
-    (props.commuteType === "ROUND" &&
-      (roundPassengers.length === (props.seatsOutbound ?? 0) ||
-        roundPassengers.length === (props.seatsReturn ?? 0))) ||
-    (props.commuteType === "OUTBOUND" &&
-      outboundPassengers.length === (props.seatsOutbound ?? 0)) ||
-    (props.commuteType === "RETURN" &&
-      returnPassengers.length === (props.seatsReturn ?? 0));
+  const passengers = getPassengers(props.stops, props.commuteType);
+  const isFull = passengers.length === props.seats;
 
   const commuteCanBeBooked =
     !isCurrentUserCreator &&
@@ -210,7 +200,7 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
           </HStack>
           {!props.isDeleted && (
             <AvatarGroup size="sm" max={3}>
-              {roundPassengers.map((passenger) => (
+              {passengers.map((passenger) => (
                 <Avatar
                   key={passenger.user.id}
                   src={passenger.user.image ?? ""}
@@ -276,19 +266,14 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
                     <AccordionIcon />
                     <Text fontWeight="medium" fontSize="sm">
                       {props.stops.length} stop
-                      {props.stops.length > 1 ? "s" : ""} ·{/* OUTBOUND*/}
-                      {props.commuteType === "OUTBOUND" &&
-                        `${outboundPassengers.length}/${
-                          props.seatsOutbound
-                        } seat${(props.seatsOutbound ?? 0) > 1 ? "s" : ""}`}
-                      {/* RETURN */}
-                      {props.commuteType === "RETURN" &&
-                        `${returnPassengers.length}/${props.seatsReturn} seat${
-                          (props.seatsReturn ?? 0) > 1 ? "s" : ""
-                        }`}
-                      {/* ROUND */}
-                      {props.commuteType === "ROUND" &&
-                        `${roundPassengers.length}/${props.seatsOutbound} seats alley and ${roundPassengers.length}/${props.seatsReturn} seats return`}
+                      {props.stops.length > 1 ? "s" : ""} ·{" "}
+                      {
+                        passengers.filter(
+                          (passenger) => passenger.requestStatus !== "REFUSED"
+                        ).length
+                      }
+                      /{props.seats} seat
+                      {props.seats > 1 ? "s" : ""}
                     </Text>
                   </Flex>
                   {isPassengerAcceptedOnCommute && !props.isDeleted && (
