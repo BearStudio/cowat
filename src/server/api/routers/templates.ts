@@ -20,8 +20,10 @@ export const templateRouter = createTRPCRouter({
         commuteType: z.enum(["ROUND", "OUTBOUND", "RETURN"]),
         comment: z.string().nullish(),
         templateName: z.string().nullish(),
-        departureTime: z.string(),
-        returnTime: z.string(),
+        departureTime: z.string().nullish(),
+        returnTime: z.string().nullish(),
+        departureLocation: z.string().nullish(),
+        returnLocation: z.string().nullish(),
       })
     )
     .mutation(async ({ input, ctx }) => {
@@ -29,17 +31,39 @@ export const templateRouter = createTRPCRouter({
         data: {
           createdById: ctx.session.user.id,
           stops: {
-            create: input.stops?.map((stop) => ({
-              time: stop.time,
-              locationId: stop.location,
-            })),
+            create: [
+              ...(input.departureLocation && input.departureTime
+                ? [
+                    {
+                      time: input.departureTime,
+                      locationId: input.departureLocation,
+                    },
+                  ]
+                : []),
+              ...(input.returnLocation && input.returnTime
+                ? [
+                    {
+                      time: input.returnTime,
+                      locationId: input.returnLocation,
+                    },
+                  ]
+                : []),
+              ...(input.stops?.map((stop) => ({
+                time: stop.time,
+                locationId: stop.location,
+              })) ?? []),
+            ],
           },
           templateName: input.templateName,
           seats: input.seats,
           commuteType: input.commuteType,
           comment: input.comment,
-          departureTime: dayjs(input.departureTime, "HH:mm").toDate(),
-          returnTime: dayjs(input.returnTime, "HH:mm").toDate(),
+          departureTime: input.departureTime
+            ? dayjs(input.departureTime, "HH:mm").toDate()
+            : null,
+          returnTime: input.returnTime
+            ? dayjs(input.returnTime, "HH:mm").toDate()
+            : null,
         },
         include: {
           createdBy: {
@@ -101,6 +125,8 @@ export const templateRouter = createTRPCRouter({
               time: "asc",
             },
             select: {
+              id: true,
+              locationId: true,
               location: true,
               time: true,
             },
@@ -115,7 +141,29 @@ export const templateRouter = createTRPCRouter({
         });
       }
 
-      return template;
+      const allStops = template.stops;
+      const departureStop =
+        template.commuteType === "RETURN" ? null : allStops[0];
+      const returnStop =
+        template.commuteType === "OUTBOUND"
+          ? null
+          : allStops[allStops.length - 1];
+      const intermediateStops = allStops.filter(
+        (stop) => stop !== departureStop && stop !== returnStop
+      );
+
+      return {
+        ...template,
+        departureLocation: departureStop?.locationId,
+        departureTime: departureStop?.time,
+        returnLocation: returnStop?.locationId,
+        returnTime: returnStop?.time,
+        stops: intermediateStops.map((stops) => ({
+          id: stops.id,
+          location: stops.location,
+          time: stops.time,
+        })),
+      };
     }),
   remove: protectedProcedure
     .input(z.object({ id: z.string().cuid() }))
@@ -145,8 +193,10 @@ export const templateRouter = createTRPCRouter({
         commuteType: z.enum(["ROUND", "OUTBOUND", "RETURN"]),
         comment: z.string().nullish(),
         templateName: z.string().nullish(),
-        departureTime: z.string(),
-        returnTime: z.string(),
+        departureTime: z.string().nullish(),
+        returnTime: z.string().nullish(),
+        departureLocation: z.string().nullish(),
+        returnLocation: z.string().nullish(),
       })
     )
     .mutation(async ({ input, ctx }) => {
@@ -162,17 +212,34 @@ export const templateRouter = createTRPCRouter({
         data: {
           createdById: ctx.session.user.id,
           stops: {
-            create: input.stops?.map((stop) => ({
-              time: stop.time,
-              locationId: stop.location,
-            })),
+            create: [
+              ...(input.departureLocation && input.departureTime
+                ? [
+                    {
+                      time: input.departureTime,
+                      locationId: input.departureLocation,
+                    },
+                  ]
+                : []),
+              ...(input.stops?.map((stop) => ({
+                time: stop.time,
+                locationId: stop.location,
+              })) ?? []),
+              ...(input.returnLocation && input.returnTime
+                ? [{ time: input.returnTime, locationId: input.returnLocation }]
+                : []),
+            ],
           },
           templateName: input.templateName,
           seats: input.seats,
           commuteType: input.commuteType,
           comment: input.comment,
-          departureTime: dayjs(input.departureTime, "HH:mm").toDate(),
-          returnTime: dayjs(input.returnTime, "HH:mm").toDate(),
+          departureTime: input.departureTime
+            ? dayjs(input.departureTime, "HH:mm").toDate()
+            : null,
+          returnTime: input.returnTime
+            ? dayjs(input.returnTime, "HH:mm").toDate()
+            : null,
         },
         where: {
           id: input.id,
