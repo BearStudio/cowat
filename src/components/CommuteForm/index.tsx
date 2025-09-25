@@ -130,30 +130,31 @@ export const CommuteForm = ({
       {values.commuteType === "ROUND" && (
         <Flex gap={4}>
           <Flex direction="column" flex={1}>
+            <LocationField name="departureLocation" label="📍 Home location" />
             <FieldTime
               label="🕑 Home departure"
               name="departureTime"
               required="Please provide a departure time"
               keepValue={false}
-              mb={4}
+              mt={4}
             />
-            <LocationField name="departureLocation" label="📍 Home location" />
           </Flex>
           <Flex direction="column" flex={1}>
+            <LocationField name="returnLocation" label="📍 Work location" />
             <FieldTime
               label="🕑 Work departure"
               name="returnTime"
               required="Please provide a departure time"
               keepValue={false}
-              mb={4}
+              mt={4}
             />
-            <LocationField name="returnLocation" label="📍 Work location" />
           </Flex>
         </Flex>
       )}
 
       {values.commuteType === "OUTBOUND" && (
-        <Flex>
+        <Flex flex={1} gap={4}>
+          <LocationField name="departureLocation" label="📍 Home location" />
           <FieldTime
             label="🕑 Home departure"
             name="departureTime"
@@ -161,12 +162,12 @@ export const CommuteForm = ({
             keepValue={false}
             flex={1}
           />
-          <LocationField name="departureLocation" label="📍 Home location" />
         </Flex>
       )}
 
       {values.commuteType === "RETURN" && (
-        <Flex>
+        <Flex flex={1} gap={4}>
+          <LocationField name="returnLocation" label="📍 Work location" />
           <FieldTime
             label="🕑 Work departure"
             name="returnTime"
@@ -174,7 +175,6 @@ export const CommuteForm = ({
             keepValue={false}
             flex={1}
           />
-          <LocationField name="returnLocation" label="📍 Work location" />
         </Flex>
       )}
       {["CREATE"].includes(mode) && (
