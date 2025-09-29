@@ -143,11 +143,13 @@ export const templateRouter = createTRPCRouter({
 
       const allStops = template.stops;
       const departureStop =
-        template.commuteType === "RETURN" ? null : allStops[0];
+        template.commuteType === "OUTBOUND" || "ROUND" ? allStops[0] : null;
       const returnStop =
-        template.commuteType === "OUTBOUND"
-          ? null
-          : allStops[allStops.length - 1];
+        template.commuteType === "ROUND"
+          ? allStops[allStops.length - 1]
+          : template.commuteType === "RETURN"
+          ? allStops[0]
+          : null;
       const intermediateStops = allStops.filter(
         (stop) => stop !== departureStop && stop !== returnStop
       );
