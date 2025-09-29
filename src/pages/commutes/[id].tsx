@@ -42,18 +42,14 @@ const EditCommute: NextPage = () => {
     commuteMutation.mutate(
       {
         ...otherValues,
-        departureTime: departureTime
-          ? dayjs(
-              `${dayjs(date).format("YYYY-MM-DD")} ${departureTime}`,
-              "YYYY-MM-DD HH:mm"
-            ).toDate()
-          : null,
-        returnTime: returnTime
-          ? dayjs(
-              `${dayjs(date).format("YYYY-MM-DD")} ${returnTime}`,
-              "YYYY-MM-DD HH:mm"
-            ).toDate()
-          : null,
+        departureTime: dayjs(
+          `${dayjs(date).format("YYYY-MM-DD")} ${departureTime}`,
+          "YYYY-MM-DD HH:mm"
+        ).toDate(),
+        returnTime: dayjs(
+          `${dayjs(date).format("YYYY-MM-DD")} ${returnTime}`,
+          "YYYY-MM-DD HH:mm"
+        ).toDate(),
         date: dayjs(
           `${dayjs(commute.data?.date).format("DD/MM/YYYY")} ${
             otherValues.stops?.[0]?.time
@@ -70,17 +66,47 @@ const EditCommute: NextPage = () => {
     );
   };
 
-  const stops = commute.data
-    ? commute.data.stops.map((stop) => ({
-        ...stop,
-        location: stop.location?.id,
-      }))
+  const intermediateStops = commute.data
+    ? commute.data.stops
+        .slice(
+          1, // remove the first
+          commute.data.commuteType === "ROUND"
+            ? -1 // for ROUND remove the last
+            : commute.data.stops.length
+        )
+        .map((stop) => ({
+          ...stop,
+          location: stop.location?.id,
+        }))
     : [];
 
   const defaultValues = {
     ...commute.data,
-    stops,
+    stops: intermediateStops,
     commuteType: commute.data?.commuteType as "ROUND" | "OUTBOUND" | "RETURN",
+    departureLocation:
+      commute.data?.commuteType !== "RETURN"
+        ? commute.data?.stops?.[0]?.location?.id
+        : undefined,
+    departureTime:
+      commute.data?.commuteType !== "RETURN" && commute.data?.stops?.[0]?.time
+        ? dayjs(commute.data?.stops?.[0]?.time, "HH:mm").toDate()
+        : undefined,
+    returnLocation:
+      commute.data?.commuteType === "ROUND"
+        ? commute.data?.stops?.[commute.data.stops.length - 1]?.location?.id
+        : commute.data?.commuteType === "RETURN"
+        ? commute.data?.stops?.[0]?.location?.id
+        : undefined,
+    returnTime:
+      commute.data?.commuteType === "ROUND"
+        ? dayjs(
+            commute.data?.stops?.[commute.data.stops.length - 1]?.time,
+            "HH:mm"
+          ).toDate()
+        : commute.data?.commuteType === "RETURN"
+        ? dayjs(commute.data?.stops?.[0]?.time, "HH:mm").toDate()
+        : undefined,
   };
 
   const editCommuteForm = useForm({
