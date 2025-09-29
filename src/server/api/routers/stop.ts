@@ -116,6 +116,7 @@ export async function book({
       },
       data: {
         requestStatus: requestStatus,
+        tripType: input.tripType,
       },
       include: {
         stop: {
