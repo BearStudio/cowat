@@ -117,6 +117,11 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
   const outboundPassengers = getPassengers(props.stops, "OUTBOUND");
   const returnPassengers = getPassengers(props.stops, "RETURN");
   const isFull = passengers.length === props.seats;
+  const isFullOutbound = outboundPassengers.length === props.seats;
+  const isFullReturn = returnPassengers.length === props.seats;
+  const isFullRound =
+    outboundPassengers.length === props.seats ||
+    returnPassengers.length === props.seats;
 
   const commuteCanBeBooked =
     !isCurrentUserCreator &&
@@ -403,16 +408,18 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
                             )}
                             {props.commuteType === "ROUND" && (
                               <ButtonGroup>
-                                <Button
-                                  type="submit"
-                                  variant="primary"
-                                  onClick={() =>
-                                    handleBookClick(stop.id, "ROUND")
-                                  }
-                                  isLoading={bookCommute.isLoading}
-                                >
-                                  Book
-                                </Button>
+                                {isFullRound === false && (
+                                  <Button
+                                    type="submit"
+                                    variant="primary"
+                                    onClick={() =>
+                                      handleBookClick(stop.id, "ROUND")
+                                    }
+                                    isLoading={bookCommute.isLoading}
+                                  >
+                                    Book
+                                  </Button>
+                                )}
                                 <Menu>
                                   <MenuButton
                                     as={Button}
@@ -421,20 +428,24 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
                                     Options
                                   </MenuButton>
                                   <MenuList>
-                                    <MenuItem
-                                      onClick={() =>
-                                        handleBookClick(stop.id, "OUTBOUND")
-                                      }
-                                    >
-                                      One-way
-                                    </MenuItem>
-                                    <MenuItem
-                                      onClick={() =>
-                                        handleBookClick(stop.id, "RETURN")
-                                      }
-                                    >
-                                      Return
-                                    </MenuItem>
+                                    {isFullOutbound === false && (
+                                      <MenuItem
+                                        onClick={() =>
+                                          handleBookClick(stop.id, "OUTBOUND")
+                                        }
+                                      >
+                                        One-way
+                                      </MenuItem>
+                                    )}
+                                    {isFullReturn === false && (
+                                      <MenuItem
+                                        onClick={() =>
+                                          handleBookClick(stop.id, "RETURN")
+                                        }
+                                      >
+                                        Return
+                                      </MenuItem>
+                                    )}
                                   </MenuList>
                                 </Menu>
                               </ButtonGroup>
