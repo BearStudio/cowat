@@ -90,13 +90,13 @@ const newCommute = async (
             commute.departureTime || commute.returnTime
               ? ` (${
                   commute.departureTime
-                    ? `Home departure : *${dayjs(commute.departureTime).format(
+                    ? `Inward : *${dayjs(commute.departureTime).format(
                         ONLY_TIME
                       )}*`
                     : ""
                 }${commute.departureTime && commute.returnTime ? " and " : ""}${
                   commute.returnTime
-                    ? `Work departure : *${dayjs(commute.returnTime).format(
+                    ? `Outward : *${dayjs(commute.returnTime).format(
                         ONLY_TIME
                       )}*`
                     : ""
