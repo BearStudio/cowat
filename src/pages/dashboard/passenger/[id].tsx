@@ -33,7 +33,6 @@ import {
 } from "@chakra-ui/react";
 import type { Stop } from "@prisma/client";
 import { DriverStopStatus } from "@prisma/client";
-import dayjs from "dayjs";
 import { ArrowLeft, Clock, ExternalLink } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
@@ -157,7 +156,13 @@ const Passenger = () => {
                 >
                   <>
                     {commute.data?.stops.length} Stops •{" "}
-                    {getPassengers(commute.data.stops).length} Passengers
+                    {
+                      getPassengers(
+                        commute.data.stops,
+                        commute.data.commuteType
+                      ).length
+                    }
+                    Passengers
                   </>
                 </Text>
               </Stack>
@@ -218,47 +223,53 @@ const Passenger = () => {
                 {havePassengerOnStop(stop) && (
                   <CardBody p="2">
                     <Stack>
-                      {getPassengers([stop]).map((passenger) => (
-                        <Flex
-                          key={passenger.userId}
-                          justify="space-between"
-                          align="center"
-                        >
-                          <HStack>
-                            <Avatar
-                              size="sm"
-                              src={passenger.user.image ?? ""}
-                              name={
-                                passenger.user.name ??
-                                passenger.user.email ??
-                                ""
-                              }
-                              opacity={
-                                NOT_YET_PASSENGER_IF_INSIDE.includes(
-                                  passenger.requestStatus
-                                )
-                                  ? 0.6
-                                  : 1
-                              }
-                            />
-                            <Text fontSize="sm" fontWeight="medium">
-                              {passenger.user.name ?? passenger.user.email}
-                            </Text>
-                          </HStack>
-                          <Tag
-                            colorScheme={
-                              PASSENGER_STATUS[passenger.stopStatus].colorScheme
-                            }
+                      {getPassengers([stop], commute.data.commuteType).map(
+                        (passenger) => (
+                          <Flex
+                            key={passenger.userId}
+                            justify="space-between"
+                            align="center"
                           >
-                            {PASSENGER_STATUS[passenger.stopStatus].text}{" "}
-                            {passenger.delay} {!!passenger.delay && " minutes"}
-                            <Icon
-                              ml="2"
-                              icon={PASSENGER_STATUS[passenger.stopStatus].icon}
-                            />
-                          </Tag>
-                        </Flex>
-                      ))}
+                            <HStack>
+                              <Avatar
+                                size="sm"
+                                src={passenger.user.image ?? ""}
+                                name={
+                                  passenger.user.name ??
+                                  passenger.user.email ??
+                                  ""
+                                }
+                                opacity={
+                                  NOT_YET_PASSENGER_IF_INSIDE.includes(
+                                    passenger.requestStatus
+                                  )
+                                    ? 0.6
+                                    : 1
+                                }
+                              />
+                              <Text fontSize="sm" fontWeight="medium">
+                                {passenger.user.name ?? passenger.user.email}
+                              </Text>
+                            </HStack>
+                            <Tag
+                              colorScheme={
+                                PASSENGER_STATUS[passenger.stopStatus]
+                                  .colorScheme
+                              }
+                            >
+                              {PASSENGER_STATUS[passenger.stopStatus].text}{" "}
+                              {passenger.delay}{" "}
+                              {!!passenger.delay && " minutes"}
+                              <Icon
+                                ml="2"
+                                icon={
+                                  PASSENGER_STATUS[passenger.stopStatus].icon
+                                }
+                              />
+                            </Tag>
+                          </Flex>
+                        )
+                      )}
                     </Stack>
                   </CardBody>
                 )}
@@ -274,7 +285,7 @@ const Passenger = () => {
                       size="sm"
                       w="full"
                       onClick={() =>
-                        hereOnStop.mutate({ id: stop.id, tripType: "OUTBOUND" })
+                        hereOnStop.mutate({ id: stop.id, tripType: "ONEWAY" })
                       }
                       isLoading={hereOnStop.isLoading}
                     >

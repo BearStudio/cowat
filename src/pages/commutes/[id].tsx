@@ -83,7 +83,7 @@ const EditCommute: NextPage = () => {
   const defaultValues = {
     ...commute.data,
     stops: intermediateStops,
-    commuteType: commute.data?.commuteType as "ROUND" | "OUTBOUND",
+    commuteType: commute.data?.commuteType as "ROUND" | "ONEWAY",
     departureLocation: commute.data?.stops?.[0]?.location?.id,
     departureTime: dayjs(commute.data?.stops?.[0]?.time, "HH:mm").toDate(),
     returnLocation:

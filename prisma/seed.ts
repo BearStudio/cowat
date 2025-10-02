@@ -82,7 +82,7 @@ async function main() {
         },
       },
       createdById: ivan?.id,
-      commuteType: "OUTBOUND",
+      commuteType: "ONEWAY",
     },
     include: {
       stops: {
@@ -102,7 +102,7 @@ async function main() {
         },
       },
       createdById: yoann?.id,
-      commuteType: "OUTBOUND",
+      commuteType: "ONEWAY",
     },
     include: {
       stops: {
@@ -125,7 +125,7 @@ async function main() {
       },
       createdById: yoann?.id,
       isDeleted: true,
-      commuteType: "OUTBOUND",
+      commuteType: "ONEWAY",
     },
   });
 

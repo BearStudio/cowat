@@ -1,0 +1,18 @@
+-- CreateEnum
+CREATE TYPE "TripType" AS ENUM ('ROUND', 'ONEWAY', 'RETURN');
+
+-- CreateEnum
+CREATE TYPE "CommuteType" AS ENUM ('ROUND', 'ONEWAY');
+
+-- AlterTable
+ALTER TABLE "Commute" ADD COLUMN     "commuteType" "CommuteType" NOT NULL DEFAULT 'ONEWAY',
+ADD COLUMN     "departureTime" TIMESTAMP(3),
+ADD COLUMN     "returnTime" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP;
+
+-- AlterTable
+ALTER TABLE "CommuteTemplate" ADD COLUMN     "commuteType" "CommuteType" NOT NULL DEFAULT 'ONEWAY',
+ADD COLUMN     "departureTime" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
+ADD COLUMN     "returnTime" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP;
+
+-- AlterTable
+ALTER TABLE "PassengersOnStops" ADD COLUMN     "tripType" "TripType" NOT NULL DEFAULT 'ONEWAY';
