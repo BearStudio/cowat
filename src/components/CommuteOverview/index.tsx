@@ -395,7 +395,7 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
                               </Button>
                             )}
                             {props.commuteType === "ROUND" && (
-                              <ButtonGroup>
+                              <ButtonGroup isAttached>
                                 {isFullRound === false && (
                                   <Button
                                     type="submit"
@@ -410,11 +410,11 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
                                 )}
                                 <Menu>
                                   <MenuButton
-                                    as={Button}
-                                    rightIcon={<ChevronDownIcon />}
-                                  >
-                                    Options
-                                  </MenuButton>
+                                    as={IconButton}
+                                    icon={<ChevronDownIcon />}
+                                    variant="outline"
+                                    aria-label="Select commute type"
+                                  />
                                   <MenuList>
                                     {isFullOutbound === false && (
                                       <MenuItem
