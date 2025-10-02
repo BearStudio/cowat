@@ -2,7 +2,7 @@
 CREATE TYPE "TripType" AS ENUM ('ROUND', 'OUTBOUND', 'RETURN');
 
 -- CreateEnum
-CREATE TYPE "CommuteType" AS ENUM ('ROUND', 'OUTBOUND', 'RETURN');
+CREATE TYPE "CommuteType" AS ENUM ('ROUND', 'OUTBOUND');
 
 -- AlterTable
 ALTER TABLE "Commute" ADD COLUMN     "commuteType" "CommuteType" NOT NULL DEFAULT 'OUTBOUND',

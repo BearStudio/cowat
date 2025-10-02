@@ -116,7 +116,6 @@ enum CommuteStatus {
 enum CommuteType {
   ROUND
   OUTBOUND
-  RETURN
 }
 
 model Commute {

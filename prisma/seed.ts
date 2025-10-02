@@ -82,7 +82,7 @@ async function main() {
         },
       },
       createdById: ivan?.id,
-      commuteType: "RETURN",
+      commuteType: "OUTBOUND",
     },
     include: {
       stops: {
