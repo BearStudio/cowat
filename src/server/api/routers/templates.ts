@@ -17,7 +17,7 @@ export const templateRouter = createTRPCRouter({
             })
           )
           .nullish(),
-        commuteType: z.enum(["ROUND", "OUTBOUND", "RETURN"]),
+        commuteType: z.enum(["ROUND", "OUTBOUND"]),
         comment: z.string().nullish(),
         templateName: z.string().nullish(),
         departureTime: z.string().nullish(),
@@ -145,11 +145,7 @@ export const templateRouter = createTRPCRouter({
       const departureStop =
         template.commuteType === "OUTBOUND" || "ROUND" ? allStops[0] : null;
       const returnStop =
-        template.commuteType === "ROUND"
-          ? allStops[allStops.length - 1]
-          : template.commuteType === "RETURN"
-          ? allStops[0]
-          : null;
+        template.commuteType === "ROUND" ? allStops[allStops.length - 1] : null;
       const intermediateStops = allStops.filter(
         (stop) => stop !== departureStop && stop !== returnStop
       );
@@ -192,7 +188,7 @@ export const templateRouter = createTRPCRouter({
             })
           )
           .nullish(),
-        commuteType: z.enum(["ROUND", "OUTBOUND", "RETURN"]),
+        commuteType: z.enum(["ROUND", "OUTBOUND"]),
         comment: z.string().nullish(),
         templateName: z.string().nullish(),
         departureTime: z.string().nullish(),

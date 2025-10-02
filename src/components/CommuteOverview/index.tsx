@@ -394,18 +394,6 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
                                 Book
                               </Button>
                             )}
-                            {props.commuteType === "RETURN" && (
-                              <Button
-                                type="submit"
-                                variant="primary"
-                                onClick={() =>
-                                  handleBookClick(stop.id, "RETURN")
-                                }
-                                isLoading={bookCommute.isLoading}
-                              >
-                                Book
-                              </Button>
-                            )}
                             {props.commuteType === "ROUND" && (
                               <ButtonGroup>
                                 {isFullRound === false && (

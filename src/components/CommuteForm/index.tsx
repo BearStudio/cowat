@@ -123,7 +123,6 @@ export const CommuteForm = ({
         options={[
           { value: "ROUND", label: "Round trip" },
           { value: "OUTBOUND", label: "One-way" },
-          { value: "RETURN", label: "Return" },
         ]}
         defaultValue="ROUND"
       />
@@ -158,19 +157,6 @@ export const CommuteForm = ({
           <FieldTime
             label="🕑 Home departure"
             name="departureTime"
-            required="Please provide a departure time"
-            keepValue={false}
-            flex={1}
-          />
-        </Flex>
-      )}
-
-      {values.commuteType === "RETURN" && (
-        <Flex flex={1} gap={4}>
-          <LocationField name="returnLocation" label="📍 Work location" />
-          <FieldTime
-            label="🕑 Work departure"
-            name="returnTime"
             required="Please provide a departure time"
             keepValue={false}
             flex={1}

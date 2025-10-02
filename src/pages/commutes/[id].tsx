@@ -83,20 +83,12 @@ const EditCommute: NextPage = () => {
   const defaultValues = {
     ...commute.data,
     stops: intermediateStops,
-    commuteType: commute.data?.commuteType as "ROUND" | "OUTBOUND" | "RETURN",
-    departureLocation:
-      commute.data?.commuteType !== "RETURN"
-        ? commute.data?.stops?.[0]?.location?.id
-        : undefined,
-    departureTime:
-      commute.data?.commuteType !== "RETURN" && commute.data?.stops?.[0]?.time
-        ? dayjs(commute.data?.stops?.[0]?.time, "HH:mm").toDate()
-        : undefined,
+    commuteType: commute.data?.commuteType as "ROUND" | "OUTBOUND",
+    departureLocation: commute.data?.stops?.[0]?.location?.id,
+    departureTime: dayjs(commute.data?.stops?.[0]?.time, "HH:mm").toDate(),
     returnLocation:
       commute.data?.commuteType === "ROUND"
         ? commute.data?.stops?.[commute.data.stops.length - 1]?.location?.id
-        : commute.data?.commuteType === "RETURN"
-        ? commute.data?.stops?.[0]?.location?.id
         : undefined,
     returnTime:
       commute.data?.commuteType === "ROUND"
@@ -104,8 +96,6 @@ const EditCommute: NextPage = () => {
             commute.data?.stops?.[commute.data.stops.length - 1]?.time,
             "HH:mm"
           ).toDate()
-        : commute.data?.commuteType === "RETURN"
-        ? dayjs(commute.data?.stops?.[0]?.time, "HH:mm").toDate()
         : undefined,
   };
 
