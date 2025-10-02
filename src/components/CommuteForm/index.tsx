@@ -6,6 +6,7 @@ import { FieldTime } from "@/components/FieldTime";
 import { FieldHidden } from "@/components/FieldHidden";
 import { FieldNumber } from "@/components/FieldNumber";
 import { FieldInput } from "@/components/FieldInput";
+import { FieldRadio } from "@/components/FieldRadio";
 import { Icon } from "@/components/Icon";
 import { LocationForm } from "@/components/LocationForm";
 import type { RouterInputs, RouterOutputs } from "@/utils/api";
@@ -116,8 +117,8 @@ export const CommuteForm = ({
           },
         ]}
       />
-      <FieldSelect
-        label="Type of trip"
+      <FieldRadio
+        label="🚗 Type of trip"
         name="commuteType"
         required="Please select the type of trip"
         options={[
