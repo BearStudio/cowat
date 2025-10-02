@@ -114,7 +114,7 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
   });
 
   const passengers = getPassengers(props.stops, props.commuteType);
-  const outboundPassengers = getPassengers(props.stops, "OUTBOUND");
+  const outboundPassengers = getPassengers(props.stops, "ONEWAY");
   const returnPassengers = getPassengers(props.stops, "RETURN");
   const isFull = passengers.length === props.seats;
   const isFullOutbound = outboundPassengers.length === props.seats;
@@ -382,12 +382,12 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
                         </Stack>
                         {commuteCanBeBooked && (
                           <>
-                            {props.commuteType === "OUTBOUND" && (
+                            {props.commuteType === "ONEWAY" && (
                               <Button
                                 type="submit"
                                 variant="primary"
                                 onClick={() =>
-                                  handleBookClick(stop.id, "OUTBOUND")
+                                  handleBookClick(stop.id, "ONEWAY")
                                 }
                                 isLoading={bookCommute.isLoading}
                               >
@@ -419,7 +419,7 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
                                     {isFullOutbound === false && (
                                       <MenuItem
                                         onClick={() =>
-                                          handleBookClick(stop.id, "OUTBOUND")
+                                          handleBookClick(stop.id, "ONEWAY")
                                         }
                                       >
                                         One-way

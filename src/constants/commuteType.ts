@@ -1,5 +1,5 @@
 export const commuteTypeLabels = {
-  OUTBOUND: "One-way",
+  ONEWAY: "One-way",
   ROUND: "Round",
   RETURN: "Return",
 };

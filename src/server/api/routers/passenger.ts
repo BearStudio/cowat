@@ -7,7 +7,7 @@ export const passengerRouter = createTRPCRouter({
     .input(
       z.object({
         id: z.string().cuid(),
-        tripType: z.enum(["ROUND", "OUTBOUND", "RETURN"]),
+        tripType: z.enum(["ROUND", "ONEWAY", "RETURN"]),
       })
     )
     .mutation(async ({ ctx, input }) => {

@@ -17,15 +17,15 @@ export const getPassengers = (
       >;
     }
   >,
-  tripType: "ROUND" | "OUTBOUND" | "RETURN"
+  tripType: "ROUND" | "ONEWAY" | "RETURN"
 ) => {
   return stops.flatMap((stop) =>
     stop.passengers.filter(
       (passenger) =>
         passenger.requestStatus !== "CANCELED" &&
         passenger.requestStatus !== "REFUSED" &&
-        ((tripType === "OUTBOUND" &&
-          (passenger.tripType === "OUTBOUND" ||
+        ((tripType === "ONEWAY" &&
+          (passenger.tripType === "ONEWAY" ||
             passenger.tripType === "ROUND")) ||
           (tripType === "RETURN" &&
             (passenger.tripType === "RETURN" ||
