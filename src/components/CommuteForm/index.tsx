@@ -128,7 +128,7 @@ export const CommuteForm = ({
         defaultValue="ROUND"
       />
       {values.commuteType === "ROUND" && (
-        <Flex gap={4}>
+        <Flex direction={{ base: "column", md: "row" }} gap={6}>
           <Flex direction="column" flex={1}>
             <LocationField name="departureLocation" label="📍 From" />
             <FieldTime
@@ -153,7 +153,7 @@ export const CommuteForm = ({
       )}
 
       {values.commuteType === "ONEWAY" && (
-        <Flex flex={1} gap={4}>
+        <Flex flex={1} direction={{ base: "column", md: "row" }} gap={6}>
           <LocationField
             name="departureLocation"
             label="📍 Departure location"
@@ -400,7 +400,7 @@ const LocationField = ({ name, label }: LocationFieldProps) => {
 
   return (
     <>
-      <HStack flex={1} align="flex-start" w="fit-content">
+      <HStack flex={1} align="flex-start" w="full">
         <FieldSelect
           label={label}
           name={name}
