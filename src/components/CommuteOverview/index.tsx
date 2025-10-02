@@ -250,7 +250,7 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
                   <Text fontWeight="medium" fontSize="sm">
                     {`${
                       props.departureTime
-                        ? `Home departure : ${dayjs(props.departureTime).format(
+                        ? `Outward : ${dayjs(props.departureTime).format(
                             ONLY_TIME
                           )}`
                         : ""
@@ -260,7 +260,7 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
                       }    
                       ${
                         props.returnTime
-                          ? `Work departure : ${dayjs(props.returnTime).format(
+                          ? `Inward : ${dayjs(props.returnTime).format(
                               ONLY_TIME
                             )}`
                           : ""
