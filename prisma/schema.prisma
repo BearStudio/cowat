@@ -128,7 +128,7 @@ model Commute {
     date        DateTime      @db.Date
     seats       Int
     commuteType CommuteType   @default(ONEWAY)
-    departureTime DateTime?
+    departureTime DateTime?   @default(now())
     returnTime DateTime?      @default(now())
     // "ON_TIME | DELAYED"
     status      CommuteStatus @default(UNKNOWN)

@@ -420,8 +420,10 @@ export const commuteRouter = createTRPCRouter({
       z.object({
         id: z.string().cuid(),
         date: z.date(),
-        departureTime: z.date(),
-        returnTime: z.date(),
+        departureTime: z.date().nullish(),
+        returnTime: z.date().nullish(),
+        departureLocation: z.string().nullish(),
+        returnLocation: z.string().nullish(),
         seats: z.number().min(1),
         stops: z
           .array(
@@ -511,6 +513,28 @@ export const commuteRouter = createTRPCRouter({
           date: input.date,
           departureTime: input.departureTime,
           returnTime: input.returnTime,
+          stops: {
+            create: [
+              ...(input.departureLocation
+                ? [
+                    {
+                      time: dayjs(input.departureTime).format(ONLY_TIME),
+                      locationId: input.departureLocation,
+                    },
+                  ]
+                : []),
+              ...(input.commuteType !== "ONEWAY" &&
+              input.returnLocation &&
+              input.returnTime
+                ? [
+                    {
+                      time: dayjs(input.returnTime).format(ONLY_TIME),
+                      locationId: input.returnLocation,
+                    },
+                  ]
+                : []),
+            ],
+          },
           commuteType: input.commuteType,
         },
         where: {
