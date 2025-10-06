@@ -250,7 +250,7 @@ const Stop = ({
   const ctx = api.useContext();
   const form = useFormContext();
   const formFields = useFormFields({
-    fields: ["stops"] as const,
+    fields: ["stops", "departureLocation", "returnLocation"] as const,
     selector: "value",
   });
 
@@ -265,9 +265,12 @@ const Stop = ({
   const locations = api.location.mine.useQuery();
 
   // Locations already used in a stop
-  const usedLocations = formFields.stops?.map(
-    (stop: { location: string }) => stop.location
-  );
+  const usedLocations = [
+    ...(formFields.stops?.map((stop: { location: string }) => stop.location) ??
+      []),
+    formFields.departureLocation,
+    formFields.returnLocation,
+  ].filter(Boolean);
 
   const getSelectOptions = (index: number) => {
     // we keep as options the unused locations & the value of current stop location
