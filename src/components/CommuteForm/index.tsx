@@ -133,11 +133,11 @@ export const CommuteForm = ({
             />
           </Flex>
           <Flex direction="column" flex={1}>
-            <LocationField name="returnLocation" label="📍 To" />
+            <LocationField name="inwardLocation" label="📍 To" />
             <FieldTime
               label="🕑 Inward time"
-              name="returnTime"
-              required="Please provide a return time"
+              name="inwardTime"
+              required="Please provide a inward time"
               mt={4}
             />
           </Flex>
@@ -231,7 +231,7 @@ const Stop = ({ id, index, onRemove, isEditable = true }: StopProps) => {
   const ctx = api.useContext();
   const form = useFormContext();
   const formFields = useFormFields({
-    fields: ["stops", "outwardLocation", "returnLocation"] as const,
+    fields: ["stops", "outwardLocation", "inwardLocation"] as const,
     selector: "value",
   });
 
@@ -250,7 +250,7 @@ const Stop = ({ id, index, onRemove, isEditable = true }: StopProps) => {
     ...(formFields.stops?.map((stop: { location: string }) => stop.location) ??
       []),
     formFields.outwardLocation,
-    formFields.returnLocation,
+    formFields.inwardLocation,
   ].filter(Boolean);
 
   const getSelectOptions = (index: number) => {

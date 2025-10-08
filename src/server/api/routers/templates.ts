@@ -21,9 +21,9 @@ export const templateRouter = createTRPCRouter({
         comment: z.string().nullish(),
         templateName: z.string().nullish(),
         outwardTime: z.string().nullish(),
-        returnTime: z.string().nullish(),
+        inwardTime: z.string().nullish(),
         outwardLocation: z.string().nullish(),
-        returnLocation: z.string().nullish(),
+        inwardLocation: z.string().nullish(),
       })
     )
     .mutation(async ({ input, ctx }) => {
@@ -40,11 +40,11 @@ export const templateRouter = createTRPCRouter({
                     },
                   ]
                 : []),
-              ...(input.returnLocation && input.returnTime
+              ...(input.inwardLocation && input.inwardTime
                 ? [
                     {
-                      time: input.returnTime,
-                      locationId: input.returnLocation,
+                      time: input.inwardTime,
+                      locationId: input.inwardLocation,
                     },
                   ]
                 : []),
@@ -61,8 +61,8 @@ export const templateRouter = createTRPCRouter({
           outwardTime: input.outwardTime
             ? dayjs(input.outwardTime, "HH:mm").toDate()
             : null,
-          returnTime: input.returnTime
-            ? dayjs(input.returnTime, "HH:mm").toDate()
+          inwardTime: input.inwardTime
+            ? dayjs(input.inwardTime, "HH:mm").toDate()
             : null,
         },
         include: {
@@ -155,8 +155,8 @@ export const templateRouter = createTRPCRouter({
         ...template,
         outwardLocation: outwardStop?.locationId,
         outwardTime: outwardStop?.time,
-        returnLocation: returnStop?.locationId,
-        returnTime: returnStop?.time,
+        inwardLocation: returnStop?.locationId,
+        inwardTime: returnStop?.time,
         stops: intermediateStops.map((stops) => ({
           id: stops.id,
           location: stops.location,
@@ -193,9 +193,9 @@ export const templateRouter = createTRPCRouter({
         comment: z.string().nullish(),
         templateName: z.string().nullish(),
         outwardTime: z.string().nullish(),
-        returnTime: z.string().nullish(),
+        inwardTime: z.string().nullish(),
         outwardLocation: z.string().nullish(),
-        returnLocation: z.string().nullish(),
+        inwardLocation: z.string().nullish(),
       })
     )
     .mutation(async ({ input, ctx }) => {
@@ -224,8 +224,8 @@ export const templateRouter = createTRPCRouter({
                 time: stop.time,
                 locationId: stop.location,
               })) ?? []),
-              ...(input.returnLocation && input.returnTime
-                ? [{ time: input.returnTime, locationId: input.returnLocation }]
+              ...(input.inwardLocation && input.inwardTime
+                ? [{ time: input.inwardTime, locationId: input.inwardLocation }]
                 : []),
             ],
           },
@@ -236,8 +236,8 @@ export const templateRouter = createTRPCRouter({
           outwardTime: input.outwardTime
             ? dayjs(input.outwardTime, "HH:mm").toDate()
             : null,
-          returnTime: input.returnTime
-            ? dayjs(input.returnTime, "HH:mm").toDate()
+          inwardTime: input.inwardTime
+            ? dayjs(input.inwardTime, "HH:mm").toDate()
             : null,
         },
         where: {
