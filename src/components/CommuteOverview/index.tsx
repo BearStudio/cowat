@@ -348,10 +348,11 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
                       <Stack key={stop.id} spacing={2} w="full">
                         <Stack spacing={0} flex={1}>
                           <Text fontWeight="bold" fontSize="sm">
-                            📍 {!!stop.time && stop.time} ·{" "}
-                            {stop.location?.name}
+                            {`📍 ${[stop.time, stop.location.name].join(
+                              " · "
+                            )}`}
                           </Text>
-                          <Tooltip label={stop?.location?.address}>
+                          <Tooltip label={stop.location?.address}>
                             <Text
                               fontSize="sm"
                               color="gray.600"
@@ -359,7 +360,7 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
                               wordBreak="break-word"
                               noOfLines={3}
                             >
-                              {stop?.location?.address}
+                              {stop.location?.address}
                             </Text>
                           </Tooltip>
                           {!!passengers.length && !props.isDeleted && (

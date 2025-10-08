@@ -45,6 +45,7 @@ import { Plus, Trash } from "lucide-react";
 import { useRouter } from "next/router";
 import { Fragment } from "react";
 import dayjs from "dayjs";
+import { LocationField } from "@/components/LocationField";
 
 type CommuteFormProps = {
   repeaterInitialValues: Array<object>;
@@ -53,15 +54,11 @@ type CommuteFormProps = {
    * the date selection.
    */
   mode?: "TEMPLATE" | "CREATE" | "EDIT";
-  form: ReturnType<typeof useForm>;
 };
-
-type CommuteFormValues = RouterOutputs["commute"]["commuteById"];
 
 export const CommuteForm = ({
   repeaterInitialValues: initialValues,
   mode = "CREATE",
-  form,
 }: CommuteFormProps) => {
   const router = useRouter();
   const { id } = router.query;
@@ -74,20 +71,17 @@ export const CommuteForm = ({
   );
 
   const values = useFormFields({
-    connect: form,
     fields: ["commuteType"] as const,
     selector: "value",
   });
 
   const stops = useCollection("stops", {
-    connect: form,
     defaultValue: initialValues,
   });
 
-  const numberOfPassengers = getPassengers(
-    commute.data?.stops ?? [],
-    commute.data?.commuteType ?? "ROUND"
-  ).length;
+  const numberOfPassengers = commute.isSuccess
+    ? getPassengers(commute.data.stops, commute.data.commuteType).length
+    : 0;
 
   const arePassengersOnStops = numberOfPassengers > 0;
 
@@ -135,7 +129,6 @@ export const CommuteForm = ({
               label="🕑 Outward time"
               name="departureTime"
               required="Please provide a departure time"
-              keepValue={false}
               mt={4}
             />
           </Flex>
@@ -144,8 +137,7 @@ export const CommuteForm = ({
             <FieldTime
               label="🕑 Inward time"
               name="returnTime"
-              required="Please provide a departure time"
-              keepValue={false}
+              required="Please provide a return time"
               mt={4}
             />
           </Flex>
@@ -162,7 +154,6 @@ export const CommuteForm = ({
             label="🕑 Departure time"
             name="departureTime"
             required="Please provide a departure time"
-            keepValue={false}
             flex={1}
           />
         </Flex>
@@ -204,9 +195,8 @@ export const CommuteForm = ({
             ? parseInt(key)
             : index;
           const stop = commute.data?.stops[stopIndex];
-          const numberOfPassengersOnStop = stop
-            ? getPassengers([stop], commute.data?.commuteType ?? "ROUND")
-                ?.length
+          const numberOfPassengersOnStop = commute.isSuccess
+            ? getPassengers(commute.data.stops, commute.data.commuteType).length
             : 0;
           const isEditable = numberOfPassengersOnStop === 0;
           const isRemovable = stops.keys.length > 1 && isEditable;
@@ -240,13 +230,7 @@ type StopProps = {
   onRemove: () => void;
 };
 
-const Stop = ({
-  id,
-  index,
-  onRemove,
-  isRemovable = true,
-  isEditable = true,
-}: StopProps) => {
+const Stop = ({ id, index, onRemove, isEditable = true }: StopProps) => {
   const ctx = api.useContext();
   const form = useFormContext();
   const formFields = useFormFields({
@@ -350,86 +334,6 @@ const Stop = ({
                 <LocationForm />
               </ModalBody>
 
-              <ModalFooter>
-                <Button
-                  variant="primary"
-                  isLoading={createLocation.isLoading}
-                  onClick={() => newLocationForm.submit()}
-                >
-                  Save
-                </Button>
-              </ModalFooter>
-            </ModalContent>
-          </Formiz>
-        </Modal>
-      )}
-    </>
-  );
-};
-
-type LocationFieldProps = {
-  name: string;
-  label: string;
-};
-
-const LocationField = ({ name, label }: LocationFieldProps) => {
-  const ctx = api.useContext();
-  const form = useFormContext();
-  const { isOpen, onOpen, onClose } = useDisclosure();
-
-  const newLocationForm = useForm({
-    onValidSubmit: (values: RouterInputs["location"]["create"]) => {
-      createLocation.mutate(values);
-    },
-  });
-
-  const locations = api.location.mine.useQuery();
-
-  const getSelectOptions = () =>
-    locations?.data?.map((location) => ({
-      label: location.name,
-      value: location.id,
-    })) ?? [];
-
-  const createLocation = api.location.create.useMutation({
-    onSuccess: async ({ id }) => {
-      await ctx.location.invalidate();
-      form.setValues({
-        [name]: id,
-      });
-      onClose();
-    },
-  });
-
-  return (
-    <>
-      <HStack flex={1} align="flex-start" w="full">
-        <FieldSelect
-          label={label}
-          name={name}
-          placeholder="Please select a location"
-          options={getSelectOptions()}
-          required="Location is required"
-        />
-        <Box pt={8}>
-          <IconButton
-            aria-label="Add a location"
-            icon={<Icon icon={Plus} />}
-            onClick={onOpen}
-          />
-        </Box>
-      </HStack>
-
-      {isOpen && (
-        <Modal isOpen onClose={onClose} size="sm">
-          <ModalOverlay />
-          <Formiz connect={newLocationForm}>
-            <ModalContent>
-              <ModalHeader flex="1">New location</ModalHeader>
-              <ModalCloseButton />
-              <ModalBody>
-                <LocationForm />
-              </ModalBody>
               <ModalFooter>
                 <Button
                   variant="primary"
