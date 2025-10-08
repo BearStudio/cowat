@@ -20,9 +20,9 @@ export const templateRouter = createTRPCRouter({
         commuteType: z.enum(["ROUND", "ONEWAY"]),
         comment: z.string().nullish(),
         templateName: z.string().nullish(),
-        departureTime: z.string().nullish(),
+        outwardTime: z.string().nullish(),
         returnTime: z.string().nullish(),
-        departureLocation: z.string().nullish(),
+        outwardLocation: z.string().nullish(),
         returnLocation: z.string().nullish(),
       })
     )
@@ -32,11 +32,11 @@ export const templateRouter = createTRPCRouter({
           createdById: ctx.session.user.id,
           stops: {
             create: [
-              ...(input.departureLocation && input.departureTime
+              ...(input.outwardLocation && input.outwardTime
                 ? [
                     {
-                      time: input.departureTime,
-                      locationId: input.departureLocation,
+                      time: input.outwardTime,
+                      locationId: input.outwardLocation,
                     },
                   ]
                 : []),
@@ -58,8 +58,8 @@ export const templateRouter = createTRPCRouter({
           seats: input.seats,
           commuteType: input.commuteType,
           comment: input.comment,
-          departureTime: input.departureTime
-            ? dayjs(input.departureTime, "HH:mm").toDate()
+          outwardTime: input.outwardTime
+            ? dayjs(input.outwardTime, "HH:mm").toDate()
             : null,
           returnTime: input.returnTime
             ? dayjs(input.returnTime, "HH:mm").toDate()
@@ -142,19 +142,19 @@ export const templateRouter = createTRPCRouter({
       }
 
       const allStops = template.stops;
-      const departureStop = ["ONEWAY", "ROUND"].includes(template.commuteType)
+      const outwardStop = ["ONEWAY", "ROUND"].includes(template.commuteType)
         ? allStops[0]
         : null;
       const returnStop =
         template.commuteType === "ROUND" ? allStops.at(-1) : null;
       const intermediateStops = allStops.filter(
-        (stop) => stop !== departureStop && stop !== returnStop
+        (stop) => stop !== outwardStop && stop !== returnStop
       );
 
       return {
         ...template,
-        departureLocation: departureStop?.locationId,
-        departureTime: departureStop?.time,
+        outwardLocation: outwardStop?.locationId,
+        outwardTime: outwardStop?.time,
         returnLocation: returnStop?.locationId,
         returnTime: returnStop?.time,
         stops: intermediateStops.map((stops) => ({
@@ -192,9 +192,9 @@ export const templateRouter = createTRPCRouter({
         commuteType: z.enum(["ROUND", "ONEWAY"]),
         comment: z.string().nullish(),
         templateName: z.string().nullish(),
-        departureTime: z.string().nullish(),
+        outwardTime: z.string().nullish(),
         returnTime: z.string().nullish(),
-        departureLocation: z.string().nullish(),
+        outwardLocation: z.string().nullish(),
         returnLocation: z.string().nullish(),
       })
     )
@@ -212,11 +212,11 @@ export const templateRouter = createTRPCRouter({
           createdById: ctx.session.user.id,
           stops: {
             create: [
-              ...(input.departureLocation && input.departureTime
+              ...(input.outwardLocation && input.outwardTime
                 ? [
                     {
-                      time: input.departureTime,
-                      locationId: input.departureLocation,
+                      time: input.outwardTime,
+                      locationId: input.outwardLocation,
                     },
                   ]
                 : []),
@@ -233,8 +233,8 @@ export const templateRouter = createTRPCRouter({
           seats: input.seats,
           commuteType: input.commuteType,
           comment: input.comment,
-          departureTime: input.departureTime
-            ? dayjs(input.departureTime, "HH:mm").toDate()
+          outwardTime: input.outwardTime
+            ? dayjs(input.outwardTime, "HH:mm").toDate()
             : null,
           returnTime: input.returnTime
             ? dayjs(input.returnTime, "HH:mm").toDate()

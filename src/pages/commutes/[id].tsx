@@ -37,13 +37,13 @@ const EditCommute: NextPage = () => {
   });
 
   const handleOnValidSubmit = (values: EditCommuteInput) => {
-    const { departureTime, returnTime, date, ...otherValues } = values;
+    const { outwardTime, returnTime, date, ...otherValues } = values;
 
     commuteMutation.mutate(
       {
         ...otherValues,
-        departureTime: dayjs(
-          `${dayjs(date).format("YYYY-MM-DD")} ${departureTime}`,
+        outwardTime: dayjs(
+          `${dayjs(date).format("YYYY-MM-DD")} ${outwardTime}`,
           "YYYY-MM-DD HH:mm"
         ).toDate(),
         returnTime: dayjs(
@@ -84,8 +84,8 @@ const EditCommute: NextPage = () => {
     ...commute.data,
     stops: intermediateStops,
     commuteType: commute.data?.commuteType as "ROUND" | "ONEWAY",
-    departureLocation: commute.data?.stops?.[0]?.location?.id,
-    departureTime: dayjs(commute.data?.stops?.[0]?.time, "HH:mm").toDate(),
+    outwardLocation: commute.data?.stops?.[0]?.location?.id,
+    outwardTime: dayjs(commute.data?.stops?.[0]?.time, "HH:mm").toDate(),
     returnLocation:
       commute.data?.commuteType === "ROUND"
         ? commute.data?.stops?.[commute.data.stops.length - 1]?.location?.id
@@ -130,7 +130,6 @@ const EditCommute: NextPage = () => {
             <CommuteForm
               mode="EDIT"
               repeaterInitialValues={defaultValues.stops}
-              form={editCommuteForm}
             />
             <Button
               variant="primary"
