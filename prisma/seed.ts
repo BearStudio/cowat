@@ -59,7 +59,7 @@ async function main() {
     data: {
       seats: 2,
       date: dayjs().add(3, "days").toDate(),
-      returnTime: dayjs().add(3, "days").hour(18).minute(0).toDate(),
+      outwardTime: dayjs().add(3, "days").hour(18).minute(0).toDate(),
       stops: {
         create: ivanLocations[0] && {
           locationId: ivanLocations[0].id,
@@ -74,7 +74,7 @@ async function main() {
     data: {
       seats: 2,
       date: dayjs().toDate(),
-      returnTime: dayjs().add(3, "days").hour(16).minute(0).toDate(),
+      outwardTime: dayjs().add(3, "days").hour(16).minute(0).toDate(),
       stops: {
         create: ivanLocations[0] && {
           locationId: ivanLocations[0].id,
@@ -94,7 +94,7 @@ async function main() {
     data: {
       seats: 2,
       date: dayjs().toDate(),
-      returnTime: dayjs().add(3, "days").hour(17).minute(0).toDate(),
+      outwardTime: dayjs().add(3, "days").hour(17).minute(0).toDate(),
       stops: {
         create: yoannLocations[0] && {
           locationId: yoannLocations[0].id,
@@ -116,7 +116,7 @@ async function main() {
     data: {
       seats: 2,
       date: dayjs().add(4, "days").toDate(),
-      returnTime: dayjs().add(3, "days").hour(16).minute(30).toDate(),
+      outwardTime: dayjs().add(3, "days").hour(16).minute(30).toDate(),
       stops: {
         create: yoannLocations[0] && {
           locationId: yoannLocations[0].id,

@@ -16,9 +16,9 @@ export const commuteRouter = createTRPCRouter({
         seats: z.number().min(1),
         date: z.date(),
         outwardTime: z.date().nullish(),
-        returnTime: z.date().nullish(),
+        inwardTime: z.date().nullish(),
         outwardLocation: z.string().nullish(),
-        returnLocation: z.string().nullish(),
+        inwardLocation: z.string().nullish(),
         stops: z
           .array(
             z.object({
@@ -37,7 +37,7 @@ export const commuteRouter = createTRPCRouter({
           seats: input.seats,
           date: input.date,
           outwardTime: input.outwardTime,
-          returnTime: input.returnTime,
+          inwardTime: input.inwardTime,
           createdById: ctx.session.user.id,
           stops: {
             create: [
@@ -50,12 +50,12 @@ export const commuteRouter = createTRPCRouter({
                   ]
                 : []),
               ...(input.commuteType !== "ONEWAY" &&
-              input.returnLocation &&
-              input.returnTime
+              input.inwardLocation &&
+              input.inwardTime
                 ? [
                     {
-                      time: dayjs(input.returnTime).format(ONLY_TIME),
-                      locationId: input.returnLocation,
+                      time: dayjs(input.inwardTime).format(ONLY_TIME),
+                      locationId: input.inwardLocation,
                     },
                   ]
                 : []),
@@ -421,9 +421,9 @@ export const commuteRouter = createTRPCRouter({
         id: z.string().cuid(),
         date: z.date(),
         outwardTime: z.date().nullish(),
-        returnTime: z.date().nullish(),
+        inwardTime: z.date().nullish(),
         outwardLocation: z.string().nullish(),
-        returnLocation: z.string().nullish(),
+        inwardLocation: z.string().nullish(),
         seats: z.number().min(1),
         stops: z
           .array(
@@ -497,7 +497,7 @@ export const commuteRouter = createTRPCRouter({
           comment: input.comment,
           date: input.date,
           outwardTime: input.outwardTime,
-          returnTime: input.returnTime,
+          inwardTime: input.inwardTime,
           stops: {
             create: [
               ...(input.outwardLocation
@@ -509,12 +509,12 @@ export const commuteRouter = createTRPCRouter({
                   ]
                 : []),
               ...(input.commuteType !== "ONEWAY" &&
-              input.returnLocation &&
-              input.returnTime
+              input.inwardLocation &&
+              input.inwardTime
                 ? [
                     {
-                      time: dayjs(input.returnTime).format(ONLY_TIME),
-                      locationId: input.returnLocation,
+                      time: dayjs(input.inwardTime).format(ONLY_TIME),
+                      locationId: input.inwardLocation,
                     },
                   ]
                 : []),

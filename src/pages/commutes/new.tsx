@@ -31,11 +31,11 @@ type CreateCommuteInput = RouterInputs["commute"]["createCommute"];
 
 type CreateCommuteFormValues = Omit<
   CreateCommuteInput,
-  "date" | "outwardTime" | "returnTime"
+  "date" | "outwardTime" | "inwardTime"
 > & {
   date: string;
   outwardTime: string;
-  returnTime: string;
+  inwardTime: string;
 };
 
 const FROM_SCRATCH = "FROM_SCRATCH";
@@ -103,8 +103,8 @@ const New: NextPage = () => {
         `${date} ${otherValues.outwardTime}`,
         "DD/MM/YYYY HH:mm"
       ).toDate(),
-      returnTime: dayjs(
-        `${date} ${otherValues.returnTime}`,
+      inwardTime: dayjs(
+        `${date} ${otherValues.inwardTime}`,
         "DD/MM/YYYY HH:mm"
       ).toDate(),
       date: otherValues.stops

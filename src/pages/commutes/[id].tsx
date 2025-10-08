@@ -37,7 +37,7 @@ const EditCommute: NextPage = () => {
   });
 
   const handleOnValidSubmit = (values: EditCommuteInput) => {
-    const { outwardTime, returnTime, date, ...otherValues } = values;
+    const { outwardTime, inwardTime, date, ...otherValues } = values;
 
     commuteMutation.mutate(
       {
@@ -46,8 +46,8 @@ const EditCommute: NextPage = () => {
           `${dayjs(date).format("YYYY-MM-DD")} ${outwardTime}`,
           "YYYY-MM-DD HH:mm"
         ).toDate(),
-        returnTime: dayjs(
-          `${dayjs(date).format("YYYY-MM-DD")} ${returnTime}`,
+        inwardTime: dayjs(
+          `${dayjs(date).format("YYYY-MM-DD")} ${inwardTime}`,
           "YYYY-MM-DD HH:mm"
         ).toDate(),
         date: dayjs(
@@ -86,11 +86,11 @@ const EditCommute: NextPage = () => {
     commuteType: commute.data?.commuteType as "ROUND" | "ONEWAY",
     outwardLocation: commute.data?.stops?.[0]?.location?.id,
     outwardTime: dayjs(commute.data?.stops?.[0]?.time, "HH:mm").toDate(),
-    returnLocation:
+    inwardLocation:
       commute.data?.commuteType === "ROUND"
         ? commute.data?.stops?.[commute.data.stops.length - 1]?.location?.id
         : undefined,
-    returnTime:
+    inwardTime:
       commute.data?.commuteType === "ROUND"
         ? dayjs(
             commute.data?.stops?.[commute.data.stops.length - 1]?.time,

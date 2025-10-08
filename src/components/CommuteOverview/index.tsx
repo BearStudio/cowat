@@ -114,14 +114,14 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
   });
 
   const passengers = getPassengers(props.stops, props.commuteType);
-  const outboundPassengers = getPassengers(props.stops, "ONEWAY");
-  const returnPassengers = getPassengers(props.stops, "RETURN");
+  const outwardPassengers = getPassengers(props.stops, "ONEWAY");
+  const inwardPassengers = getPassengers(props.stops, "RETURN");
   const isFull = passengers.length === props.seats;
-  const isFullOutbound = outboundPassengers.length === props.seats;
-  const isFullReturn = returnPassengers.length === props.seats;
+  const isFullOutward = outwardPassengers.length === props.seats;
+  const isFullInward = inwardPassengers.length === props.seats;
   const isFullRound =
-    outboundPassengers.length === props.seats ||
-    returnPassengers.length === props.seats;
+    outwardPassengers.length === props.seats ||
+    inwardPassengers.length === props.seats;
 
   const commuteCanBeBooked =
     !isCurrentUserCreator &&
@@ -255,10 +255,10 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
                           )}`
                         : ""
                     } 
-                      ${props.outwardTime && props.returnTime ? "and" : ""}    
+                      ${props.outwardTime && props.inwardTime ? "and" : ""}    
                       ${
-                        props.returnTime
-                          ? `Inward : ${dayjs(props.returnTime).format(
+                        props.inwardTime
+                          ? `Inward : ${dayjs(props.inwardTime).format(
                               ONLY_TIME
                             )}`
                           : ""
@@ -274,8 +274,8 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
                       {props.stops.length > 1 ? "s" : ""} ·{" "}
                       {props.commuteType === "ROUND" ? (
                         <>
-                          One-way : {outboundPassengers.length}/{props.seats}{" "}
-                          seats · Return : {returnPassengers.length}/
+                          One-way : {outwardPassengers.length}/{props.seats}{" "}
+                          seats · Return : {inwardPassengers.length}/
                           {props.seats} seats
                         </>
                       ) : (
@@ -415,7 +415,7 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
                                     aria-label="Select commute type"
                                   />
                                   <MenuList>
-                                    {isFullOutbound === false && (
+                                    {isFullOutward === false && (
                                       <MenuItem
                                         onClick={() =>
                                           handleBookClick(stop.id, "ONEWAY")
@@ -424,7 +424,7 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
                                         One-way
                                       </MenuItem>
                                     )}
-                                    {isFullReturn === false && (
+                                    {isFullInward === false && (
                                       <MenuItem
                                         onClick={() =>
                                           handleBookClick(stop.id, "RETURN")
