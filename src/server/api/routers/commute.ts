@@ -15,9 +15,9 @@ export const commuteRouter = createTRPCRouter({
       z.object({
         seats: z.number().min(1),
         date: z.date(),
-        departureTime: z.date().nullish(),
+        outwardTime: z.date().nullish(),
         returnTime: z.date().nullish(),
-        departureLocation: z.string().nullish(),
+        outwardLocation: z.string().nullish(),
         returnLocation: z.string().nullish(),
         stops: z
           .array(
@@ -36,16 +36,16 @@ export const commuteRouter = createTRPCRouter({
         data: {
           seats: input.seats,
           date: input.date,
-          departureTime: input.departureTime,
+          outwardTime: input.outwardTime,
           returnTime: input.returnTime,
           createdById: ctx.session.user.id,
           stops: {
             create: [
-              ...(input.departureLocation
+              ...(input.outwardLocation
                 ? [
                     {
-                      time: dayjs(input.departureTime).format(ONLY_TIME),
-                      locationId: input.departureLocation,
+                      time: dayjs(input.outwardTime).format(ONLY_TIME),
+                      locationId: input.outwardLocation,
                     },
                   ]
                 : []),
@@ -420,9 +420,9 @@ export const commuteRouter = createTRPCRouter({
       z.object({
         id: z.string().cuid(),
         date: z.date(),
-        departureTime: z.date().nullish(),
+        outwardTime: z.date().nullish(),
         returnTime: z.date().nullish(),
-        departureLocation: z.string().nullish(),
+        outwardLocation: z.string().nullish(),
         returnLocation: z.string().nullish(),
         seats: z.number().min(1),
         stops: z
@@ -491,35 +491,20 @@ export const commuteRouter = createTRPCRouter({
         });
       }
 
-      const updatedStops = await ctx.prisma.stop.findMany({
-        where: {
-          commuteId: input.id,
-        },
-        orderBy: {
-          time: "asc",
-        },
-      });
-
-      const currentCommute = await ctx.prisma.commute.findUnique({
-        where: {
-          id: input.id,
-        },
-      });
-
       const commute = await ctx.prisma.commute.update({
         data: {
           seats: input.seats,
           comment: input.comment,
           date: input.date,
-          departureTime: input.departureTime,
+          outwardTime: input.outwardTime,
           returnTime: input.returnTime,
           stops: {
             create: [
-              ...(input.departureLocation
+              ...(input.outwardLocation
                 ? [
                     {
-                      time: dayjs(input.departureTime).format(ONLY_TIME),
-                      locationId: input.departureLocation,
+                      time: dayjs(input.outwardTime).format(ONLY_TIME),
+                      locationId: input.outwardLocation,
                     },
                   ]
                 : []),

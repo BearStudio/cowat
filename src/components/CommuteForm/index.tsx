@@ -9,7 +9,7 @@ import { FieldInput } from "@/components/FieldInput";
 import { FieldRadio } from "@/components/FieldRadio";
 import { Icon } from "@/components/Icon";
 import { LocationForm } from "@/components/LocationForm";
-import type { RouterInputs, RouterOutputs } from "@/utils/api";
+import type { RouterInputs } from "@/utils/api";
 import { api } from "@/utils/api";
 import { getPassengers } from "@/utils/commutes";
 import {
@@ -124,11 +124,11 @@ export const CommuteForm = ({
       {values.commuteType === "ROUND" && (
         <Flex direction={{ base: "column", md: "row" }} gap={6}>
           <Flex direction="column" flex={1}>
-            <LocationField name="departureLocation" label="📍 From" />
+            <LocationField name="outwardLocation" label="📍 From" />
             <FieldTime
               label="🕑 Outward time"
-              name="departureTime"
-              required="Please provide a departure time"
+              name="outwardTime"
+              required="Please provide an outward time"
               mt={4}
             />
           </Flex>
@@ -146,14 +146,11 @@ export const CommuteForm = ({
 
       {values.commuteType === "ONEWAY" && (
         <Flex flex={1} direction={{ base: "column", md: "row" }} gap={6}>
-          <LocationField
-            name="departureLocation"
-            label="📍 Departure location"
-          />
+          <LocationField name="outwardLocation" label="📍 Outward location" />
           <FieldTime
-            label="🕑 Departure time"
-            name="departureTime"
-            required="Please provide a departure time"
+            label="🕑 Outward time"
+            name="outwardTime"
+            required="Please provide an outward time"
             flex={1}
           />
         </Flex>
@@ -234,7 +231,7 @@ const Stop = ({ id, index, onRemove, isEditable = true }: StopProps) => {
   const ctx = api.useContext();
   const form = useFormContext();
   const formFields = useFormFields({
-    fields: ["stops", "departureLocation", "returnLocation"] as const,
+    fields: ["stops", "outwardLocation", "returnLocation"] as const,
     selector: "value",
   });
 
@@ -252,7 +249,7 @@ const Stop = ({ id, index, onRemove, isEditable = true }: StopProps) => {
   const usedLocations = [
     ...(formFields.stops?.map((stop: { location: string }) => stop.location) ??
       []),
-    formFields.departureLocation,
+    formFields.outwardLocation,
     formFields.returnLocation,
   ].filter(Boolean);
 

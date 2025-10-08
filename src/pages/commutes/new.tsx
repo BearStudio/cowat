@@ -29,8 +29,13 @@ import { ConfirmCommuteActionModal } from "@/components/ConfirmCommuteActionModa
 
 type CreateCommuteInput = RouterInputs["commute"]["createCommute"];
 
-type CreateCommuteFormValues = Omit<CreateCommuteInput, "date"> & {
+type CreateCommuteFormValues = Omit<
+  CreateCommuteInput,
+  "date" | "outwardTime" | "returnTime"
+> & {
   date: string;
+  outwardTime: string;
+  returnTime: string;
 };
 
 const FROM_SCRATCH = "FROM_SCRATCH";
@@ -94,8 +99,8 @@ const New: NextPage = () => {
 
     createCommute.mutate({
       ...otherValues,
-      departureTime: dayjs(
-        `${date} ${otherValues.departureTime}`,
+      outwardTime: dayjs(
+        `${date} ${otherValues.outwardTime}`,
         "DD/MM/YYYY HH:mm"
       ).toDate(),
       returnTime: dayjs(
@@ -194,10 +199,7 @@ const New: NextPage = () => {
       {showForm && (
         <Formiz autoForm connect={form}>
           <SimpleCard>
-            <CommuteForm
-              repeaterInitialValues={defaultValues.stops}
-              form={form}
-            />
+            <CommuteForm repeaterInitialValues={defaultValues.stops} />
             <Button
               variant="primary"
               onClick={handleSave}

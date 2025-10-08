@@ -249,15 +249,13 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
                 <Flex flex="1" align="center">
                   <Text fontWeight="medium" fontSize="sm">
                     {`${
-                      props.departureTime
-                        ? `Outward : ${dayjs(props.departureTime).format(
+                      props.outwardTime
+                        ? `Outward : ${dayjs(props.outwardTime).format(
                             ONLY_TIME
                           )}`
                         : ""
                     } 
-                      ${
-                        props.departureTime && props.returnTime ? "and" : ""
-                      }    
+                      ${props.outwardTime && props.returnTime ? "and" : ""}    
                       ${
                         props.returnTime
                           ? `Inward : ${dayjs(props.returnTime).format(
