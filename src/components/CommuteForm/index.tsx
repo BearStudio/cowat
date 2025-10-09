@@ -76,7 +76,7 @@ export const CommuteForm = ({
   });
 
   const stops = useCollection("stops", {
-    defaultValue: initialValues,
+    defaultValue: mode === "TEMPLATE" ? [] : initialValues,
   });
 
   const numberOfPassengers = commute.isSuccess
@@ -227,7 +227,7 @@ type StopProps = {
   onRemove: () => void;
 };
 
-const Stop = ({ id, index, onRemove, isEditable = true }: StopProps) => {
+const Stop = ({ id, index, onRemove, isEditable = true, isRemovable = true, }: StopProps) => {
   const ctx = api.useContext();
   const form = useFormContext();
   const formFields = useFormFields({

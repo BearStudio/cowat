@@ -62,7 +62,7 @@ export const ConfirmCommuteActionModal = ({
     updateRequestStatus.mutate({
       stopId: stopToCancelId || "",
       passengerId: session?.user?.id || "",
-      tripType: "ROUND",
+      tripType: commute.commuteType,
       requestStatus: "CANCELED",
     });
   };
