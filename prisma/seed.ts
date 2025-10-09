@@ -59,6 +59,7 @@ async function main() {
     data: {
       seats: 2,
       date: dayjs().add(3, "days").toDate(),
+      inwardTime: dayjs().add(3, "days").hour(8).minute(0).toDate(),
       outwardTime: dayjs().add(3, "days").hour(18).minute(0).toDate(),
       stops: {
         create: ivanLocations[0] && {
@@ -92,7 +93,7 @@ async function main() {
   });
   const newCommuteFromYoann = await prisma.commute.create({
     data: {
-      seats: 2,
+      seats: 3,
       date: dayjs().toDate(),
       outwardTime: dayjs().add(3, "days").hour(17).minute(0).toDate(),
       stops: {
