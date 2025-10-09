@@ -247,8 +247,7 @@ const Stop = ({ id, index, onRemove, isEditable = true }: StopProps) => {
 
   // Locations already used in a stop
   const usedLocations = [
-    ...(formFields.stops?.map((stop: { location: string }) => stop.location) ??
-      []),
+    ...(formFields.stops?.map((stop: { location: string }) => stop.location) ?? []),
     formFields.outwardLocation,
     formFields.inwardLocation,
   ].filter(Boolean);

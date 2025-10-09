@@ -87,16 +87,16 @@ const newCommute = async (
             commute.seats
           } seats available) 
           \n Trip type : *${commuteTypeLabels[commute.commuteType]}*${
-            commute.departureTime || commute.returnTime
+            commute.outwardTime || commute.inwardTime
               ? ` (${
-                  commute.departureTime
-                    ? `Inward : *${dayjs(commute.departureTime).format(
+                  commute.outwardTime
+                    ? `Inward : *${dayjs(commute.outwardTime).format(
                         ONLY_TIME
                       )}*`
                     : ""
-                }${commute.departureTime && commute.returnTime ? " and " : ""}${
-                  commute.returnTime
-                    ? `Outward : *${dayjs(commute.returnTime).format(
+                }${commute.outwardTime && commute.inwardTime ? " and " : ""}${
+                  commute.inwardTime
+                    ? `Outward : *${dayjs(commute.inwardTime).format(
                         ONLY_TIME
                       )}*`
                     : ""

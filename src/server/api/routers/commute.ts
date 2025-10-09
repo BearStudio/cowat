@@ -19,8 +19,7 @@ export const commuteRouter = createTRPCRouter({
         inwardTime: z.date().nullish(),
         outwardLocation: z.string().nullish(),
         inwardLocation: z.string().nullish(),
-        stops: z
-          .array(
+        stops: z.array(
             z.object({
               location: z.string(),
               time: z.string(),
@@ -425,8 +424,7 @@ export const commuteRouter = createTRPCRouter({
         outwardLocation: z.string().nullish(),
         inwardLocation: z.string().nullish(),
         seats: z.number().min(1),
-        stops: z
-          .array(
+        stops: z.array(
             z.object({
               location: z.string(),
               time: z.string(),

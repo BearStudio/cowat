@@ -9,8 +9,7 @@ export const templateRouter = createTRPCRouter({
     .input(
       z.object({
         seats: z.number().min(1),
-        stops: z
-          .array(
+        stops: z.array(
             z.object({
               location: z.string(),
               time: z.string(),
@@ -181,8 +180,7 @@ export const templateRouter = createTRPCRouter({
       z.object({
         id: z.string().cuid(),
         seats: z.number().min(1),
-        stops: z
-          .array(
+        stops: z.array(
             z.object({
               location: z.string(),
               time: z.string(),
