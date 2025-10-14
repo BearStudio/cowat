@@ -487,6 +487,10 @@ export const commuteRouter = createTRPCRouter({
             },
           },
         });
+      } else {
+        await ctx.prisma.stop.deleteMany({
+          where: { commuteId: input.id },
+        });
       }
 
       const commute = await ctx.prisma.commute.update({
@@ -498,7 +502,7 @@ export const commuteRouter = createTRPCRouter({
           inwardTime: input.inwardTime,
           stops: {
             create: [
-              ...(input.outwardLocation
+              ...(input.outwardLocation && input.outwardTime
                 ? [
                     {
                       time: dayjs(input.outwardTime).format(ONLY_TIME),
