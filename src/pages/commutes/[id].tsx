@@ -52,7 +52,7 @@ const EditCommute: NextPage = () => {
         ).toDate(),
         date: dayjs(
           `${dayjs(commute.data?.date).format("DD/MM/YYYY")} ${
-            otherValues.stops?.[0]?.time
+            commute.data?.date
           }`,
           "DD/MM/YYYY HH:mm"
         ).toDate(),
