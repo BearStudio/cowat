@@ -134,6 +134,13 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
       confirmCommuteActionModal.onOpen();
     } else {
       bookCommute.mutate({ stopId, tripType });
+
+      if (tripType === "ROUND") {
+        const inwardStop = props.stops.at(-1);
+        if (inwardStop) {
+          bookCommute.mutate({ stopId: inwardStop.id, tripType: "ROUND" });
+        }
+      }
     }
   };
 
