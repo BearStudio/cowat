@@ -45,6 +45,7 @@ export const commuteRouter = createTRPCRouter({
                     {
                       time: dayjs(input.outwardTime).format(ONLY_TIME),
                       locationId: input.outwardLocation,
+                      isOutward: true,
                     },
                   ]
                 : []),
@@ -55,12 +56,15 @@ export const commuteRouter = createTRPCRouter({
                     {
                       time: dayjs(input.inwardTime).format(ONLY_TIME),
                       locationId: input.inwardLocation,
+                      isInward: true,
                     },
                   ]
                 : []),
               ...(input.stops?.map((stop) => ({
                 time: stop.time,
                 locationId: stop.location,
+                isOutward: false,
+                isInward: false,
               })) ?? []),
             ],
           },
@@ -507,6 +511,7 @@ export const commuteRouter = createTRPCRouter({
                     {
                       time: dayjs(input.outwardTime).format(ONLY_TIME),
                       locationId: input.outwardLocation,
+                      isOutward: true,
                     },
                   ]
                 : []),
@@ -517,6 +522,7 @@ export const commuteRouter = createTRPCRouter({
                     {
                       time: dayjs(input.inwardTime).format(ONLY_TIME),
                       locationId: input.inwardLocation,
+                      isInward: true,
                     },
                   ]
                 : []),

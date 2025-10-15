@@ -36,6 +36,7 @@ export const templateRouter = createTRPCRouter({
                     {
                       time: input.outwardTime,
                       locationId: input.outwardLocation,
+                      isOutward: true,
                     },
                   ]
                 : []),
@@ -44,12 +45,15 @@ export const templateRouter = createTRPCRouter({
                     {
                       time: input.inwardTime,
                       locationId: input.inwardLocation,
+                      isInward: true,
                     },
                   ]
                 : []),
               ...(input.stops?.map((stop) => ({
                 time: stop.time,
                 locationId: stop.location,
+                isInward: false,
+                isOutward: false,
               })) ?? []),
             ],
           },
@@ -128,6 +132,8 @@ export const templateRouter = createTRPCRouter({
               locationId: true,
               location: true,
               time: true,
+              isInward: true,
+              isOutward: true,
             },
           },
         },
@@ -141,21 +147,18 @@ export const templateRouter = createTRPCRouter({
       }
 
       const allStops = template.stops;
-      const outwardStop = ["ONEWAY", "ROUND"].includes(template.commuteType)
-        ? allStops[0]
-        : null;
-      const returnStop =
-        template.commuteType === "ROUND" ? allStops.at(-1) : null;
+      const outwardStop = allStops.find((s) => s.isOutward) ?? null;
+      const inwardStop = allStops.find((s) => s.isInward) ?? null;
       const intermediateStops = allStops.filter(
-        (stop) => stop !== outwardStop && stop !== returnStop
+        (stop) => !stop.isOutward && !stop.isInward
       );
 
       return {
         ...template,
         outwardLocation: outwardStop?.locationId,
         outwardTime: outwardStop?.time,
-        inwardLocation: returnStop?.locationId,
-        inwardTime: returnStop?.time,
+        inwardLocation: inwardStop?.locationId,
+        inwardTime: inwardStop?.time,
         stops: intermediateStops.map((stops) => ({
           id: stops.id,
           location: stops.location,
@@ -215,15 +218,24 @@ export const templateRouter = createTRPCRouter({
                     {
                       time: input.outwardTime,
                       locationId: input.outwardLocation,
+                      isOutward: true,
                     },
                   ]
                 : []),
               ...(input.stops?.map((stop) => ({
                 time: stop.time,
                 locationId: stop.location,
+                isInward: false,
+                isOutward: false,
               })) ?? []),
               ...(input.inwardLocation && input.inwardTime
-                ? [{ time: input.inwardTime, locationId: input.inwardLocation }]
+                ? [
+                    {
+                      time: input.inwardTime,
+                      locationId: input.inwardLocation,
+                      isInward: true,
+                    },
+                  ]
                 : []),
             ],
           },

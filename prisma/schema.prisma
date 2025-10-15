@@ -46,6 +46,8 @@ model Stop {
     commuteTemplateId String?
     passengers        PassengersOnStops[]
     driverStatus      DriverStopStatus    @default(UNKNOWN)
+    isOutward         Boolean             @default(false)
+    isInward          Boolean             @default(false)
 
     @@index([locationId])
     @@index([commuteId])

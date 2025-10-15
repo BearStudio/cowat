@@ -66,34 +66,32 @@ const EditCommute: NextPage = () => {
     );
   };
 
-  const intermediateStops = commute.data
-    ? commute.data.stops
-        .slice(
-          1, // remove the first
-          commute.data.commuteType === "ROUND"
-            ? -1 // for ROUND remove the last
-            : commute.data.stops.length
-        )
-        .map((stop) => ({
-          ...stop,
-          location: stop.location?.id,
-        }))
-    : [];
+  const intermediateStops =
+    commute.data?.stops
+      ?.filter((s) => !s.isOutward && !s.isInward)
+      .map((stop) => ({
+        ...stop,
+        location: stop.location?.id,
+      })) ?? [];
 
   const defaultValues = {
     ...commute.data,
     stops: intermediateStops,
     commuteType: commute.data?.commuteType as "ROUND" | "ONEWAY",
-    outwardLocation: commute.data?.stops?.[0]?.location?.id,
-    outwardTime: dayjs(commute.data?.stops?.[0]?.time, "HH:mm").toDate(),
+    outwardLocation: commute.data?.stops?.find((s) => s.isOutward)?.location
+      ?.id,
+    outwardTime: dayjs(
+      commute.data?.stops.find((s) => s.isOutward)?.time,
+      "HH:mm"
+    ).toDate(),
     inwardLocation:
       commute.data?.commuteType === "ROUND"
-        ? commute.data?.stops?.[commute.data.stops.length - 1]?.location?.id
+        ? commute.data?.stops?.find((s) => s.isInward)?.location?.id
         : undefined,
     inwardTime:
       commute.data?.commuteType === "ROUND"
         ? dayjs(
-            commute.data?.stops?.[commute.data.stops.length - 1]?.time,
+            commute.data?.stops?.find((s) => s.isInward)?.time,
             "HH:mm"
           ).toDate()
         : undefined,
