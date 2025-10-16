@@ -81,16 +81,16 @@ export const CommuteForm = ({
 
   const numberOfPassengers = commute.isSuccess
     ? getAllPassengers(
-        commute.data.stops.filter((s) => !s.isOutward || !s.isInward)
+        commute.data.stops.filter((stop) => !stop.isOutward || !stop.isInward)
       ).length
     : 0;
 
   const numberOfPassengersOutward = commute.isSuccess
-    ? getAllPassengers(commute.data.stops.filter((s) => s.isOutward)).length
+    ? getAllPassengers(commute.data.stops.filter((stop) => stop.isOutward)).length
     : 0;
 
   const numberOfPassengersInward = commute.isSuccess
-    ? getAllPassengers(commute.data.stops.filter((s) => s.isInward)).length
+    ? getAllPassengers(commute.data.stops.filter((stop) => stop.isInward)).length
     : 0;
 
   const arePassengersOnStops = numberOfPassengers > 0;
@@ -213,10 +213,9 @@ export const CommuteForm = ({
           const stopIndex = Number.isInteger(parseInt(key)) // index is not update when you delete stops above in the list, but key is
             ? parseInt(key)
             : index;
-          const stopId = values.stops?.[index]?.id;
           const stop =
-            stopId && commute.data?.stops
-              ? commute.data.stops.find((s) => s.id === stopId)
+            commute.data?.stops
+              ? commute.data.stops.find((stop) => stop.id === values.stops?.[index]?.id)
               : commute.data?.stops?.[stopIndex];
           const numberOfPassengersOnStop = stop
             ? getAllPassengers([stop]).length

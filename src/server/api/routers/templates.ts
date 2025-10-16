@@ -147,8 +147,8 @@ export const templateRouter = createTRPCRouter({
       }
 
       const allStops = template.stops;
-      const outwardStop = allStops.find((s) => s.isOutward) ?? null;
-      const inwardStop = allStops.find((s) => s.isInward) ?? null;
+      const outwardStop = allStops.find((stop) => stop.isOutward) ?? null;
+      const inwardStop = allStops.find((stop) => stop.isInward) ?? null;
       const intermediateStops = allStops.filter(
         (stop) => !stop.isOutward && !stop.isInward
       );

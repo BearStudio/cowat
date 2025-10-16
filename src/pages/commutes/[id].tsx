@@ -68,7 +68,7 @@ const EditCommute: NextPage = () => {
 
   const intermediateStops =
     commute.data?.stops
-      ?.filter((s) => !s.isOutward && !s.isInward)
+      ?.filter((stop) => !stop.isOutward && !stop.isInward)
       .map((stop) => ({
         ...stop,
         location: stop.location?.id,
@@ -78,20 +78,20 @@ const EditCommute: NextPage = () => {
     ...commute.data,
     stops: intermediateStops,
     commuteType: commute.data?.commuteType as "ROUND" | "ONEWAY",
-    outwardLocation: commute.data?.stops?.find((s) => s.isOutward)?.location
+    outwardLocation: commute.data?.stops?.find((stop) => stop.isOutward)?.location
       ?.id,
     outwardTime: dayjs(
-      commute.data?.stops.find((s) => s.isOutward)?.time,
+      commute.data?.stops.find((stop) => stop.isOutward)?.time,
       "HH:mm"
     ).toDate(),
     inwardLocation:
       commute.data?.commuteType === "ROUND"
-        ? commute.data?.stops?.find((s) => s.isInward)?.location?.id
+        ? commute.data?.stops?.find((stop) => stop.isInward)?.location?.id
         : undefined,
     inwardTime:
       commute.data?.commuteType === "ROUND"
         ? dayjs(
-            commute.data?.stops?.find((s) => s.isInward)?.time,
+            commute.data?.stops?.find((stop) => stop.isInward)?.time,
             "HH:mm"
           ).toDate()
         : undefined,
