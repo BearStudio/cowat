@@ -150,7 +150,7 @@ const Driver = () => {
                   >
                     <>
                       {commute.data?.stops.length} Stops •{" "}
-                      {getPassengers(commute.data.stops).length} Passengers{" "}
+                      {getPassengers(commute.data.stops, commute.data.commuteType).length} Passengers{" "}
                     </>
                   </Text>
                 </HStack>
@@ -204,7 +204,7 @@ const Driver = () => {
                 {havePassengerOnStop(stop) && (
                   <CardBody p="2">
                     <Stack>
-                      {getPassengers([stop]).map((passenger) => (
+                      {getPassengers([stop], commute.data.commuteType).map((passenger) => (
                         <Flex
                           key={passenger.userId}
                           justify="space-between"
@@ -254,6 +254,7 @@ const Driver = () => {
                                   stopId: stop.id,
                                   passengerId: passenger.userId,
                                   requestStatus: "REFUSED",
+                                  tripType: passenger.tripType,
                                 })
                               }
                               confirmVariant="danger"

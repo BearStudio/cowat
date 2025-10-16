@@ -11,7 +11,7 @@ import { Icon } from "@/components/Icon";
 import { LocationForm } from "@/components/LocationForm";
 import type { RouterInputs } from "@/utils/api";
 import { api } from "@/utils/api";
-import { getPassengers } from "@/utils/commutes";
+import { getAllPassengers } from "@/utils/commutes";
 import {
   Alert,
   AlertDescription,
@@ -71,7 +71,7 @@ export const CommuteForm = ({
   );
 
   const values = useFormFields({
-    fields: ["commuteType"] as const,
+    fields: ["commuteType", "stops"] as const,
     selector: "value",
   });
 
@@ -80,10 +80,22 @@ export const CommuteForm = ({
   });
 
   const numberOfPassengers = commute.isSuccess
-    ? getPassengers(commute.data.stops, commute.data.commuteType).length
+    ? getAllPassengers(
+        commute.data.stops.filter((s) => !s.isOutward || !s.isInward)
+      ).length
+    : 0;
+
+  const numberOfPassengersOutward = commute.isSuccess
+    ? getAllPassengers(commute.data.stops.filter((s) => s.isOutward)).length
+    : 0;
+
+  const numberOfPassengersInward = commute.isSuccess
+    ? getAllPassengers(commute.data.stops.filter((s) => s.isInward)).length
     : 0;
 
   const arePassengersOnStops = numberOfPassengers > 0;
+  const arePassengersOnStopsOutward = numberOfPassengersOutward > 0;
+  const arePassengersOnStopsInward = numberOfPassengersInward > 0;
 
   return (
     <>
@@ -124,19 +136,29 @@ export const CommuteForm = ({
       {values.commuteType === "ROUND" && (
         <Flex direction={{ base: "column", md: "row" }} gap={6}>
           <Flex direction="column" flex={1}>
-            <LocationField name="outwardLocation" label="📍 From" />
+            <LocationField
+              name="outwardLocation"
+              label="📍 From"
+              isEditable={arePassengersOnStopsOutward}
+            />
             <FieldTime
               label="🕑 Outward time"
               name="outwardTime"
+              isDisabled={arePassengersOnStopsOutward}
               required="Please provide an outward time"
               mt={4}
             />
           </Flex>
           <Flex direction="column" flex={1}>
-            <LocationField name="inwardLocation" label="📍 To" />
+            <LocationField
+              name="inwardLocation"
+              label="📍 To"
+              isEditable={arePassengersOnStopsInward}
+            />
             <FieldTime
               label="🕑 Inward time"
               name="inwardTime"
+              isDisabled={arePassengersOnStopsInward}
               required="Please provide a inward time"
               mt={4}
             />
@@ -191,9 +213,13 @@ export const CommuteForm = ({
           const stopIndex = Number.isInteger(parseInt(key)) // index is not update when you delete stops above in the list, but key is
             ? parseInt(key)
             : index;
-          const stop = commute.data?.stops[stopIndex];
-          const numberOfPassengersOnStop = commute.isSuccess
-            ? getPassengers(commute.data.stops, commute.data.commuteType).length
+          const stopId = values.stops?.[index]?.id;
+          const stop =
+            stopId && commute.data?.stops
+              ? commute.data.stops.find((s) => s.id === stopId)
+              : commute.data?.stops?.[stopIndex];
+          const numberOfPassengersOnStop = stop
+            ? getAllPassengers([stop]).length
             : 0;
           const isEditable = numberOfPassengersOnStop === 0;
           const isRemovable = stops.keys.length > 1 && isEditable;
