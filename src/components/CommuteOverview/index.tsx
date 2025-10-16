@@ -133,13 +133,15 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
     if (myCommutesOnDate.isSuccess && myCommutesOnDate.data?.length > 0) {
       confirmCommuteActionModal.onOpen();
     } else {
-      bookCommute.mutate({ stopId, tripType });
-
       if (tripType === "ROUND") {
         const inwardStop = props.stops.at(-1);
         if (inwardStop) {
-          bookCommute.mutate({ stopId: inwardStop.id, tripType: "ROUND" });
+          bookCommute.mutate({ stopId, tripType: "ONEWAY" });
+          bookCommute.mutate({ stopId: inwardStop.id, tripType: "RETURN" });
         }
+      }
+      else {
+        bookCommute.mutate({ stopId, tripType });
       }
     }
   };
