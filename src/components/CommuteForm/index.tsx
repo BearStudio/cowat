@@ -124,6 +124,7 @@ export const CommuteForm = ({
       {values.commuteType === "ROUND" && (
         <Flex direction={{ base: "column", md: "row" }} gap={6}>
           <Flex direction="column" flex={1}>
+            {/* Outward : for the departure */}
             <LocationField name="outwardLocation" label="📍 From" />
             <FieldTime
               label="🕑 Outward time"
@@ -133,6 +134,7 @@ export const CommuteForm = ({
             />
           </Flex>
           <Flex direction="column" flex={1}>
+            {/* Inward : for the return */}
             <LocationField name="inwardLocation" label="📍 To" />
             <FieldTime
               label="🕑 Inward time"
