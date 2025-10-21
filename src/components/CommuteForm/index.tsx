@@ -11,7 +11,7 @@ import { Icon } from "@/components/Icon";
 import { LocationForm } from "@/components/LocationForm";
 import type { RouterInputs } from "@/utils/api";
 import { api } from "@/utils/api";
-import { getPassengers } from "@/utils/commutes";
+import { getAllPassengers } from "@/utils/commutes";
 import {
   Alert,
   AlertDescription,
@@ -81,10 +81,28 @@ export const CommuteForm = ({
   });
 
   const numberOfPassengers = commute.isSuccess
-    ? getPassengers(commute.data.stops, commute.data.commuteType).length
+    ? getAllPassengers(commute.data?.stops ?? []).length
     : 0;
 
+  const numberOfPassengersOutward = (() => {
+    if (commute.isSuccess) {
+      const outwardStop = commute.data?.stops?.[0];
+      return outwardStop ? getAllPassengers([outwardStop]).length : 0;
+    }
+    return 0;
+  })();
+
+  const numberOfPassengersInward = (() => {
+    if (commute.isSuccess) {
+      const inwardStop = commute.data?.stops?.at(-1);
+      return inwardStop ? getAllPassengers([inwardStop]).length : 0;
+    }
+    return 0;
+  })();
+
   const arePassengersOnStops = numberOfPassengers > 0;
+  const arePassengersOnStopsOutward = numberOfPassengersOutward > 0;
+  const arePassengersOnStopsInward = numberOfPassengersInward > 0;
 
   const stopTimes = (values.stops ?? []).map(
     (stop: { time: string }) => stop?.time
@@ -146,11 +164,16 @@ export const CommuteForm = ({
       />
       <Flex flex={1} direction={{ base: "column", md: "row" }} gap={6}>
         {/* Outward : for the departure */}
-        <LocationField name="outwardLocation" label="📍 Outward location" />
+        <LocationField
+          name="outwardLocation"
+          label="📍 Outward location"
+          isEditable={arePassengersOnStopsOutward}
+        />
         <FieldTime
           label="🕑 Outward time"
           name="outwardTime"
           required="Please provide an outward time"
+          isDisabled={arePassengersOnStopsOutward}
           flex={1}
           validations={[
             {
@@ -196,9 +219,13 @@ export const CommuteForm = ({
           const stopIndex = Number.isInteger(parseInt(key)) // index is not update when you delete stops above in the list, but key is
             ? parseInt(key)
             : index;
-          const stop = commute.data?.stops[stopIndex];
-          const numberOfPassengersOnStop = commute.isSuccess
-            ? getPassengers(commute.data.stops, commute.data.commuteType).length
+          const stop = commute.data?.stops
+            ? commute.data.stops.find(
+                (stop) => stop.id === values.stops?.[index]?.id
+              )
+            : commute.data?.stops?.[stopIndex];
+          const numberOfPassengersOnStop = stop
+            ? getAllPassengers([stop]).length
             : 0;
           const isEditable = numberOfPassengersOnStop === 0;
           const isRemovable = stops.keys.length > 1 && isEditable;
@@ -227,11 +254,16 @@ export const CommuteForm = ({
       {values.commuteType === "ROUND" && (
         <Flex flex={1} direction={{ base: "column", md: "row" }} gap={6}>
           {/* Inward : for the return */}
-          <LocationField name="inwardLocation" label="📍 Inward location" />
+          <LocationField
+            name="inwardLocation"
+            label="📍 Inward location"
+            isEditable={arePassengersOnStopsInward}
+          />
           <FieldTime
             label="🕑 Inward time"
             name="inwardTime"
             required="Please provide a inward time"
+            isDisabled={arePassengersOnStopsInward}
             flex={1}
             validations={[
               {
