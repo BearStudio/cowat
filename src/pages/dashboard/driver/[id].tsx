@@ -149,7 +149,13 @@ const Driver = () => {
                   >
                     <>
                       {commute.data?.stops.length} Stops •{" "}
-                      {getPassengers(commute.data.stops, commute.data.commuteType).length} Passengers{" "}
+                      {
+                        getPassengers(
+                          commute.data.stops,
+                          commute.data.commuteType
+                        ).length
+                      }{" "}
+                      Passengers{" "}
                     </>
                   </Text>
                 </HStack>
@@ -203,84 +209,86 @@ const Driver = () => {
                 {havePassengerOnStop(stop) && (
                   <CardBody p="2">
                     <Stack>
-                      {getPassengers([stop], commute.data.commuteType).map((passenger) => (
-                        <Flex
-                          key={passenger.userId}
-                          justify="space-between"
-                          align="center"
-                        >
-                          <HStack>
-                            <Avatar
-                              size="sm"
-                              src={passenger.user.image ?? ""}
-                              name={
-                                passenger.user.name ??
-                                passenger.user.email ??
-                                ""
-                              }
-                              opacity={
-                                NOT_YET_PASSENGER_IF_INSIDE.includes(
-                                  passenger.requestStatus
-                                )
-                                  ? 0.6
-                                  : 1
-                              }
-                            />
-                            <Text fontSize="sm" fontWeight="medium">
-                              {passenger.user.name ?? passenger.user.email}
-                            </Text>
-                          </HStack>
-                          <Stack align={"end"}>
-                            <Tag
-                              colorScheme={
-                                PASSENGER_STATUS[passenger.stopStatus]
-                                  .colorScheme
-                              }
-                            >
-                              {PASSENGER_STATUS[passenger.stopStatus].text}{" "}
-                              {passenger.delay}{" "}
-                              {!!passenger.delay && " minutes"}
-                              <Icon
-                                ml="2"
-                                icon={
-                                  PASSENGER_STATUS[passenger.stopStatus].icon
+                      {getPassengers([stop], commute.data.commuteType).map(
+                        (passenger) => (
+                          <Flex
+                            key={passenger.userId}
+                            justify="space-between"
+                            align="center"
+                          >
+                            <HStack>
+                              <Avatar
+                                size="sm"
+                                src={passenger.user.image ?? ""}
+                                name={
+                                  passenger.user.name ??
+                                  passenger.user.email ??
+                                  ""
+                                }
+                                opacity={
+                                  NOT_YET_PASSENGER_IF_INSIDE.includes(
+                                    passenger.requestStatus
+                                  )
+                                    ? 0.6
+                                    : 1
                                 }
                               />
-                            </Tag>
-                            <ConfirmModal
-                              onConfirm={() =>
-                                updateRequestStatus.mutate({
-                                  stopId: stop.id,
-                                  passengerId: passenger.userId,
-                                  requestStatus: "REFUSED",
-                                  tripType: passenger.tripType
-                                })
-                              }
-                              confirmVariant="danger"
-                              confirmText="Decline passenger"
-                              cancelText="Cancel"
-                              title="You’re about to decline a passenger on your commute."
-                              message={
-                                <>
-                                  Are you sure you want to decline{" "}
-                                  <strong>{passenger.user.name}</strong> at stop
-                                  &quot;
-                                  <strong>{stop.location?.name}</strong>
-                                  &quot; at <strong>{stop.time}</strong> ?
-                                </>
-                              }
-                            >
-                              <Button
-                                variant="danger"
-                                size="sm"
-                                isLoading={updateRequestStatus.isLoading}
+                              <Text fontSize="sm" fontWeight="medium">
+                                {passenger.user.name ?? passenger.user.email}
+                              </Text>
+                            </HStack>
+                            <Stack align={"end"}>
+                              <Tag
+                                colorScheme={
+                                  PASSENGER_STATUS[passenger.stopStatus]
+                                    .colorScheme
+                                }
                               >
-                                Decline passenger
-                              </Button>
-                            </ConfirmModal>
-                          </Stack>
-                        </Flex>
-                      ))}
+                                {PASSENGER_STATUS[passenger.stopStatus].text}{" "}
+                                {passenger.delay}{" "}
+                                {!!passenger.delay && " minutes"}
+                                <Icon
+                                  ml="2"
+                                  icon={
+                                    PASSENGER_STATUS[passenger.stopStatus].icon
+                                  }
+                                />
+                              </Tag>
+                              <ConfirmModal
+                                onConfirm={() =>
+                                  updateRequestStatus.mutate({
+                                    stopId: stop.id,
+                                    passengerId: passenger.userId,
+                                    requestStatus: "REFUSED",
+                                    tripType: passenger.tripType,
+                                  })
+                                }
+                                confirmVariant="danger"
+                                confirmText="Decline passenger"
+                                cancelText="Cancel"
+                                title="You’re about to decline a passenger on your commute."
+                                message={
+                                  <>
+                                    Are you sure you want to decline{" "}
+                                    <strong>{passenger.user.name}</strong> at
+                                    stop &quot;
+                                    <strong>{stop.location?.name}</strong>
+                                    &quot; at <strong>{stop.time}</strong> ?
+                                  </>
+                                }
+                              >
+                                <Button
+                                  variant="danger"
+                                  size="sm"
+                                  isLoading={updateRequestStatus.isLoading}
+                                >
+                                  Decline passenger
+                                </Button>
+                              </ConfirmModal>
+                            </Stack>
+                          </Flex>
+                        )
+                      )}
                     </Stack>
                   </CardBody>
                 )}
