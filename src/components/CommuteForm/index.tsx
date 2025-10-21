@@ -43,7 +43,7 @@ import {
 import { isMaxNumber, isMinNumber } from "@formiz/validations";
 import { Plus, Trash } from "lucide-react";
 import { useRouter } from "next/router";
-import { Fragment } from "react";
+import { Fragment, useEffect } from "react";
 import dayjs from "dayjs";
 import { LocationField } from "@/components/LocationField";
 
@@ -61,6 +61,7 @@ export const CommuteForm = ({
   mode = "CREATE",
 }: CommuteFormProps) => {
   const router = useRouter();
+  const form = useFormContext();
   const { id } = router.query;
 
   const commute = api.commute.commuteById.useQuery(
@@ -71,7 +72,7 @@ export const CommuteForm = ({
   );
 
   const values = useFormFields({
-    fields: ["commuteType"] as const,
+    fields: ["commuteType", "stops", "outwardTime", "inwardTime"] as const,
     selector: "value",
   });
 
@@ -84,6 +85,38 @@ export const CommuteForm = ({
     : 0;
 
   const arePassengersOnStops = numberOfPassengers > 0;
+
+  const stopTimes = (values.stops ?? []).map(
+    (stop: { time: string }) => stop?.time
+  );
+
+  useEffect(() => {
+    form.setValues({
+      outwardTime: values.outwardTime,
+      inwardTime: values.inwardTime,
+    });
+  });
+
+  const firstStopTime = stopTimes[0];
+  const lastStopTime = stopTimes.at(-1);
+
+  const validateOutwardTime = (value?: string) => {
+    if (value || firstStopTime) {
+      const outward = dayjs(value, "HH:mm");
+      const firstStop = dayjs(firstStopTime, "HH:mm");
+      return outward.isBefore(firstStop);
+    }
+    return true;
+  };
+
+  const validateInwardTime = (value?: string) => {
+    if (value || lastStopTime) {
+      const inward = dayjs(value, "HH:mm");
+      const lastStop = dayjs(lastStopTime, "HH:mm");
+      return inward.isAfter(lastStop);
+    }
+    return true;
+  };
 
   return (
     <>
@@ -119,6 +152,12 @@ export const CommuteForm = ({
           name="outwardTime"
           required="Please provide an outward time"
           flex={1}
+          validations={[
+            {
+              handler: validateOutwardTime,
+              message: "Outward time must be before the first stop",
+            },
+          ]}
         />
       </Flex>
       {["CREATE"].includes(mode) && (
@@ -194,6 +233,12 @@ export const CommuteForm = ({
             name="inwardTime"
             required="Please provide a inward time"
             flex={1}
+            validations={[
+              {
+                handler: validateInwardTime,
+                message: "Inward time must be after the last stop",
+              },
+            ]}
           />
         </Flex>
       )}
@@ -210,7 +255,13 @@ type StopProps = {
   onRemove: () => void;
 };
 
-const Stop = ({ id, index, onRemove, isEditable = true, isRemovable = true, }: StopProps) => {
+const Stop = ({
+  id,
+  index,
+  onRemove,
+  isEditable = true,
+  isRemovable = true,
+}: StopProps) => {
   const ctx = api.useContext();
   const form = useFormContext();
   const formFields = useFormFields({
@@ -230,7 +281,8 @@ const Stop = ({ id, index, onRemove, isEditable = true, isRemovable = true, }: S
 
   // Locations already used in a stop
   const usedLocations = [
-    ...(formFields.stops?.map((stop: { location: string }) => stop.location) ?? []),
+    ...(formFields.stops?.map((stop: { location: string }) => stop.location) ??
+      []),
     formFields.outwardLocation,
     formFields.inwardLocation,
   ].filter(Boolean);
