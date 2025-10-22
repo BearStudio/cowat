@@ -6,7 +6,7 @@ import { FieldTime } from "@/components/FieldTime";
 import { FieldHidden } from "@/components/FieldHidden";
 import { FieldNumber } from "@/components/FieldNumber";
 import { FieldInput } from "@/components/FieldInput";
-import { FieldRadio } from "@/components/FieldRadio";
+import { FieldCheckbox } from "@/components/FieldCheckbox";
 import { Icon } from "@/components/Icon";
 import { LocationForm } from "@/components/LocationForm";
 import type { RouterInputs } from "@/utils/api";
@@ -85,6 +85,8 @@ export const CommuteForm = ({
 
   const arePassengersOnStops = numberOfPassengers > 0;
 
+  const form = useFormContext();
+
   return (
     <>
       {["TEMPLATE"].includes(mode) && (
@@ -111,52 +113,16 @@ export const CommuteForm = ({
           },
         ]}
       />
-      <FieldRadio
-        label="🚗 Type of trip"
-        name="commuteType"
-        required="Please select the type of trip"
-        options={[
-          { value: "ROUND", label: "Round trip" },
-          { value: "ONEWAY", label: "One-way" },
-        ]}
-        defaultValue="ROUND"
-      />
-      {values.commuteType === "ROUND" && (
-        <Flex direction={{ base: "column", md: "row" }} gap={6}>
-          <Flex direction="column" flex={1}>
-            {/* Outward : for the departure */}
-            <LocationField name="outwardLocation" label="📍 From" />
-            <FieldTime
-              label="🕑 Outward time"
-              name="outwardTime"
-              required="Please provide an outward time"
-              mt={4}
-            />
-          </Flex>
-          <Flex direction="column" flex={1}>
-            {/* Inward : for the return */}
-            <LocationField name="inwardLocation" label="📍 To" />
-            <FieldTime
-              label="🕑 Inward time"
-              name="inwardTime"
-              required="Please provide a inward time"
-              mt={4}
-            />
-          </Flex>
-        </Flex>
-      )}
-
-      {values.commuteType === "ONEWAY" && (
-        <Flex flex={1} direction={{ base: "column", md: "row" }} gap={6}>
-          <LocationField name="outwardLocation" label="📍 Outward location" />
-          <FieldTime
-            label="🕑 Outward time"
-            name="outwardTime"
-            required="Please provide an outward time"
-            flex={1}
-          />
-        </Flex>
-      )}
+      <Flex flex={1} direction={{ base: "column", md: "row" }} gap={6}>
+        {/* Outward : for the departure */}
+        <LocationField name="outwardLocation" label="📍 Outward location" />
+        <FieldTime
+          label="🕑 Outward time"
+          name="outwardTime"
+          required="Please provide an outward time"
+          flex={1}
+        />
+      </Flex>
       {["CREATE"].includes(mode) && (
         <>
           <FieldDayPicker
@@ -216,6 +182,27 @@ export const CommuteForm = ({
           <Icon icon={Plus} /> Add Stop 📍
         </AddPlaceholder>
       </>
+      <FieldCheckbox
+        label="🚗 Round trip"
+        name="isRoundTrip"
+        defaultValue={true}
+        onValueChange={(checked) => {
+          form.setValues({ commuteType: checked ? "ROUND" : "ONEWAY" });
+        }}
+      />
+      <FieldHidden name="commuteType" defaultValue="ROUND" />
+      {values.commuteType === "ROUND" && (
+        <Flex flex={1} direction={{ base: "column", md: "row" }} gap={6}>
+          {/* Inward : for the return */}
+          <LocationField name="inwardLocation" label="📍 Inward location" />
+          <FieldTime
+            label="🕑 Inward time"
+            name="inwardTime"
+            required="Please provide a inward time"
+            flex={1}
+          />
+        </Flex>
+      )}
       <FieldTextarea label="Comment" name="comment" />
     </>
   );

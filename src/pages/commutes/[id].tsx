@@ -97,6 +97,7 @@ const EditCommute: NextPage = () => {
             "HH:mm"
           ).toDate()
         : undefined,
+    isRoundTrip: commute.data?.commuteType === "ROUND" ? true : false,
   };
 
   const editCommuteForm = useForm({
