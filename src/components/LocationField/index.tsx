@@ -26,7 +26,7 @@ type LocationFieldProps = {
   isEditable?: boolean;
 };
 
-export const LocationField = ({ name, label, isEditable = false }: LocationFieldProps) => {
+export const LocationField = ({ name, label, isEditable = true }: LocationFieldProps) => {
   const ctx = api.useContext();
   const form = useFormContext();
   const { isOpen, onOpen, onClose } = useDisclosure();
