@@ -26,7 +26,7 @@ type LocationFieldProps = {
   isEditable?: boolean;
 };
 
-export const LocationField = ({ name, label, isEditable = true }: LocationFieldProps) => {
+export const LocationField = ({ name, label, isEditable = false }: LocationFieldProps) => {
   const ctx = api.useContext();
   const form = useFormContext();
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -64,14 +64,14 @@ export const LocationField = ({ name, label, isEditable = true }: LocationFieldP
           placeholder="Please select a location"
           options={getSelectOptions()}
           required="Location is required"
-          isDisabled={isEditable}
+          isDisabled={!isEditable}
         />
         <Box pt={8}>
           <IconButton
             aria-label="Add a location"
             icon={<Icon icon={Plus} />}
             onClick={onOpen}
-            isDisabled={isEditable}
+            isDisabled={!isEditable}
           />
         </Box>
       </HStack>
