@@ -2,21 +2,15 @@ import type { PassengersOnStops, Stop, User } from "@prisma/client";
 import type { RouterOutputs } from "@/utils/api";
 
 type CommuteType = RouterOutputs["commute"]["commuteById"];
+type PassengerWithUser = PassengersOnStops & { user: User };
+type StopWithPassengers = Stop & { passengers: PassengerWithUser[] };
 
 /**
  * Get all the passengers of the given stops, wihtout the canceled ones.
  * @returns The passengers of the given stops, without the canceled ones.
  */
 export const getPassengers = (
-  stops: Array<
-    Stop & {
-      passengers: Array<
-        PassengersOnStops & {
-          user: User;
-        }
-      >;
-    }
-  >,
+  stops: StopWithPassengers[],
   tripType: "ROUND" | "ONEWAY" | "RETURN"
 ) => {
   return stops.flatMap((stop) =>
@@ -36,15 +30,7 @@ export const getPassengers = (
 };
 
 export const getAllPassengers = (
-  stops: Array<
-    Stop & {
-      passengers: Array<
-        PassengersOnStops & {
-          user: User;
-        }
-      >;
-    }
-  >
+  stops: StopWithPassengers[]
 ) => {
   return stops.flatMap((stop) =>
     stop.passengers.filter(
@@ -60,15 +46,7 @@ export const getAllPassengers = (
  * @returns The passengers of the given stops, only accepted ones.
  */
 export const getAcceptedPassengers = (
-  stops: Array<
-    Stop & {
-      passengers: Array<
-        PassengersOnStops & {
-          user: User;
-        }
-      >;
-    }
-  >
+  stops: StopWithPassengers[]
 ) => {
   return stops.flatMap((stop) =>
     stop.passengers.filter(
