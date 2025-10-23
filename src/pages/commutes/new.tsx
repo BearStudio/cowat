@@ -86,6 +86,7 @@ const New: NextPage = () => {
     ...fromTemplate.data,
     stops,
     date: dateString,
+    commuteType: "ROUND" as const,
   };
 
   const createCommute = api.commute.createCommute.useMutation({
