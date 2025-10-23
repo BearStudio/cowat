@@ -184,13 +184,12 @@ export const CommuteForm = ({
       </>
       <FieldCheckbox
         label="🚗 Round trip"
-        name="isRoundTrip"
-        defaultValue={true}
+        name="commuteType"
+        isChecked={values.commuteType === "ROUND"}
         onValueChange={(checked) => {
           form.setValues({ commuteType: checked ? "ROUND" : "ONEWAY" });
         }}
       />
-      <FieldHidden name="commuteType" defaultValue="ROUND" />
       {values.commuteType === "ROUND" && (
         <Flex flex={1} direction={{ base: "column", md: "row" }} gap={6}>
           {/* Inward : for the return */}

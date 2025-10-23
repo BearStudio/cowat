@@ -32,6 +32,7 @@ const NewCommuteTemplates: NextPage = () => {
 
   const createCommuteForm = useForm({
     onValidSubmit: handleOnValidSubmit,
+    initialValues: { commuteType: "ROUND" as const },
   });
 
   return (
