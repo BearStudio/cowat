@@ -41,9 +41,11 @@ import {
   CheckCircle2,
   ChevronDownIcon,
   Clock,
+  LogIn,
   Navigation,
   Pencil,
   Phone,
+  Undo2,
 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
@@ -203,11 +205,29 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
             />
             <Stack spacing={0}>
               <HStack>
-                <Text fontWeight="bold" fontSize="sm">
-                  {` ${dayjs(props.date).format(FULL_TEXT_DATE)} ${dayjs(
-                    props.date
-                  ).format("HH:mm")}`}
-                </Text>
+                {props.commuteType === "ROUND" ? (
+                  <>
+                    <Text fontWeight="bold" fontSize="sm">
+                      {dayjs(props.date).format(FULL_TEXT_DATE)}
+                    </Text>
+                    <Text fontWeight="bold" fontSize="sm">
+                      <Icon icon={LogIn} />{" "}
+                      {dayjs(props.outwardTime).format(ONLY_TIME)}
+                    </Text>
+                    <Text fontWeight="bold" fontSize="sm">
+                      <Icon icon={Undo2} />{" "}
+                      {dayjs(props.inwardTime).format(ONLY_TIME)}
+                    </Text>
+                  </>
+                ) : (
+                  <>
+                    <Text fontWeight="bold" fontSize="sm">
+                      {` ${dayjs(props.date).format(FULL_TEXT_DATE)} ${dayjs(
+                        props.outwardTime
+                      ).format(ONLY_TIME)}`}
+                    </Text>
+                  </>
+                )}
               </HStack>
               <Text fontSize="sm">
                 {props.createdBy?.name ?? props.createdBy?.email}
@@ -250,31 +270,6 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
               }}
             >
               <Stack spacing="0" w="full">
-                <Flex flex="1" align="center">
-                  <Text fontWeight="medium" fontSize="sm">
-                    {`Type : ${commuteTypeLabels[props.commuteType]}`}
-                  </Text>
-                </Flex>
-                <Flex flex="1" align="center">
-                  <Text fontWeight="medium" fontSize="sm">
-                    {`${
-                      props.outwardTime
-                        ? `Outward : ${dayjs(props.outwardTime).format(
-                            ONLY_TIME
-                          )}`
-                        : ""
-                    } 
-                      ${props.outwardTime && props.inwardTime ? "and" : ""}    
-                      ${
-                        props.inwardTime
-                          ? `Inward : ${dayjs(props.inwardTime).format(
-                              ONLY_TIME
-                            )}`
-                          : ""
-                      }
-                    `}
-                  </Text>
-                </Flex>
                 <Flex flex="1" align="center" justify="space-between">
                   <Flex align="center">
                     <AccordionIcon />
@@ -283,9 +278,9 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
                       {props.stops.length > 1 ? "s" : ""} ·{" "}
                       {props.commuteType === "ROUND" ? (
                         <>
-                          One-way : {outwardPassengers.length}/{props.seats}{" "}
-                          seats · Return : {inwardPassengers.length}/
-                          {props.seats} seats
+                          <Icon icon={LogIn} /> {outwardPassengers.length}/
+                          {props.seats} seats · <Icon icon={Undo2} />{" "}
+                          {inwardPassengers.length}/{props.seats} seats
                         </>
                       ) : (
                         <>
@@ -300,26 +295,31 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
                       )}
                     </Text>
                   </Flex>
-                  {isPassengerAcceptedOnCommute && !props.isDeleted && (
-                    <Badge colorScheme="success" variant="solid">
-                      Passenger <Icon icon={CheckCircle2} />
+                  <Flex flex={1} gap="2" justify="flex-end">
+                    <Badge colorScheme="blue" variant="solid">
+                      {commuteTypeLabels[props.commuteType]}
                     </Badge>
-                  )}
-                  {isPassengerRequestedOnCommute && !props.isDeleted && (
-                    <Badge colorScheme="warning" variant="solid">
-                      Passenger <Icon icon={Clock} />
-                    </Badge>
-                  )}
-                  {isCurrentUserCreator && !props.isDeleted && (
-                    <Badge colorScheme="brand" variant="solid">
-                      Driver
-                    </Badge>
-                  )}
-                  {props.isDeleted && (
-                    <Badge colorScheme="error" variant="solid">
-                      Canceled
-                    </Badge>
-                  )}
+                    {isPassengerAcceptedOnCommute && !props.isDeleted && (
+                      <Badge colorScheme="success" variant="solid">
+                        Passenger <Icon icon={CheckCircle2} />
+                      </Badge>
+                    )}
+                    {isPassengerRequestedOnCommute && !props.isDeleted && (
+                      <Badge colorScheme="warning" variant="solid">
+                        Passenger <Icon icon={Clock} />
+                      </Badge>
+                    )}
+                    {isCurrentUserCreator && !props.isDeleted && (
+                      <Badge colorScheme="brand" variant="solid">
+                        Driver
+                      </Badge>
+                    )}
+                    {props.isDeleted && (
+                      <Badge colorScheme="error" variant="solid">
+                        Canceled
+                      </Badge>
+                    )}
+                  </Flex>
                 </Flex>
               </Stack>
             </AccordionButton>
