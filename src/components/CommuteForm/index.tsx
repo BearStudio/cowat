@@ -17,14 +17,15 @@ import {
   Divider,
   Flex,
 } from "@chakra-ui/react";
-import { useCollection, useFormContext, useFormFields } from "@formiz/core";
+import { useCollection, useFormFields } from "@formiz/core";
 import { isMaxNumber, isMinNumber } from "@formiz/validations";
 import { Plus } from "lucide-react";
 import { useRouter } from "next/router";
-import { Fragment, useEffect } from "react";
+import { Fragment } from "react";
 import dayjs from "dayjs";
 import { LocationField } from "@/components/LocationField";
 import { Stop } from "@/components/Stop";
+import { ONLY_TIME } from "@/constants/dates";
 
 type CommuteFormProps = {
   repeaterInitialValues: Array<object>;
@@ -40,7 +41,6 @@ export const CommuteForm = ({
   mode = "CREATE",
 }: CommuteFormProps) => {
   const router = useRouter();
-  const form = useFormContext();
   const { id } = router.query;
 
   const commute = api.commute.commuteById.useQuery(
@@ -87,32 +87,32 @@ export const CommuteForm = ({
     (stop: { time: string }) => stop?.time
   );
 
-  useEffect(() => {
-    form.setValues({
-      outwardTime: values.outwardTime,
-      inwardTime: values.inwardTime,
-    });
-  });
-
   const firstStopTime = stopTimes[0];
   const lastStopTime = stopTimes.at(-1);
 
   const validateOutwardTime = (value?: string) => {
+    if (!firstStopTime) return true;
     if (value || firstStopTime) {
-      const outward = dayjs(value, "HH:mm");
-      const firstStop = dayjs(firstStopTime, "HH:mm");
+      const outward = dayjs(value, ONLY_TIME);
+      const firstStop = dayjs(firstStopTime, ONLY_TIME);
       return outward.isBefore(firstStop);
     }
-    return true;
+    return false;
   };
 
   const validateInwardTime = (value?: string) => {
-    if (value || lastStopTime) {
-      const inward = dayjs(value, "HH:mm");
-      const lastStop = dayjs(lastStopTime, "HH:mm");
+    const hasStops = (values.stops ?? []).length > 0;
+    if (hasStops && lastStopTime) {
+      const inward = dayjs(value, ONLY_TIME);
+      const lastStop = dayjs(lastStopTime, ONLY_TIME);
       return inward.isAfter(lastStop);
     }
-    return true;
+    if (!hasStops) {
+      const outward = dayjs(values.outwardTime, ONLY_TIME);
+      const inward = dayjs(value, ONLY_TIME);
+      return outward.isBefore(inward);
+    }
+    return false;
   };
 
   return (
@@ -158,6 +158,7 @@ export const CommuteForm = ({
             {
               handler: validateOutwardTime,
               message: "Outward time must be before the first stop",
+              deps: [stopTimes],
             },
           ]}
         />
@@ -242,7 +243,10 @@ export const CommuteForm = ({
             validations={[
               {
                 handler: validateInwardTime,
-                message: "Inward time must be after the last stop",
+                message: (values.stops ?? []).length
+                  ? "Inward time must be after the last stop"
+                  : "Inward time must be after outward time",
+                deps: [stopTimes, values.outwardTime],
               },
             ]}
           />
