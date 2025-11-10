@@ -167,7 +167,7 @@ export const CommuteForm = ({
         <LocationField
           name="outwardLocation"
           label="📍 Outward location"
-          isEditable={!arePassengersOnStopsOutward}
+          isDisabled={arePassengersOnStopsOutward}
         />
         <FieldTime
           label="🕑 Outward time"
@@ -257,7 +257,7 @@ export const CommuteForm = ({
           <LocationField
             name="inwardLocation"
             label="📍 Inward location"
-            isEditable={!arePassengersOnStopsInward}
+            isDisabled={arePassengersOnStopsInward}
           />
           <FieldTime
             label="🕑 Inward time"
