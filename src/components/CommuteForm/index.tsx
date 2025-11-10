@@ -195,14 +195,9 @@ export const CommuteForm = ({
       )}
       <>
         {stops.keys.map((key, index) => {
-          const stopIndex = Number.isInteger(parseInt(key)) // index is not update when you delete stops above in the list, but key is
-            ? parseInt(key)
-            : index;
-          const stop = commute.data?.stops
-            ? commute.data.stops.find(
-                (stop) => stop.id === values.stops?.[index]?.id
-              )
-            : commute.data?.stops?.[stopIndex];
+          const stop = commute.data?.stops.find(
+            (stop) => stop.id === values.stops?.[index]?.id
+          );
           const numberOfPassengersOnStop = stop
             ? getAllPassengers([stop]).length
             : 0;
