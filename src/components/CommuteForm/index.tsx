@@ -85,8 +85,6 @@ export const CommuteForm = ({
 
   const arePassengersOnStops = numberOfPassengers > 0;
 
-  const form = useFormContext();
-
   return (
     <>
       {["TEMPLATE"].includes(mode) && (
@@ -185,10 +183,7 @@ export const CommuteForm = ({
       <FieldCheckbox
         label="🚗 Round trip"
         name="commuteType"
-        isChecked={values.commuteType === "ROUND"}
-        onValueChange={(checked) => {
-          form.setValues({ commuteType: checked ? "ROUND" : "ONEWAY" });
-        }}
+        formatValue={(checked) => (checked ? "ROUND" : "ONEWAY")}
       />
       {values.commuteType === "ROUND" && (
         <Flex flex={1} direction={{ base: "column", md: "row" }} gap={6}>
