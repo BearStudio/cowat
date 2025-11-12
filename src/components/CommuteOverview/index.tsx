@@ -206,7 +206,7 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
             <Stack spacing={0}>
               <HStack>
                 {props.commuteType === "ROUND" ? (
-                  <>
+                  <Flex gap={1}>
                     <Text fontWeight="bold" fontSize="sm">
                       {dayjs(props.date).format(FULL_TEXT_DATE)}
                     </Text>
@@ -218,7 +218,7 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
                       <Icon icon={Undo2} />{" "}
                       {dayjs(props.inwardTime).format(ONLY_TIME)}
                     </Text>
-                  </>
+                  </Flex>
                 ) : (
                   <>
                     <Text fontWeight="bold" fontSize="sm">
@@ -270,7 +270,12 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
               }}
             >
               <Stack spacing="0" w="full">
-                <Flex flex="1" align="center" justify="space-between">
+                <Flex
+                  flex="1"
+                  align={{ base: "baseline", sm: "center" }}
+                  direction={{ base: "column-reverse", sm: "row" }}
+                  justify="space-between"
+                >
                   <Flex align="center">
                     <AccordionIcon />
                     <Text fontWeight="medium" fontSize="sm">
