@@ -6,13 +6,15 @@ import React, { useEffect, useState } from "react";
 import { useField } from "@formiz/core";
 import { Checkbox, CheckboxProps } from "@chakra-ui/react";
 
-export type FieldCheckboxProps = FieldProps<boolean> &
+export type FieldCheckboxProps<FormattedValue = boolean> = FieldProps<boolean, FormattedValue> &
   FormGroupProps &
   Omit<CheckboxProps, "children" | "value" | "defaultValue"> & {
     autoFocus?: boolean;
   };
 
-export const FieldCheckbox = (props: FieldCheckboxProps) => {
+export const FieldCheckbox = <FormattedValue = boolean>(
+  props: FieldCheckboxProps<FormattedValue>
+) => {
   const {
     errorMessage,
     id,
