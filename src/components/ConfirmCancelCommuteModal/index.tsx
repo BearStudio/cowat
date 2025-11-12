@@ -19,7 +19,7 @@ export const ConfirmCancelCommuteModal = ({
       await ctx.commute.invalidate();
     },
   });
-  const passengers = getPassengers(commute.stops);
+  const passengers = getPassengers(commute.stops, commute.commuteType);
 
   return (
     <ConfirmModal
