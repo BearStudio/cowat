@@ -31,11 +31,12 @@ type CreateCommuteInput = RouterInputs["commute"]["createCommute"];
 
 type CreateCommuteFormValues = Omit<
   CreateCommuteInput,
-  "date" | "outwardTime" | "inwardTime"
+  "date" | "outwardTime" | "inwardTime" | "commuteType"
 > & {
   date: string;
   outwardTime: string;
   inwardTime: string;
+  commuteType: boolean;
 };
 
 const FROM_SCRATCH = "FROM_SCRATCH";
@@ -102,6 +103,7 @@ const New: NextPage = () => {
 
     createCommute.mutate({
       ...otherValues,
+      commuteType: defaultValues.commuteType ? "ROUND" : "ONEWAY",
       outwardTime: dayjs(
         `${date} ${otherValues.outwardTime}`,
         "DD/MM/YYYY HH:mm"
@@ -121,7 +123,6 @@ const New: NextPage = () => {
 
   const form = useForm({
     onValidSubmit: handleOnValidSubmit,
-    //@ts-expect-error ts-migrate(2345) FIXME
     initialValues: defaultValues,
   });
 
