@@ -86,7 +86,9 @@ const New: NextPage = () => {
     ...fromTemplate.data,
     stops,
     date: dateString,
-    commuteType: "ROUND" as const,
+    commuteType:
+      fromTemplate.data?.commuteType === "ROUND" ||
+      fromTemplate.data?.commuteType === undefined,
   };
 
   const createCommute = api.commute.createCommute.useMutation({
@@ -119,6 +121,7 @@ const New: NextPage = () => {
 
   const form = useForm({
     onValidSubmit: handleOnValidSubmit,
+    //@ts-expect-error ts-migrate(2345) FIXME
     initialValues: defaultValues,
   });
 
