@@ -17,6 +17,16 @@ import { useRouter } from "next/router";
 
 type EditCommuteInput = RouterInputs["commute"]["edit"];
 
+type EditCommuteInputValues = Omit<
+  EditCommuteInput,
+  "date" | "outwardTime" | "inwardTime" | "commuteType"
+> & {
+  date: Date;
+  outwardTime: Date;
+  inwardTime: Date;
+  commuteType: boolean;
+};
+
 const EditCommute: NextPage = () => {
   const router = useRouter();
   const ctx = api.useContext();
@@ -36,12 +46,13 @@ const EditCommute: NextPage = () => {
     },
   });
 
-  const handleOnValidSubmit = (values: EditCommuteInput) => {
+  const handleOnValidSubmit = (values: EditCommuteInputValues) => {
     const { outwardTime, inwardTime, date, ...otherValues } = values;
 
     commuteMutation.mutate(
       {
         ...otherValues,
+        commuteType: commute.data?.commuteType ? "ROUND" : "ONEWAY",
         outwardTime: dayjs(
           `${dayjs(date).format("YYYY-MM-DD")} ${outwardTime}`,
           "YYYY-MM-DD HH:mm"
@@ -83,7 +94,9 @@ const EditCommute: NextPage = () => {
   const defaultValues = {
     ...commute.data,
     stops: intermediateStops,
-    commuteType: commute.data?.commuteType as "ROUND" | "ONEWAY",
+    commuteType:
+      commute.data?.commuteType === "ROUND" ||
+      commute.data?.commuteType === undefined,
     outwardLocation: commute.data?.stops?.[0]?.location?.id,
     outwardTime: dayjs(commute.data?.stops?.[0]?.time, "HH:mm").toDate(),
     inwardLocation:
@@ -97,7 +110,6 @@ const EditCommute: NextPage = () => {
             "HH:mm"
           ).toDate()
         : undefined,
-    isRoundTrip: commute.data?.commuteType === "ROUND",
   };
 
   const editCommuteForm = useForm({
