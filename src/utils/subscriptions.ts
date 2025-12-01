@@ -21,7 +21,7 @@ export const EVENTS_DETAILS: Record<
     detail: "You will get notified when a new commute is created",
     message: (data: WebhookBody) =>
       `${data.driver} has created a commute on ${buildCommuteDateTime(data)}`,
-    fields: ["event", "driver", "date", "seats", "stops"],
+    fields: ["event", "driver", "date", "seats", "stops", "commuteType"],
   },
   NEW_BOOKING: {
     label: "New booking",
@@ -32,7 +32,7 @@ export const EVENTS_DETAILS: Record<
       } has requested a booking for your commute on ${buildCommuteDateTime(
         data
       )}`,
-    fields: ["event", "user", "passenger", "date"],
+    fields: ["event", "user", "passenger", "date", "stops" ,"tripType"],
   },
   REQUEST: {
     label: "Request",
@@ -42,7 +42,7 @@ export const EVENTS_DETAILS: Record<
       `${data.driver} has ${
         data.requestStatus
       } your booking request for the commute on ${buildCommuteDateTime(data)}`,
-    fields: ["event", "user", "requestStatus", "driver", "date", "comment"],
+    fields: ["event", "user", "requestStatus", "driver", "date", "comment", "tripType"],
   },
   AUTO_ACCEPT: {
     label: "Auto-accept",
@@ -52,7 +52,7 @@ export const EVENTS_DETAILS: Record<
       `${data.passenger} has booked your commute on ${buildCommuteDateTime(
         data
       )}`,
-    fields: ["event", "user", "passenger", "date"],
+    fields: ["event", "user", "passenger", "date", "tripType"],
   },
   BOOKING_CANCELED: {
     label: "Booking cancelled",
@@ -64,7 +64,7 @@ export const EVENTS_DETAILS: Record<
       } has cancelled his booking for your commute on ${buildCommuteDateTime(
         data
       )}`,
-    fields: ["event", "user", "passenger", "date"],
+    fields: ["event", "user", "passenger", "date", "tripType"],
   },
   COMMUTE_CANCELED: {
     label: "Commute cancelled",
@@ -74,7 +74,7 @@ export const EVENTS_DETAILS: Record<
       `${data.driver} has cancelled your commute on ${buildCommuteDateTime(
         data
       )}`,
-    fields: ["event", "user", "driver", "date"],
+    fields: ["event", "user", "driver", "date", "commuteType"],
   },
 };
 
@@ -101,6 +101,14 @@ export const EVENT_FIELDS_DESCRIPTIONS = {
     example: '"Meet me at the door"',
     description: "Comment added by hand by the other user",
   },
+  commuteType : {
+    example: "ROUND",
+    description: "Type of commute",
+  },
+  tripType : {
+    example : "RETURN",
+    description: "Type of booking",
+  }
 };
 
 type EventField = keyof typeof EVENT_FIELDS_DESCRIPTIONS;
