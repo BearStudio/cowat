@@ -2,7 +2,7 @@ import { ConfirmModal } from "@/components/ConfirmModal";
 import { EmptyState } from "@/components/EmptyState";
 import { Icon } from "@/components/Icon";
 import { SubscriptionForm } from "@/components/SubscriptionForm";
-import { SubscriptionHelper } from "@/components/SubscriptionForm/SubscriptionHelper";
+import { SubscriptionInfo } from "@/components/SubscriptionForm/SubscriptionInfo";
 import { LayoutAuthenticated } from "@/layout/LayoutAuthenticated";
 import type { RouterOutputs } from "@/utils/api";
 import { api } from "@/utils/api";
@@ -145,7 +145,7 @@ const SubscriptionCard = ({ subscription }: SubscriptionCardProps) => {
                 <PopoverArrow />
                 <PopoverCloseButton />
                 <PopoverBody>
-                  <SubscriptionHelper event={subscription.triggeringEvent} />
+                  <SubscriptionInfo event={subscription.triggeringEvent} />
                 </PopoverBody>
               </PopoverContent>
             </Popover>
