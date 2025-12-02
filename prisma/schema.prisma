@@ -75,7 +75,7 @@ enum TripType {
 enum Events {
     NEW_BOOKING
     NEW_COMMUTE
-    REQUEST
+    RESPONSE
     AUTO_ACCEPT
     BOOKING_CANCELED
     COMMUTE_CANCELED

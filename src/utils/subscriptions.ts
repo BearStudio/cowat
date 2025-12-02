@@ -34,8 +34,8 @@ export const EVENTS_DETAILS: Record<
       )}`,
     fields: ["event", "user", "passenger", "date", "stops" ,"tripType"],
   },
-  REQUEST: {
-    label: "Request",
+  RESPONSE: {
+    label: "Response",
     detail:
       "You will get notified when the driver responds to your booking request",
     message: (data: WebhookBody) =>

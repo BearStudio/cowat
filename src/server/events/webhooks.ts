@@ -43,7 +43,7 @@ const newCommute = async (
       date: commute.date,
       seats: commute.seats,
       stops,
-      commuteType : commute.commuteType,
+      commuteType: commute.commuteType,
     });
     await ky.post(subscription.url, requestBody);
   });
@@ -65,7 +65,7 @@ const newBookingFrom = async (passengerOnStop: PassengerOnStopNotification) => {
       user: passengerOnStop.stop?.commute?.createdBy?.name || "",
       passenger: passengerOnStop.user.name || "",
       date: passengerOnStop?.stop?.commute?.date,
-      tripType : passengerOnStop.tripType
+      tripType: passengerOnStop.tripType,
     });
     await ky.post(subscription.url, requestBody);
   });
@@ -75,7 +75,7 @@ const request = async (passengerOnStop: PassengerOnStopNotification) => {
   const passengerId = passengerOnStop.user.id;
   const subscriptions = await prisma.subscription.findMany({
     where: {
-      triggeringEvent: "REQUEST",
+      triggeringEvent: "RESPONSE",
       isDeleted: false,
       createdById: passengerId,
     },
@@ -89,7 +89,7 @@ const request = async (passengerOnStop: PassengerOnStopNotification) => {
       driver: passengerOnStop.stop?.commute?.createdBy?.name || "",
       date: passengerOnStop?.stop?.commute?.date || "",
       comment: passengerOnStop.requestComment || "",
-      tripType: passengerOnStop.tripType
+      tripType: passengerOnStop.tripType,
     });
     await ky.post(subscription.url, requestBody);
   });
@@ -113,7 +113,7 @@ const bookingAutoAccepted = async (
       user: passengerOnStop.user.name || "",
       passenger: passengerOnStop.stop?.commute?.createdBy?.name || "",
       date: passengerOnStop?.stop?.commute?.date,
-      tripType: passengerOnStop.tripType
+      tripType: passengerOnStop.tripType,
     });
     await ky.post(subscription.url, requestBody);
   });
@@ -137,7 +137,7 @@ const bookingCanceled = async (
       user: passengerOnStop.stop?.commute?.createdBy?.name || "",
       passenger: passengerOnStop.user.name || "",
       date: passengerOnStop?.stop?.commute?.date,
-      tripType: passengerOnStop.tripType
+      tripType: passengerOnStop.tripType,
     });
     await ky.post(subscription.url, requestBody);
   });
@@ -161,7 +161,7 @@ const commuteCanceled = async (
       user: passengerOnStop.user.name || "",
       driver: passengerOnStop.stop?.commute?.createdBy?.name || "",
       date: passengerOnStop?.stop?.commute?.date,
-      commuteType: passengerOnStop.stop.commute?.commuteType
+      commuteType: passengerOnStop.stop.commute?.commuteType,
     });
     await ky.post(subscription.url, requestBody);
   });
