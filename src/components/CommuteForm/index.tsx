@@ -92,24 +92,22 @@ export const CommuteForm = ({
 
   const validateOutwardTime = (value?: string) => {
     if (!firstStopTime) return true;
-    if (value || firstStopTime) {
-      const outward = dayjs(value, ONLY_TIME);
-      const firstStop = dayjs(firstStopTime, ONLY_TIME);
-      return outward.isBefore(firstStop);
-    }
-    return false;
+    if (!value) return false;
+    const outward = dayjs(value, ONLY_TIME);
+    const firstStop = dayjs(firstStopTime, ONLY_TIME);
+    return outward.isBefore(firstStop);
   };
 
   const validateInwardTime = (value?: string) => {
+    if (!value) return false;
     const hasStops = (values.stops ?? []).length > 0;
+    const inward = dayjs(value, ONLY_TIME);
     if (hasStops && lastStopTime) {
-      const inward = dayjs(value, ONLY_TIME);
       const lastStop = dayjs(lastStopTime, ONLY_TIME);
       return inward.isAfter(lastStop);
     }
     if (!hasStops) {
       const outward = dayjs(values.outwardTime, ONLY_TIME);
-      const inward = dayjs(value, ONLY_TIME);
       return outward.isBefore(inward);
     }
     return false;
@@ -221,10 +219,7 @@ export const CommuteForm = ({
           <Icon icon={Plus} /> Add Stop 📍
         </AddPlaceholder>
       </>
-      <FieldCheckbox
-        label="🚗 Round trip"
-        name="commuteType"
-      />
+      <FieldCheckbox label="🚗 Round trip" name="commuteType" />
       {values.commuteType === true && (
         <Flex flex={1} direction={{ base: "column", md: "row" }} gap={6}>
           {/* Inward : for the return */}
