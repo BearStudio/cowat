@@ -103,7 +103,7 @@ const New: NextPage = () => {
 
     createCommute.mutate({
       ...otherValues,
-      commuteType: defaultValues.commuteType ? "ROUND" : "ONEWAY",
+      commuteType: otherValues.commuteType ? "ROUND" : "ONEWAY",
       outwardTime: dayjs(
         `${date} ${otherValues.outwardTime}`,
         "DD/MM/YYYY HH:mm"

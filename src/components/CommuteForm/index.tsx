@@ -224,9 +224,8 @@ export const CommuteForm = ({
       <FieldCheckbox
         label="🚗 Round trip"
         name="commuteType"
-        formatValue={(checked) => (checked ? "ROUND" : "ONEWAY")}
       />
-      {values.commuteType === "ROUND" && (
+      {values.commuteType === true && (
         <Flex flex={1} direction={{ base: "column", md: "row" }} gap={6}>
           {/* Inward : for the return */}
           <LocationField
