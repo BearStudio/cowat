@@ -16,6 +16,13 @@ import { useRouter } from "next/router";
 type CreateCommuteTemplateInput =
   RouterInputs["template"]["createCommuteTemplate"];
 
+type CreateCommuteTemplateValues = Omit<
+  CreateCommuteTemplateInput,
+  "commuteType"
+> & {
+  commuteType: boolean;
+};
+
 const NewCommuteTemplates: NextPage = () => {
   const router = useRouter();
 
@@ -26,13 +33,16 @@ const NewCommuteTemplates: NextPage = () => {
       },
     });
 
-  const handleOnValidSubmit = (values: CreateCommuteTemplateInput) => {
-    commuteTemplateMutation.mutate(values);
+  const handleOnValidSubmit = (values: CreateCommuteTemplateValues) => {
+    commuteTemplateMutation.mutate({
+      ...values,
+      commuteType: values.commuteType ? "ROUND" : "ONEWAY",
+    });
   };
 
   const createCommuteForm = useForm({
     onValidSubmit: handleOnValidSubmit,
-    initialValues: { commuteType: "ROUND" as const },
+    initialValues: { commuteType: true },
   });
 
   return (

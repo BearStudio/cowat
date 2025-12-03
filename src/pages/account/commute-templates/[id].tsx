@@ -16,6 +16,13 @@ import { useRouter } from "next/router";
 
 type EditCommuteTemplateInput = RouterInputs["template"]["edit"];
 
+type EditCommuteTemplateValues = Omit<
+  EditCommuteTemplateInput,
+  "commuteType"
+> & {
+  commuteType: boolean;
+};
+
 const EditCommuteTemplates: NextPage = () => {
   const router = useRouter();
 
@@ -34,8 +41,12 @@ const EditCommuteTemplates: NextPage = () => {
     },
   });
 
-  const handleOnValidSubmit = (values: EditCommuteTemplateInput) => {
-    commuteTemplateMutation.mutate({ ...values, id: id?.toString() ?? "" });
+  const handleOnValidSubmit = (values: EditCommuteTemplateValues) => {
+    commuteTemplateMutation.mutate({
+      ...values,
+      id: id?.toString() ?? "",
+      commuteType: values.commuteType ? "ROUND" : "ONEWAY",
+    });
   };
 
   const stops = template.data
@@ -48,6 +59,9 @@ const EditCommuteTemplates: NextPage = () => {
   const defaultValues = {
     ...template.data,
     stops,
+    commuteType:
+      template.data?.commuteType === "ROUND" ||
+      template.data?.commuteType === undefined,
   };
 
   const editCommuteForm = useForm({
