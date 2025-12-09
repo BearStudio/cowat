@@ -4,8 +4,10 @@ import { api } from "@/utils/api";
 import {
   getAllBook,
   getAllCommute,
+  getAllDrivenPeople,
   getYearBook,
   getYearCommute,
+  getYearDrivenPeople,
 } from "@/utils/stats";
 import {
   Center,
@@ -25,6 +27,7 @@ const StatsPage = () => {
   const profile = api.user.profile.useQuery();
   const commuteStats = api.commute.allCommutesStats.useQuery();
   const bookedStats = api.commute.allBookStats.useQuery();
+  const drivenPeopleStats = api.commute.allDrivenPeopleStats.useQuery();
 
   return (
     <LayoutAuthenticated
@@ -71,7 +74,11 @@ const StatsPage = () => {
               Booked commutes :{" "}
               {bookedStats.data && getAllBook(bookedStats.data)}
             </Text>
-            <Text>Driven people : 95</Text>
+            <Text>
+              Driven people :{" "}
+              {drivenPeopleStats.data &&
+                getAllDrivenPeople(drivenPeopleStats.data)}
+            </Text>
           </Stack>
           <Stack>
             <Text fontWeight="bold">This year</Text>
@@ -83,7 +90,11 @@ const StatsPage = () => {
               Booked commutes :{" "}
               {bookedStats.data && getYearBook(bookedStats.data)}
             </Text>
-            <Text>Driven people: 35</Text>
+            <Text>
+              Driven people:{" "}
+              {drivenPeopleStats.data &&
+                getYearDrivenPeople(drivenPeopleStats.data)}
+            </Text>
           </Stack>
         </Flex>
       </Stack>

@@ -129,9 +129,6 @@ export const commuteRouter = createTRPCRouter({
       },
       include: {
         stops: {
-          orderBy: {
-            time: "asc",
-          },
           include: {
             location: true,
             passengers: {
@@ -146,6 +143,25 @@ export const commuteRouter = createTRPCRouter({
 
     return commutes;
     }),
+  allDrivenPeopleStats: protectedProcedure.query(async ({ ctx }) => {
+    const stops = await ctx.prisma.stop.findMany({
+      where: {
+        commute: { createdById: ctx.session.user.id, isDeleted: false },
+      },
+      include: {
+        passengers: true,
+        commute: { select: { createdAt: true } },
+      },
+    });
+
+    return stops.flatMap((stop) =>
+      stop.passengers.map((passenger) => ({
+        ...passenger,
+        commuteDate: stop.commute?.createdAt,
+      }))
+    );
+  }),
+
   allMyCommutes: protectedProcedure.query(async ({ ctx }) => {
     const commutes = await ctx.prisma.commute.findMany({
       where: {
