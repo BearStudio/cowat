@@ -1,14 +1,7 @@
 import { Icon } from "@/components/Icon";
 import { LayoutAuthenticated } from "@/layout/LayoutAuthenticated";
 import { api } from "@/utils/api";
-import {
-  getAllBook,
-  getAllCommute,
-  getAllDrivenPeople,
-  getYearBook,
-  getYearCommute,
-  getYearDrivenPeople,
-} from "@/utils/stats";
+import { getAll, getYear, getYearWithDate } from "@/utils/stats";
 import {
   Center,
   Flex,
@@ -52,7 +45,7 @@ const StatsPage = () => {
         <Center flex={1}>
           <Spinner />
         </Center>
-      )}{" "}
+      )}
       <Stack
         spacing="4"
         as="main"
@@ -68,32 +61,28 @@ const StatsPage = () => {
           <Stack>
             <Text fontWeight="bold">All</Text>
             <Text>
-              Commutes : {commuteStats.data && getAllCommute(commuteStats.data)}
+              Commutes : {commuteStats.data && getAll(commuteStats.data)}
             </Text>
             <Text>
-              Booked commutes :{" "}
-              {bookedStats.data && getAllBook(bookedStats.data)}
+              Booked commutes : {bookedStats.data && getAll(bookedStats.data)}
             </Text>
             <Text>
               Driven people :{" "}
-              {drivenPeopleStats.data &&
-                getAllDrivenPeople(drivenPeopleStats.data)}
+              {drivenPeopleStats.data && getAll(drivenPeopleStats.data)}
             </Text>
           </Stack>
           <Stack>
             <Text fontWeight="bold">This year</Text>
             <Text>
-              Commutes :{" "}
-              {commuteStats.data && getYearCommute(commuteStats.data)}
+              Commutes : {commuteStats.data && getYear(commuteStats.data)}
             </Text>
             <Text>
-              Booked commutes :{" "}
-              {bookedStats.data && getYearBook(bookedStats.data)}
+              Booked commutes : {bookedStats.data && getYear(bookedStats.data)}
             </Text>
             <Text>
               Driven people:{" "}
               {drivenPeopleStats.data &&
-                getYearDrivenPeople(drivenPeopleStats.data)}
+                getYearWithDate(drivenPeopleStats.data)}
             </Text>
           </Stack>
         </Flex>

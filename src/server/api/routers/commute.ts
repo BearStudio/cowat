@@ -142,7 +142,7 @@ export const commuteRouter = createTRPCRouter({
     });
 
     return commutes;
-    }),
+  }),
   allDrivenPeopleStats: protectedProcedure.query(async ({ ctx }) => {
     const stops = await ctx.prisma.stop.findMany({
       where: {
