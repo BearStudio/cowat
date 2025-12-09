@@ -109,6 +109,42 @@ export const commuteRouter = createTRPCRouter({
     });
 
     return commutes;
+  }),
+  allBookStats: protectedProcedure.query(async ({ ctx }) => {
+    const commutes = await ctx.prisma.commute.findMany({
+      where: {
+        isDeleted: false,
+        stops: {
+          some: {
+            passengers: {
+              some: {
+                userId: ctx.session.user.id,
+                requestStatus: {
+                  notIn: ["CANCELED", "REFUSED"],
+                },
+              },
+            },
+          },
+        },
+      },
+      include: {
+        stops: {
+          orderBy: {
+            time: "asc",
+          },
+          include: {
+            location: true,
+            passengers: {
+              include: {
+                user: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    return commutes;
     }),
   allMyCommutes: protectedProcedure.query(async ({ ctx }) => {
     const commutes = await ctx.prisma.commute.findMany({

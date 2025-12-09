@@ -12,3 +12,7 @@ export const getYearCommute = (commutes: CommuteType[]) => {
     dayjs(commute.createdAt).isSame(dayjs(), "year")
   ).length;
 };
+
+export const getAllBook = (commutes: CommuteType[]) => {
+  return commutes.length;
+};
