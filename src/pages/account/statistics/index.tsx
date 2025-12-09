@@ -1,7 +1,12 @@
 import { Icon } from "@/components/Icon";
 import { LayoutAuthenticated } from "@/layout/LayoutAuthenticated";
 import { api } from "@/utils/api";
-import { getAllBook, getAllCommute, getYearCommute } from "@/utils/stats";
+import {
+  getAllBook,
+  getAllCommute,
+  getYearBook,
+  getYearCommute,
+} from "@/utils/stats";
 import {
   Center,
   Flex,
@@ -63,16 +68,21 @@ const StatsPage = () => {
               Commutes : {commuteStats.data && getAllCommute(commuteStats.data)}
             </Text>
             <Text>
-              Booked commutes : {bookedStats.data && getAllBook(bookedStats.data)}
+              Booked commutes :{" "}
+              {bookedStats.data && getAllBook(bookedStats.data)}
             </Text>
             <Text>Driven people : 95</Text>
           </Stack>
           <Stack>
             <Text fontWeight="bold">This year</Text>
             <Text>
-              Commutes : {commuteStats.data && getYearCommute(commuteStats.data)}
+              Commutes :{" "}
+              {commuteStats.data && getYearCommute(commuteStats.data)}
             </Text>
-            <Text>Booked commutes : 8</Text>
+            <Text>
+              Booked commutes :{" "}
+              {bookedStats.data && getYearBook(bookedStats.data)}
+            </Text>
             <Text>Driven people: 35</Text>
           </Stack>
         </Flex>
