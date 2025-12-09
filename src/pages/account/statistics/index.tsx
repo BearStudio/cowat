@@ -1,7 +1,7 @@
 import { Icon } from "@/components/Icon";
 import { LayoutAuthenticated } from "@/layout/LayoutAuthenticated";
 import { api } from "@/utils/api";
-import { getAllCommute } from "@/utils/stats";
+import { getAllCommute, getYearCommute } from "@/utils/stats";
 import {
   Center,
   Flex,
@@ -18,7 +18,7 @@ import Link from "next/link";
 
 const StatsPage = () => {
   const profile = api.user.profile.useQuery();
-  const allCommute = api.commute.allCommutesStats.useQuery();
+  const commuteStats = api.commute.allCommutesStats.useQuery();
 
   return (
     <LayoutAuthenticated
@@ -59,14 +59,16 @@ const StatsPage = () => {
           <Stack>
             <Text fontWeight="bold">All</Text>
             <Text>
-              Commutes : {allCommute.data && getAllCommute(allCommute.data)}
+              Commutes : {commuteStats.data && getAllCommute(commuteStats.data)}
             </Text>
             <Text>Booked commutes : 26</Text>
             <Text>Driven people : 95</Text>
           </Stack>
           <Stack>
             <Text fontWeight="bold">This year</Text>
-            <Text>Commutes : 15</Text>
+            <Text>
+              Commutes : {commuteStats.data && getYearCommute(commuteStats.data)}
+            </Text>
             <Text>Booked commutes : 8</Text>
             <Text>Driven people: 35</Text>
           </Stack>
