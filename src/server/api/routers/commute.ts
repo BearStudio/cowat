@@ -95,6 +95,21 @@ export const commuteRouter = createTRPCRouter({
 
       return commute;
     }),
+  allCommutesStats: protectedProcedure.query(async ({ ctx }) => {
+    const commutes = await ctx.prisma.commute.findMany({
+      where: {
+        createdById: {
+          equals: ctx.session.user.id,
+        },
+        isDeleted: false,
+      },
+      include: {
+        createdBy: true,
+      },
+    });
+
+    return commutes;
+    }),
   allMyCommutes: protectedProcedure.query(async ({ ctx }) => {
     const commutes = await ctx.prisma.commute.findMany({
       where: {

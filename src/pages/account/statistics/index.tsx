@@ -1,6 +1,7 @@
 import { Icon } from "@/components/Icon";
 import { LayoutAuthenticated } from "@/layout/LayoutAuthenticated";
 import { api } from "@/utils/api";
+import { getAllCommute } from "@/utils/stats";
 import {
   Center,
   Flex,
@@ -17,6 +18,7 @@ import Link from "next/link";
 
 const StatsPage = () => {
   const profile = api.user.profile.useQuery();
+  const allCommute = api.commute.allCommutesStats.useQuery();
 
   return (
     <LayoutAuthenticated
@@ -56,7 +58,9 @@ const StatsPage = () => {
         <Flex flex={1} direction={"column"} gap={6}>
           <Stack>
             <Text fontWeight="bold">All</Text>
-            <Text>Commutes : 20</Text>
+            <Text>
+              Commutes : {allCommute.data && getAllCommute(allCommute.data)}
+            </Text>
             <Text>Booked commutes : 26</Text>
             <Text>Driven people : 95</Text>
           </Stack>
