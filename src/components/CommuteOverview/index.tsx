@@ -124,6 +124,8 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
   const isFullRound =
     outwardPassengers.length === props.seats ||
     inwardPassengers.length === props.seats;
+  const outwardStop = props.stops[0];
+  const inwardStop = props.stops.at(-1);
 
   const commuteCanBeBooked =
     !isCurrentUserCreator &&
@@ -136,13 +138,11 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
       confirmCommuteActionModal.onOpen();
     } else {
       if (tripType === "ROUND") {
-        const inwardStop = props.stops.at(-1);
         if (inwardStop) {
           bookCommute.mutate({ stopId, tripType: "ONEWAY" });
           bookCommute.mutate({ stopId: inwardStop.id, tripType: "RETURN" });
         }
-      }
-      else {
+      } else {
         bookCommute.mutate({ stopId, tripType });
       }
     }
@@ -429,7 +429,8 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
                                     aria-label="Select commute type"
                                   />
                                   <MenuList>
-                                    {isFullOutward === false && (
+                                    {isFullOutward === false &&
+                                      stop !== inwardStop && (
                                       <MenuItem
                                         onClick={() =>
                                           handleBookClick(stop.id, "ONEWAY")
@@ -438,7 +439,8 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
                                         One-way
                                       </MenuItem>
                                     )}
-                                    {isFullInward === false && (
+                                    {isFullInward === false &&
+                                      stop !== outwardStop && (
                                       <MenuItem
                                         onClick={() =>
                                           handleBookClick(stop.id, "RETURN")
