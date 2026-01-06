@@ -24,7 +24,7 @@ export const getPassengers = (
           (tripType === "RETURN" &&
             (passenger.tripType === "RETURN" ||
               passenger.tripType === "ROUND")) ||
-          (tripType === "ROUND" && passenger.tripType === "ROUND"))
+          tripType === "ROUND")
     )
   );
 };
@@ -45,9 +45,7 @@ export const getAllPassengers = (
  * Get all the passengers of the given stops, only accepted ones.
  * @returns The passengers of the given stops, only accepted ones.
  */
-export const getAcceptedPassengers = (
-  stops: StopWithPassengers[]
-) => {
+export const getAcceptedPassengers = (stops: StopWithPassengers[]) => {
   return stops.flatMap((stop) =>
     stop.passengers.filter(
       (passenger) => passenger.requestStatus === "ACCEPTED"

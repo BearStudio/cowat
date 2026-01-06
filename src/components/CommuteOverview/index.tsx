@@ -116,6 +116,13 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
   });
 
   const passengers = getPassengers(props.stops, props.commuteType);
+  const uniquePassengers = passengers.filter(
+    (passenger, id, PassengerWithUsers) =>
+      id ===
+      PassengerWithUsers.findIndex(
+        (PassengerWithUser) => PassengerWithUser.userId === passenger.userId
+      )
+  );
   const outwardPassengers = getPassengers(props.stops, "ONEWAY");
   const inwardPassengers = getPassengers(props.stops, "RETURN");
   const isFull = passengers.length === props.seats;
@@ -236,7 +243,7 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
           </HStack>
           {!props.isDeleted && (
             <AvatarGroup size="sm" max={3}>
-              {passengers.map((passenger) => (
+              {uniquePassengers.map((passenger) => (
                 <Avatar
                   key={passenger.user.id}
                   src={passenger.user.image ?? ""}
@@ -388,6 +395,14 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
                                   }
                                 >
                                   {passenger.user.name ?? passenger.user.email}
+                                  <Icon
+                                    icon={
+                                      passenger.tripType === "ONEWAY"
+                                        ? LogIn
+                                        : Undo2
+                                    }
+                                    ml="1"
+                                  />
                                 </Tag>
                               ))}
                             </Wrap>
@@ -431,24 +446,24 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
                                   <MenuList>
                                     {isFullOutward === false &&
                                       stop !== inwardStop && (
-                                      <MenuItem
-                                        onClick={() =>
-                                          handleBookClick(stop.id, "ONEWAY")
-                                        }
-                                      >
-                                        One-way
-                                      </MenuItem>
-                                    )}
+                                        <MenuItem
+                                          onClick={() =>
+                                            handleBookClick(stop.id, "ONEWAY")
+                                          }
+                                        >
+                                          One-way
+                                        </MenuItem>
+                                      )}
                                     {isFullInward === false &&
                                       stop !== outwardStop && (
-                                      <MenuItem
-                                        onClick={() =>
-                                          handleBookClick(stop.id, "RETURN")
-                                        }
-                                      >
-                                        Return
-                                      </MenuItem>
-                                    )}
+                                        <MenuItem
+                                          onClick={() =>
+                                            handleBookClick(stop.id, "RETURN")
+                                          }
+                                        >
+                                          Return
+                                        </MenuItem>
+                                      )}
                                   </MenuList>
                                 </Menu>
                               </ButtonGroup>
