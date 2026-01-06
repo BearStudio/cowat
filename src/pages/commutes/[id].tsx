@@ -52,7 +52,7 @@ const EditCommute: NextPage = () => {
     commuteMutation.mutate(
       {
         ...otherValues,
-        commuteType: commute.data?.commuteType ? "ROUND" : "ONEWAY",
+        commuteType: otherValues.commuteType ? "ROUND" : "ONEWAY",
         outwardTime: dayjs(
           `${dayjs(date).format("YYYY-MM-DD")} ${outwardTime}`,
           "YYYY-MM-DD HH:mm"
