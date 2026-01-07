@@ -444,26 +444,24 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
                                     aria-label="Select commute type"
                                   />
                                   <MenuList>
-                                    {isFullOutward === false &&
-                                      stop !== inwardStop && (
-                                        <MenuItem
-                                          onClick={() =>
-                                            handleBookClick(stop.id, "ONEWAY")
-                                          }
-                                        >
-                                          One-way
-                                        </MenuItem>
-                                      )}
-                                    {isFullInward === false &&
-                                      stop !== outwardStop && (
-                                        <MenuItem
-                                          onClick={() =>
-                                            handleBookClick(stop.id, "RETURN")
-                                          }
-                                        >
-                                          Return
-                                        </MenuItem>
-                                      )}
+                                    {!isFullOutward && stop !== inwardStop && (
+                                      <MenuItem
+                                        onClick={() =>
+                                          handleBookClick(stop.id, "ONEWAY")
+                                        }
+                                      >
+                                        One-way
+                                      </MenuItem>
+                                    )}
+                                    {!isFullInward && stop !== outwardStop && (
+                                      <MenuItem
+                                        onClick={() =>
+                                          handleBookClick(stop.id, "RETURN")
+                                        }
+                                      >
+                                        Return
+                                      </MenuItem>
+                                    )}
                                   </MenuList>
                                 </Menu>
                               </ButtonGroup>
