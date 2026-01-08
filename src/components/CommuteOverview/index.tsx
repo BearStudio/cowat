@@ -134,12 +134,6 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
   const outwardStop = props.stops[0];
   const inwardStop = props.stops.at(-1);
 
-  const commuteCanBeBooked =
-    !isCurrentUserCreator &&
-    !isPassenger &&
-    !isFull &&
-    dayjs().isBefore(dayjs(props.date));
-
   const handleBookClick = (stopId: string, tripType: TripType) => {
     if (myCommutesOnDate.isSuccess && myCommutesOnDate.data?.length > 0) {
       confirmCommuteActionModal.onOpen();
@@ -361,6 +355,16 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
                     (passenger) =>
                       !["CANCELED", "REFUSED"].includes(passenger.requestStatus)
                   );
+
+                  const commuteCanBeBooked =
+                    !isCurrentUserCreator &&
+                    !isPassenger &&
+                    !isFull &&
+                    dayjs().isBefore(
+                      dayjs(props.date)
+                        .hour(Number(stop.time.split(":")[0]))
+                        .minute(Number(stop.time.split(":")[1]))
+                    );
 
                   return (
                     <HStack key={stop.id}>
