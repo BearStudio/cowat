@@ -364,6 +364,7 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
                       dayjs(props.date)
                         .hour(Number(stop.time.split(":")[0]))
                         .minute(Number(stop.time.split(":")[1]))
+                        .subtract(2, "hours")
                     );
 
                   return (
