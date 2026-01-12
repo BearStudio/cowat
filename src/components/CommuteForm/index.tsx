@@ -101,7 +101,8 @@ export const CommuteForm = ({
   const validateOutwardTime = (value?: string) => {
     if (!firstStopTime) return true;
     if (!value) return false;
-    const dateWithTime = dayjs(`${values.date} ${value}`, "DD/MM/YYYY HH:mm");
+    const date = values.date ?? dayjs(commute.data?.date).format("DD/MM/YYYY");
+    const dateWithTime = dayjs(`${date} ${value}`, "DD/MM/YYYY HH:mm");
     const outward = dayjs(value, ONLY_TIME);
     const firstStop = dayjs(firstStopTime, ONLY_TIME);
     return outward.isBefore(firstStop) && dateWithTime.isAfter(dayjs());

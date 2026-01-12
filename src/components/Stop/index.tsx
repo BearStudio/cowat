@@ -25,6 +25,7 @@ import { Formiz, useForm, useFormContext, useFormFields } from "@formiz/core";
 import { Plus, Trash } from "lucide-react";
 import dayjs from "dayjs";
 import { FiAlertTriangle } from "react-icons/fi";
+import { useRouter } from "next/router";
 
 type StopProps = {
   id?: string;
@@ -34,13 +35,22 @@ type StopProps = {
   onRemove: () => void;
 };
 
-export const Stop = ({ id, index, onRemove, isEditable = true, isRemovable = true, }: StopProps) => {
+export const Stop = ({ index, onRemove, isEditable = true, isRemovable = true, }: StopProps) => {
   const ctx = api.useContext();
   const form = useFormContext();
   const formFields = useFormFields({
     fields: ["stops", "outwardLocation", "inwardLocation", "date"] as const,
     selector: "value",
   });
+
+  const router = useRouter();
+  const { id } = router.query;
+  const commute = api.commute.commuteById.useQuery(
+    { id: id?.toString() ?? "" },
+    {
+      enabled: !!id,
+    }
+  );
 
   const newLocationForm = useForm({
     onValidSubmit: (values: RouterInputs["location"]["create"]) => {
@@ -119,9 +129,12 @@ export const Stop = ({ id, index, onRemove, isEditable = true, isRemovable = tru
             validations={[
               {
                 handler: (value) => {
-                  if (!value || !formFields.date) return false;
+                  const date =
+                    formFields.date ??
+                    dayjs(commute.data?.date).format("DD/MM/YYYY");
+                  if (!value || !date) return false;
                   const dateWithTime = dayjs(
-                    `${formFields.date} ${value}`,
+                    `${date} ${value}`,
                     "DD/MM/YYYY HH:mm"
                   );
                   return dateWithTime.isAfter(dayjs());
