@@ -16,6 +16,7 @@ import {
   Box,
   Divider,
   Flex,
+  Text,
 } from "@chakra-ui/react";
 import { useCollection, useFormFields } from "@formiz/core";
 import { isMaxNumber, isMinNumber } from "@formiz/validations";
@@ -26,6 +27,7 @@ import dayjs from "dayjs";
 import { LocationField } from "@/components/LocationField";
 import { Stop } from "@/components/Stop";
 import { ONLY_TIME } from "@/constants/dates";
+import { FiAlertTriangle } from "react-icons/fi";
 
 type CommuteFormProps = {
   repeaterInitialValues: Array<object>;
@@ -161,6 +163,26 @@ export const CommuteForm = ({
           ]}
         />
       </Flex>
+      {values.outwardTime &&
+        values.stops &&
+        dayjs(values.outwardTime, ONLY_TIME)
+          .subtract(-1, "hours")
+          .isAfter(dayjs(values.stops[0]?.time, ONLY_TIME)) && (
+          <Text color="error.600" _dark={{ color: "error.400" }} fontSize="sm">
+            <Icon icon={FiAlertTriangle} me="1" />
+            The outward time must be before the first stop time
+          </Text>
+        )}
+      {values.outwardTime &&
+        values.inwardTime &&
+        dayjs(values.outwardTime, ONLY_TIME)
+          .subtract(-1, "hours")
+          .isAfter(dayjs(values.inwardTime, ONLY_TIME)) && (
+          <Text color="error.600" _dark={{ color: "error.400" }} fontSize="sm">
+            <Icon icon={FiAlertTriangle} me="1" />
+            The outward time must be before inward time
+          </Text>
+        )}
       {["CREATE"].includes(mode) && (
         <>
           <FieldDayPicker
