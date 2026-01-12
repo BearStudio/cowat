@@ -171,6 +171,16 @@ export const CommuteForm = ({
         />
       </Flex>
       {values.outwardTime &&
+        dayjs(
+          `${values.date} ${values.outwardTime}`,
+          "DD/MM/YYYY HH:mm"
+        ).isBefore(dayjs()) && (
+          <Text color="error.600" _dark={{ color: "error.400" }} fontSize="sm">
+            <Icon icon={FiAlertTriangle} me="1" />
+            The outward is in the past
+          </Text>
+        )}
+      {values.outwardTime &&
         values.stops &&
         dayjs(values.outwardTime, ONLY_TIME)
           .subtract(-1, "hours")
