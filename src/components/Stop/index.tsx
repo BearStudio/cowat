@@ -22,6 +22,7 @@ import {
 } from "@chakra-ui/react";
 import { Formiz, useForm, useFormContext, useFormFields } from "@formiz/core";
 import { Plus, Trash } from "lucide-react";
+import dayjs from "dayjs";
 
 type StopProps = {
   id?: string;
@@ -35,7 +36,7 @@ export const Stop = ({ id, index, onRemove, isEditable = true, isRemovable = tru
   const ctx = api.useContext();
   const form = useFormContext();
   const formFields = useFormFields({
-    fields: ["stops", "outwardLocation", "inwardLocation"] as const,
+    fields: ["stops", "outwardLocation", "inwardLocation", "date"] as const,
     selector: "value",
   });
 
@@ -113,6 +114,20 @@ export const Stop = ({ id, index, onRemove, isEditable = true, isRemovable = tru
             label="🕑 Pick up time"
             name={`stops[${index}].time`}
             isDisabled={!isEditable}
+            validations={[
+              {
+                handler: (value) => {
+                  if (!value || !formFields.date) return false;
+                  const dateWithTime = dayjs(
+                    `${formFields.date} ${value}`,
+                    "DD/MM/YYYY HH:mm"
+                  );
+                  return dateWithTime.isAfter(dayjs());
+                },
+                message: "Stop time must be in the future",
+                deps: [formFields.date, formFields.stops],
+              },
+            ]}
           />
           <Box pt={8}>
             <IconButton

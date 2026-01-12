@@ -53,7 +53,13 @@ export const CommuteForm = ({
   );
 
   const values = useFormFields({
-    fields: ["commuteType", "stops", "outwardTime", "inwardTime"] as const,
+    fields: [
+      "commuteType",
+      "stops",
+      "outwardTime",
+      "inwardTime",
+      "date",
+    ] as const,
     selector: "value",
   });
 
@@ -95,9 +101,10 @@ export const CommuteForm = ({
   const validateOutwardTime = (value?: string) => {
     if (!firstStopTime) return true;
     if (!value) return false;
+    const dateWithTime = dayjs(`${values.date} ${value}`, "DD/MM/YYYY HH:mm");
     const outward = dayjs(value, ONLY_TIME);
     const firstStop = dayjs(firstStopTime, ONLY_TIME);
-    return outward.isBefore(firstStop);
+    return outward.isBefore(firstStop) && dateWithTime.isAfter(dayjs());
   };
 
   const validateInwardTime = (value?: string) => {
@@ -158,7 +165,7 @@ export const CommuteForm = ({
             {
               handler: validateOutwardTime,
               message: "Outward time must be before the first stop",
-              deps: [stopTimes],
+              deps: [stopTimes, values.date],
             },
           ]}
         />
