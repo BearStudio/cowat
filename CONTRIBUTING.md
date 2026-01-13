@@ -25,3 +25,7 @@ Make a **review request** in #bs-merge-request on slack, by filling in the URL o
 4. For conflicts that have to be resolved manually : `git rebase --continue` to move on to the next step
 5. If you wish to cancel the rebase completely and return to the initial state of the branch : `git rebase --abort`
 6. `git push --force-with-lease` : Push force is compulsory after a rebase, but with lease lets you know if someone has pushed your branch in-between.
+
+# How to test
+
+To test, you need to ping someone to test the tickets in the “To test” column on the develop branch. Knowing that end-to-end tests are currently being created : [link](https://github.com/BearStudio/cowat/issues/196)?
