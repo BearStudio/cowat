@@ -28,4 +28,4 @@ Make a **review request** in #bs-merge-request on slack, by filling in the URL o
 
 # How to test
 
-To test, you need to ping someone to test the tickets in the “To test” column on the develop branch. Knowing that end-to-end tests are currently being created : [link](https://github.com/BearStudio/cowat/issues/196)?
+To test, you need to ping someone to test the tickets in the “To test” column on the develop branch. Knowing that end-to-end tests are currently being created : [link](https://github.com/BearStudio/cowat/issues/196)
