@@ -52,6 +52,7 @@ import Link from "next/link";
 import { ConfirmCommuteActionModal } from "@/components/ConfirmCommuteActionModal";
 import { ConfirmCancelCommuteModal } from "@/components/ConfirmCancelCommuteModal";
 import { commuteTypeLabels } from "@/constants/commuteType";
+import { FiAlertTriangle } from "react-icons/fi";
 
 export type CommuteOverviewProps = Prisma.CommuteGetPayload<{
   include: {
@@ -413,6 +414,27 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
                             </Wrap>
                           )}
                         </Stack>
+                        {!isCurrentUserCreator &&
+                          !isPassenger &&
+                          !isFull &&
+                          dayjs(
+                            `${dayjs(props.date).format("DD/MM/YYYY")} ${
+                              stop.time
+                            }`,
+                            "DD/MM/YYYY HH:mm"
+                          )
+                            .subtract(2, "hours")
+                            .isBefore(dayjs()) && (
+                            <Text
+                              color="warning.600"
+                              _dark={{ color: "warning.400" }}
+                              fontSize="sm"
+                            >
+                              <Icon icon={FiAlertTriangle} me="1" />
+                              You can&apos;t book a commute less than 2 hours
+                              before departure.
+                            </Text>
+                          )}
                         {commuteCanBeBooked && (
                           <>
                             {props.commuteType === "ONEWAY" && (
