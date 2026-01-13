@@ -9,7 +9,7 @@ Every new issue must be written in English and added to the project board in the
 2. **Move the issue around the board** as you go along. It's important to keep the board up to date, so you can assess the status of your project at a glance. To do this, simply drag & drop the issue into the column you want.
 3. Work on a **new branch** for each issue, put consistent messages for your commits and **tag the issue number on each commit**. The branch should be named `fix/xxx-xxx` or `feat/xxx-xxx`, with xxx-xxx being a short description of the issue.
 Remember, by convention, issues, branches, PR messages and commits must be written in English.
-4. When you've finished working on your issue, move it to the "To review" column. Then **create a PR**, making sure that the reference branch is the "main" branch.
+4. When you've finished working on your issue, move it to the "To review" column. Then **create a PR**, making sure that the reference branch is the "develop" branch.
 ![How to create a pull request](./doc/assets/Create-PR.png)
 ![How to check the target branch of the pull request](./doc/assets/Check-branch-PR.png)
 Make a **review request** in #bs-merge-request on slack, by filling in the URL of the PR and mentioning the people who will be doing the review.
