@@ -19,12 +19,10 @@ import {
   ModalOverlay,
   Stack,
   useDisclosure,
-  Text,
 } from "@chakra-ui/react";
 import { Formiz, useForm, useFormContext, useFormFields } from "@formiz/core";
 import { Plus, Trash } from "lucide-react";
 import dayjs from "dayjs";
-import { FiAlertTriangle } from "react-icons/fi";
 import { useRouter } from "next/router";
 
 type StopProps = {
@@ -154,16 +152,6 @@ export const Stop = ({ index, onRemove, isEditable = true, isRemovable = true, }
           </Box>
         </HStack>
       </Stack>
-      {formFields.stops &&
-        dayjs(
-          `${formFields.date} ${formFields.stops[index]?.time}`,
-          "DD/MM/YYYY HH:mm"
-        ).isBefore(dayjs()) && (
-          <Text color="error.600" _dark={{ color: "error.400" }} fontSize="sm">
-            <Icon icon={FiAlertTriangle} me="1" />
-            The stop is in the past
-          </Text>
-        )}
       {isOpen && (
         <Modal isOpen onClose={onClose} size="sm">
           <ModalOverlay />

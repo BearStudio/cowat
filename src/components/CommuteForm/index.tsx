@@ -16,7 +16,6 @@ import {
   Box,
   Divider,
   Flex,
-  Text,
 } from "@chakra-ui/react";
 import { useCollection, useFormFields } from "@formiz/core";
 import { isMaxNumber, isMinNumber } from "@formiz/validations";
@@ -27,7 +26,9 @@ import dayjs from "dayjs";
 import { LocationField } from "@/components/LocationField";
 import { Stop } from "@/components/Stop";
 import { ONLY_TIME } from "@/constants/dates";
-import { FiAlertTriangle } from "react-icons/fi";
+import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
+
+dayjs.extend(isSameOrAfter);
 
 type CommuteFormProps = {
   repeaterInitialValues: Array<object>;
@@ -165,42 +166,17 @@ export const CommuteForm = ({
           validations={[
             {
               handler: validateOutwardTime,
-              message: "Outward time must be before the first stop",
-              deps: [stopTimes, values.date],
+              message: `${
+                dayjs(values.outwardTime, ONLY_TIME).isSameOrAfter(
+                  dayjs(firstStopTime, ONLY_TIME)
+                )
+                  ? "Outward time must be before the first stop"
+                  : "Outward time must be in the future"
+              }`,
             },
           ]}
         />
       </Flex>
-      {values.outwardTime &&
-        dayjs(
-          `${values.date} ${values.outwardTime}`,
-          "DD/MM/YYYY HH:mm"
-        ).isBefore(dayjs()) && (
-          <Text color="error.600" _dark={{ color: "error.400" }} fontSize="sm">
-            <Icon icon={FiAlertTriangle} me="1" />
-            The outward is in the past
-          </Text>
-        )}
-      {values.outwardTime &&
-        values.stops &&
-        dayjs(values.outwardTime, ONLY_TIME)
-          .subtract(-1, "hours")
-          .isAfter(dayjs(values.stops[0]?.time, ONLY_TIME)) && (
-          <Text color="error.600" _dark={{ color: "error.400" }} fontSize="sm">
-            <Icon icon={FiAlertTriangle} me="1" />
-            The outward time must be before the first stop time
-          </Text>
-        )}
-      {values.outwardTime &&
-        values.inwardTime &&
-        dayjs(values.outwardTime, ONLY_TIME)
-          .subtract(-1, "hours")
-          .isAfter(dayjs(values.inwardTime, ONLY_TIME)) && (
-          <Text color="error.600" _dark={{ color: "error.400" }} fontSize="sm">
-            <Icon icon={FiAlertTriangle} me="1" />
-            The outward time must be before inward time
-          </Text>
-        )}
       {["CREATE"].includes(mode) && (
         <>
           <FieldDayPicker
