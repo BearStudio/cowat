@@ -11,29 +11,45 @@ import {
 } from "@chakra-ui/react";
 import type { FieldProps } from "@formiz/core";
 import { useField } from "@formiz/core";
+import { useEffect, useState } from "react";
 import dayjs from "dayjs";
 
 export type FieldTimeProps = FieldProps<string> &
   FormGroupProps & { placeholder?: string };
 
 export const FieldTime = (props: FieldTimeProps) => {
-  const { errorMessage, id, shouldDisplayError, setValue, value, otherProps } =
-    useField(props, {
-      formatValue: (value) => {
-        if ((value as any) instanceof Date) {
-          return dayjs(value).format("HH:mm");
-        }
-        const [h, m] = value?.split(":") ?? [];
-        if (!h || !m) {
-          return null;
-        }
-        return value;
-      },
-    });
+  const {
+    errorMessage,
+    id,
+    isValid,
+    isPristine,
+    isSubmitted,
+    resetKey,
+    setValue,
+    value,
+    otherProps,
+  } = useField(props, {
+    formatValue: (value) => {
+      if ((value as any) instanceof Date) {
+        return dayjs(value).format("HH:mm");
+      }
+      const [h, m] = value?.split(":") ?? [];
+      if (!h || !m) {
+        return null;
+      }
+      return value;
+    },
+  });
 
   const { label, helper, placeholder, ...rest } = otherProps;
   const { required } = props;
-  const showError = shouldDisplayError;
+  const [isTouched, setIsTouched] = useState(false);
+
+  useEffect(() => {
+    setIsTouched(false);
+  }, [resetKey]);
+
+  const showError = !isValid && ((isTouched && !isPristine) || isSubmitted);
 
   const formGroupProps = {
     errorMessage,
@@ -67,7 +83,10 @@ export const FieldTime = (props: FieldTimeProps) => {
             setValue(`${String(h).padStart(2, "0")}:${minutes ?? "00"}`)
           }
         >
-          <NumberInputField placeholder={placeholderHours ?? ""} />
+          <NumberInputField
+            placeholder={placeholderHours ?? ""}
+            onBlur={() => setIsTouched(true)}
+          />
           <NumberInputStepper>
             <NumberIncrementStepper />
             <NumberDecrementStepper />
@@ -85,7 +104,10 @@ export const FieldTime = (props: FieldTimeProps) => {
             setValue(`${hours ?? ""}:${String(m).padStart(2, "0")}`)
           }
         >
-          <NumberInputField placeholder={placeholderMinutes ?? ""} />
+          <NumberInputField
+            placeholder={placeholderMinutes ?? ""}
+            onBlur={() => setIsTouched(true)}
+          />
           <NumberInputStepper>
             <NumberIncrementStepper />
             <NumberDecrementStepper />
