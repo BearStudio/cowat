@@ -126,7 +126,7 @@ const Driver = () => {
             <CardHeader p="2">
               <Flex justify="space-between" align="center">
                 <Text fontWeight="bold" fontSize="sm">
-                  Departure at {getFirstStopTime(commute.data)}
+                  Departure at {getFirstStopTime(commute.data.stops)}
                 </Text>
                 <Button
                   onClick={() => modal.onOpen()}

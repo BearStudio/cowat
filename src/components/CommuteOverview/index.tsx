@@ -1,7 +1,7 @@
 import { Icon } from "@/components/Icon";
 import { FULL_TEXT_DATE, ONLY_TIME } from "@/constants/dates";
 import { api } from "@/utils/api";
-import { getPassengers } from "@/utils/commutes";
+import { getFirstStopTime, getPassengers } from "@/utils/commutes";
 import { NOT_YET_PASSENGER_IF_INSIDE } from "@/utils/passengers";
 import {
   Accordion,
