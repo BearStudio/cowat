@@ -31,9 +31,16 @@ type StopProps = {
   isRemovable?: boolean;
   isEditable?: boolean;
   onRemove: () => void;
+  mode?: "TEMPLATE" | "CREATE" | "EDIT";
 };
 
-export const Stop = ({ index, onRemove, isEditable = true, isRemovable = true, }: StopProps) => {
+export const Stop = ({
+  index,
+  onRemove,
+  isEditable = true,
+  isRemovable = true,
+  mode,
+}: StopProps) => {
   const ctx = api.useContext();
   const form = useFormContext();
   const formFields = useFormFields({
@@ -49,6 +56,16 @@ export const Stop = ({ index, onRemove, isEditable = true, isRemovable = true, }
       enabled: !!id,
     }
   );
+
+  const validateTime = (value?: string) => {
+    if (!value) return false;
+    if (mode === "TEMPLATE") return true;
+    const date =
+      formFields.date ?? dayjs(commute.data?.date).format("DD/MM/YYYY");
+    if (!value || !date) return false;
+    const dateWithTime = dayjs(`${date} ${value}`, "DD/MM/YYYY HH:mm");
+    return dateWithTime.isAfter(dayjs());
+  };
 
   const newLocationForm = useForm({
     onValidSubmit: (values: RouterInputs["location"]["create"]) => {
@@ -126,17 +143,7 @@ export const Stop = ({ index, onRemove, isEditable = true, isRemovable = true, }
             isDisabled={!isEditable}
             validations={[
               {
-                handler: (value) => {
-                  const date =
-                    formFields.date ??
-                    dayjs(commute.data?.date).format("DD/MM/YYYY");
-                  if (!value || !date) return false;
-                  const dateWithTime = dayjs(
-                    `${date} ${value}`,
-                    "DD/MM/YYYY HH:mm"
-                  );
-                  return dateWithTime.isAfter(dayjs());
-                },
+                handler: validateTime,
                 message: "Stop time must be in the future",
                 deps: [formFields.date, formFields.stops],
               },
