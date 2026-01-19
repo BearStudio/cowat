@@ -122,7 +122,7 @@ export const commuteRouter = createTRPCRouter({
         AND: [
           {
             date: {
-              gte: dayjs().subtract(1, "day").toDate(),
+              gte: dayjs().toDate(),
             },
           },
         ],
