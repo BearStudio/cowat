@@ -155,7 +155,7 @@ const newBookingFrom = async (passengerOnStop: PassengerOnStopNotification) => {
             text: `Hey, 🙋 ${passenger} requested a seat on your *${
               passengerOnStop.stop?.commute?.date
                 ? `${dayjs(passengerOnStop?.stop?.commute?.date).format(
-                    "dddd DD MMM"
+                    FULL_TEXT_DATE
                   )} ${passengerOnStop.stop?.time}`
                 : ""
             }* commute. <${
@@ -201,7 +201,7 @@ const request = async (passengerOnStop: PassengerOnStopNotification) => {
     } ${driver} ${passengerOnStop.requestStatus.toLocaleLowerCase()} your request for *${
               passengerOnStop.stop.commute?.date
                 ? `${dayjs(passengerOnStop.stop.commute.date).format(
-                    "dddd DD MMM"
+                    FULL_TEXT_DATE
                   )} ${passengerOnStop.stop?.time}`
                 : ""
             }* commute
@@ -250,7 +250,7 @@ const bookingAutoAccepted = async (
     ✅${driver} automatically accepted your request for *${
               passengerOnStop.stop.commute?.date
                 ? `${dayjs(passengerOnStop.stop.commute.date).format(
-                    "dddd DD MMM"
+                    FULL_TEXT_DATE
                   )}  ${passengerOnStop.stop?.time}`
                 : ""
             }* commute.`,
@@ -289,7 +289,7 @@ const bookingCanceled = async (
             text: `🙅 ${passenger} cancelled their booking for the *${
               passengerOnStop.stop.commute?.date
                 ? `${dayjs(passengerOnStop.stop.commute.date).format(
-                    "dddd DD MMM"
+                    FULL_TEXT_DATE
                   )}  ${passengerOnStop.stop?.time}`
                 : ""
             }* commute.`,
@@ -328,7 +328,7 @@ const commuteCanceled = async (
             text: `🙅 ${driver} cancelled the *${
               passengerOnStop.stop.commute?.date
                 ? `${dayjs(passengerOnStop.stop.commute.date).format(
-                    "dddd DD MMM"
+                    FULL_TEXT_DATE
                   )} ${passengerOnStop.stop?.time}`
                 : ""
             }* commute you booked.`,
