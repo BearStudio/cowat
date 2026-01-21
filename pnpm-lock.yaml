@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@bearstudio/ui-state':
+        specifier: 1.1.0
+        version: 1.1.0(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@chakra-ui/anatomy':
         specifier: 2.1.1
         version: 2.1.1
@@ -235,6 +238,12 @@ packages:
   '@babel/types@7.27.6':
     resolution: {integrity: sha512-ETyHEk2VHHvl9b9jZP5IHPavHYk57EhanlRRuae9XCpb/j5bDCbPPMOBfCWhnl/7EDJz0jEMCi/RhccCE8r1+Q==}
     engines: {node: '>=6.9.0'}
+
+  '@bearstudio/ui-state@1.1.0':
+    resolution: {integrity: sha512-NtLjXNBBZp2mXFVOGaRJYuFiOoCyDMz03FB9Iw7ZkOBHsJsakHsldElC/d7iIVmbUNDfK7YhjehC+rLIGjzPSA==}
+    peerDependencies:
+      react: '>=18.0.0'
+      react-dom: '>=18.0.0'
 
   '@chakra-ui/accordion@2.1.9':
     resolution: {integrity: sha512-a9CKIAUHezc0f5FR/SQ4GVxnWuIb2HbDTxTEKTp58w/J9pecIbJaNrJ5TUZ0MVbDU9jkgO9RsZ29jkja8PomAw==}
@@ -4122,6 +4131,11 @@ snapshots:
     dependencies:
       '@babel/helper-string-parser': 7.27.1
       '@babel/helper-validator-identifier': 7.27.1
+
+  '@bearstudio/ui-state@1.1.0(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
+    dependencies:
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
 
   '@chakra-ui/accordion@2.1.9(@chakra-ui/system@2.5.1(@emotion/react@11.10.6(@types/react@18.0.28)(react@18.2.0))(@emotion/styled@11.10.6(@emotion/react@11.10.6(@types/react@18.0.28)(react@18.2.0))(@types/react@18.0.28)(react@18.2.0))(react@18.2.0))(framer-motion@8.5.3(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react@18.2.0)':
     dependencies:

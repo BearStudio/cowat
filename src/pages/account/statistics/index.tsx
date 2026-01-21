@@ -57,6 +57,8 @@ const StatsPage = () => {
             commuteStats.data &&
             getActualYear(commuteStats.data, (commute) => commute.createdAt)
           }
+          isLoading={commuteStats.isLoading}
+          isError={commuteStats.isError}
         />
         <ChatWithStats
           label="Booked commutes"
@@ -69,6 +71,8 @@ const StatsPage = () => {
             bookedStats.data &&
             getActualYear(bookedStats.data, (commute) => commute.createdAt)
           }
+          isLoading={bookedStats.isLoading}
+          isError={bookedStats.isError}
         />
         <ChatWithStats
           label="Driven people"
@@ -84,6 +88,8 @@ const StatsPage = () => {
               (commute) => commute.commuteDate
             )
           }
+          isLoading={drivenPeopleStats.isLoading}
+          isError={drivenPeopleStats.isError}
         />
       </Flex>
     </LayoutAuthenticated>
