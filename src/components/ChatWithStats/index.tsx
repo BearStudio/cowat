@@ -77,7 +77,7 @@ export const ChatWithStats = ({
           </Center>
         ))
         .match("default", ({ chartData, allTimeData, thisYearData }) => (
-          <>
+          <Stack pr={4}>
             <Flex gap={8}>
               <Flex direction="column" alignItems="center">
                 <Text fontSize="sm">All time</Text>
@@ -93,7 +93,7 @@ export const ChatWithStats = ({
               </Flex>
             </Flex>
             <Chart data={chartData} />
-          </>
+          </Stack>
         ))
         .exhaustive()}
     </Stack>

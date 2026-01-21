@@ -33,8 +33,8 @@ export default function Chart({ data }: ChartProps) {
         <YAxis
           domain={[0, maxValue]}
           tickCount={2}
-          axisLine={false}
           tickLine={false}
+          width={35}
         />
 
         {/* Past years */}
