@@ -1,13 +1,7 @@
 import { Icon } from "@/components/Icon";
 import { LayoutAuthenticated } from "@/layout/LayoutAuthenticated";
 import { api } from "@/utils/api";
-import {
-  getAll,
-  getActualYear,
-  getActualYearWithDate,
-  getByYears,
-  getByYearsWithDate,
-} from "@/utils/stats";
+import { getAll, getActualYear, getByYears } from "@/utils/stats";
 import {
   Center,
   Flex,
@@ -54,23 +48,41 @@ const StatsPage = () => {
       <Flex direction="column" gap="6" as="main">
         <ChatWithStats
           label="Commutes"
-          chartData={getByYears(commuteStats.data || [])}
+          chartData={getByYears(
+            commuteStats.data || [],
+            (commute) => commute.createdAt
+          )}
           allTimeData={commuteStats.data && getAll(commuteStats.data)}
-          thisYearData={commuteStats.data && getActualYear(commuteStats.data)}
+          thisYearData={
+            commuteStats.data &&
+            getActualYear(commuteStats.data, (commute) => commute.createdAt)
+          }
         />
         <ChatWithStats
           label="Booked commutes"
-          chartData={getByYears(bookedStats.data || [])}
+          chartData={getByYears(
+            bookedStats.data || [],
+            (commute) => commute.createdAt
+          )}
           allTimeData={bookedStats.data && getAll(bookedStats.data)}
-          thisYearData={bookedStats.data && getActualYear(bookedStats.data)}
+          thisYearData={
+            bookedStats.data &&
+            getActualYear(bookedStats.data, (commute) => commute.createdAt)
+          }
         />
         <ChatWithStats
           label="Driven people"
-          chartData={getByYearsWithDate(drivenPeopleStats.data || [])}
+          chartData={getByYears(
+            drivenPeopleStats.data || [],
+            (commute) => commute.commuteDate
+          )}
           allTimeData={drivenPeopleStats.data && getAll(drivenPeopleStats.data)}
           thisYearData={
             drivenPeopleStats.data &&
-            getActualYearWithDate(drivenPeopleStats.data)
+            getActualYear(
+              drivenPeopleStats.data,
+              (commute) => commute.commuteDate
+            )
           }
         />
       </Flex>
