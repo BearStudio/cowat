@@ -1,16 +1,11 @@
 import { LineChart, Line, XAxis, YAxis, ResponsiveContainer } from "recharts";
+import type { chartDataProps } from "@/utils/stats";
 
-type chartDataProps = {
-  year: number;
-  value: number;
-  actualYear?: boolean;
-};
-
-interface ChartProps {
+export default function ChartByYear({
+  chartData,
+}: {
   chartData: chartDataProps[];
-}
-
-export default function ChartByYear({ chartData }: ChartProps) {
+}) {
   const past = chartData.filter((data) => !data.actualYear);
   const actualYear = chartData.filter((data) => data.actualYear);
 

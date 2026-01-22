@@ -1,5 +1,11 @@
 import dayjs from "dayjs";
 
+export type chartDataProps = {
+  year: number;
+  value: number;
+  actualYear?: boolean;
+};
+
 type DateGetter<T> = (item: T) => Date | undefined | null;
 
 const currentYear = dayjs().year();

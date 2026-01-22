@@ -1,15 +1,10 @@
 import Chart from "@/components/ChartByYear";
 import { Center, Flex, Stack, Text, Spinner } from "@chakra-ui/react";
 import { getUiState } from "@bearstudio/ui-state";
-
-type ChartData = {
-  year: number;
-  value: number;
-  actualYear?: boolean;
-};
+import type { chartDataProps } from "@/utils/stats";
 
 interface ChartProps {
-  chartData: ChartData[];
+  chartData: chartDataProps[];
   allTimeData: number | undefined;
   thisYearData: number | undefined;
   label: string;
