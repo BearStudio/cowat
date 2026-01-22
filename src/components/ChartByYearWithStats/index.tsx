@@ -1,4 +1,4 @@
-import Chart from "@/components/ChartByYear";
+import ChartByYear from "@/components/ChartByYear";
 import { Center, Flex, Stack, Text, Spinner } from "@chakra-ui/react";
 import { getUiState } from "@bearstudio/ui-state";
 import type { chartDataProps } from "@/utils/stats";
@@ -94,7 +94,7 @@ export const ChartByYearWithStats = ({
                 </Text>
               </Flex>
             </Flex>
-            <Chart chartData={chartData} />
+            <ChartByYear chartData={chartData} />
           </Stack>
         ))
         .exhaustive()}
