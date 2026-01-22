@@ -1,24 +1,24 @@
 import { LineChart, Line, XAxis, YAxis, ResponsiveContainer } from "recharts";
 
-type ChartData = {
+type chartDataProps = {
   year: number;
   value: number;
   actualYear?: boolean;
 };
 
 interface ChartProps {
-  data: ChartData[];
+  chartData: chartDataProps[];
 }
 
-export default function ChartByYear({ data }: ChartProps) {
-  const past = data.filter((year) => !year.actualYear);
-  const actualYear = data.filter((year) => year.actualYear);
+export default function ChartByYear({ chartData }: ChartProps) {
+  const past = chartData.filter((data) => !data.actualYear);
+  const actualYear = chartData.filter((data) => data.actualYear);
 
-  const years = data.map((year) => year.year);
+  const years = chartData.map((data) => data.year);
   const minYear = Math.min(...years);
   const maxYear = Math.max(...years);
 
-  const maxValue = Math.max(...data.map((value) => value.value));
+  const maxValue = Math.max(...chartData.map((value) => value.value));
 
   return (
     <ResponsiveContainer width="100%" height={200}>

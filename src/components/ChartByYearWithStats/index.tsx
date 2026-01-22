@@ -92,7 +92,7 @@ export const ChartByYearWithStats = ({
                 </Text>
               </Flex>
             </Flex>
-            <Chart data={chartData} />
+            <Chart chartData={chartData} />
           </Stack>
         ))
         .exhaustive()}
