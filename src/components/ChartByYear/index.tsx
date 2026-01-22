@@ -10,7 +10,7 @@ interface ChartProps {
   data: ChartData[];
 }
 
-export default function Chart({ data }: ChartProps) {
+export default function ChartByYear({ data }: ChartProps) {
   const past = data.filter((year) => !year.actualYear);
   const actualYear = data.filter((year) => year.actualYear);
 

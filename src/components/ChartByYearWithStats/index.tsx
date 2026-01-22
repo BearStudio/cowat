@@ -1,4 +1,4 @@
-import Chart from "@/components/Chart";
+import Chart from "@/components/ChartByYear";
 import { Center, Flex, Stack, Text, Spinner } from "@chakra-ui/react";
 import { getUiState } from "@bearstudio/ui-state";
 
@@ -17,7 +17,7 @@ interface ChartProps {
   isError: boolean;
 }
 
-export const ChatWithStats = ({
+export const ChartByYearWithStats = ({
   label,
   allTimeData,
   thisYearData,

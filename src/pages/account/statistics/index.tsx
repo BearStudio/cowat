@@ -13,7 +13,7 @@ import {
 import { ArrowLeft } from "lucide-react";
 import Head from "next/head";
 import Link from "next/link";
-import { ChatWithStats } from "@/components/ChatWithStats";
+import { ChartByYearWithStats } from "@/components/ChartByYearWithStats";
 
 const StatsPage = () => {
   const profile = api.user.profile.useQuery();
@@ -46,7 +46,7 @@ const StatsPage = () => {
         </Center>
       )}
       <Flex direction="column" gap="6" as="main">
-        <ChatWithStats
+        <ChartByYearWithStats
           label="Commutes"
           chartData={getByYears(
             commuteStats.data || [],
@@ -60,7 +60,7 @@ const StatsPage = () => {
           isLoading={commuteStats.isLoading}
           isError={commuteStats.isError}
         />
-        <ChatWithStats
+        <ChartByYearWithStats
           label="Booked commutes"
           chartData={getByYears(
             bookedStats.data || [],
@@ -74,7 +74,7 @@ const StatsPage = () => {
           isLoading={bookedStats.isLoading}
           isError={bookedStats.isError}
         />
-        <ChatWithStats
+        <ChartByYearWithStats
           label="Driven people"
           chartData={getByYears(
             drivenPeopleStats.data || [],
