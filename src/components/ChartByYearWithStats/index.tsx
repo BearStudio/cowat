@@ -12,6 +12,19 @@ interface ChartProps {
   isError: boolean;
 }
 
+function getMessage(label: string) {
+  switch (label) {
+    case "Commutes":
+      return "You need to create commutes to see statistics here.";
+    case "Booked commutes":
+      return "You need to book commutes to see statistics here.";
+    case "Driven people":
+      return "You need to drive people to see statistics here.";
+    default:
+      return "Make commutes, book commutes or drive people to see statistics here.";
+  }
+}
+
 export const ChartByYearWithStats = ({
   label,
   allTimeData,
@@ -56,13 +69,7 @@ export const ChartByYearWithStats = ({
         .match("empty", () => (
           <Center>
             <Text color="gray.600" _dark={{ color: "gray.300" }}>
-              {label === "Commutes"
-                ? "You need to create commutes to see statistics here."
-                : label === "Booked commutes"
-                ? "You need to book commutes to see statistics here."
-                : label === "Driven people"
-                ? "You need to drive people to see statistics here."
-                : undefined}
+              {getMessage(label)}
             </Text>
           </Center>
         ))
