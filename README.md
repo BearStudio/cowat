@@ -87,4 +87,15 @@ You can check out the [create-t3-app GitHub repository](https://github.com/t3-os
 
 ## How do I deploy this?
 
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+1. Switch to the develop branch
+2. Check for migrations (from Neon)
+3. Create Snapshot to back up the schema in case of problems
+4. Install dependency (`pnpm install`)
+5. Put the production URL in your .env
+6. Migrate database to production (`db:migrate:deploy`)
+7. Go to the main branch
+8. Do a rebase on develop
+9. Copy the link into OnePassword (“🚨 DEPLOY COWAT TO PRODUCTION 🚨”) and open it in your browser
+10. Otherwise, go to Vercel, then to settings > git > deploy hooks to get the link
+11. Check the build on the link and the deployment (make sure everything is going smoothly).
+12. Verify that everything is functioning on production.
