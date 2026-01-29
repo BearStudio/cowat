@@ -8,7 +8,6 @@ import type { RouterInputs } from "@/utils/api";
 import { api } from "@/utils/api";
 import { Button, Heading, HStack, IconButton } from "@chakra-ui/react";
 import { Formiz, useForm } from "@formiz/core";
-import dayjs from "dayjs";
 import { ArrowLeft } from "lucide-react";
 import type { NextPage } from "next";
 import Head from "next/head";
@@ -22,8 +21,8 @@ type EditCommuteInputValues = Omit<
   "date" | "outwardTime" | "inwardTime" | "commuteType"
 > & {
   date: Date;
-  outwardTime: Date;
-  inwardTime: Date;
+  outwardTime: string;
+  inwardTime: string;
   commuteType: boolean;
 };
 
@@ -47,26 +46,15 @@ const EditCommute: NextPage = () => {
   });
 
   const handleOnValidSubmit = (values: EditCommuteInputValues) => {
-    const { outwardTime, inwardTime, date, ...otherValues } = values;
+    const { outwardTime, inwardTime, ...otherValues } = values;
 
     commuteMutation.mutate(
       {
         ...otherValues,
         commuteType: otherValues.commuteType ? "ROUND" : "ONEWAY",
-        outwardTime: dayjs(
-          `${dayjs(date).format("YYYY-MM-DD")} ${outwardTime}`,
-          "YYYY-MM-DD HH:mm"
-        ).toDate(),
-        inwardTime: dayjs(
-          `${dayjs(date).format("YYYY-MM-DD")} ${inwardTime}`,
-          "YYYY-MM-DD HH:mm"
-        ).toDate(),
-        date: dayjs(
-          `${dayjs(commute.data?.date).format("DD/MM/YYYY")} ${
-            commute.data?.date
-          }`,
-          "DD/MM/YYYY HH:mm"
-        ).toDate(),
+        inwardTime: inwardTime || undefined,
+        outwardTime: outwardTime,
+        date: commute.data?.date ?? new Date(),
         id: id?.toString() ?? "",
       },
       {
@@ -98,17 +86,14 @@ const EditCommute: NextPage = () => {
       commute.data?.commuteType === "ROUND" ||
       commute.data?.commuteType === undefined,
     outwardLocation: commute.data?.stops?.[0]?.location?.id,
-    outwardTime: dayjs(commute.data?.stops?.[0]?.time, "HH:mm").toDate(),
+    outwardTime: commute.data?.outwardTime,
     inwardLocation:
       commute.data?.commuteType === "ROUND"
         ? commute.data?.stops?.[commute.data.stops.length - 1]?.location?.id
         : undefined,
     inwardTime:
       commute.data?.commuteType === "ROUND"
-        ? dayjs(
-            commute.data?.stops?.[commute.data.stops.length - 1]?.time,
-            "HH:mm"
-          ).toDate()
+        ? commute.data?.inwardTime
         : undefined,
   };
 
