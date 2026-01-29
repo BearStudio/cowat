@@ -101,8 +101,8 @@ model CommuteTemplate {
     comment      String?  @db.Text
     templateName String?  @db.Text
     commuteType  CommuteType @default(ROUND)
-    outwardTime DateTime?  @default(now())
-    inwardTime DateTime?  @default(now())
+    outwardTime String?
+    inwardTime String?
 
     @@index([createdById])
 }
@@ -128,8 +128,8 @@ model Commute {
     date        DateTime      @db.Date
     seats       Int
     commuteType CommuteType   @default(ROUND)
-    outwardTime DateTime?   @default(now())
-    inwardTime DateTime?      @default(now())
+    outwardTime String?  
+    inwardTime String?      
     // "ON_TIME | DELAYED"
     status      CommuteStatus @default(UNKNOWN)
     // If the driver is late, number of minutes of delay

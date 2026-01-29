@@ -104,14 +104,8 @@ const New: NextPage = () => {
     createCommute.mutate({
       ...otherValues,
       commuteType: otherValues.commuteType ? "ROUND" : "ONEWAY",
-      outwardTime: dayjs(
-        `${date} ${otherValues.outwardTime}`,
-        "DD/MM/YYYY HH:mm"
-      ).toDate(),
-      inwardTime: dayjs(
-        `${date} ${otherValues.inwardTime}`,
-        "DD/MM/YYYY HH:mm"
-      ).toDate(),
+      outwardTime: otherValues.outwardTime,
+      inwardTime: otherValues.inwardTime,
       date: otherValues.stops
         ? dayjs(
             `${date} ${otherValues.stops[0]?.time}`,

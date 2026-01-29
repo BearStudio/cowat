@@ -1,6 +1,5 @@
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { TRPCError } from "@trpc/server";
-import dayjs from "dayjs";
 
 import { z } from "zod";
 
@@ -57,12 +56,8 @@ export const templateRouter = createTRPCRouter({
           seats: input.seats,
           commuteType: input.commuteType,
           comment: input.comment,
-          outwardTime: input.outwardTime
-            ? dayjs(input.outwardTime, "HH:mm").toDate()
-            : null,
-          inwardTime: input.inwardTime
-            ? dayjs(input.inwardTime, "HH:mm").toDate()
-            : null,
+          outwardTime: input.outwardTime,
+          inwardTime: input.inwardTime,
         },
         include: {
           createdBy: {
@@ -231,12 +226,8 @@ export const templateRouter = createTRPCRouter({
           seats: input.seats,
           commuteType: input.commuteType,
           comment: input.comment,
-          outwardTime: input.outwardTime
-            ? dayjs(input.outwardTime, "HH:mm").toDate()
-            : null,
-          inwardTime: input.inwardTime
-            ? dayjs(input.inwardTime, "HH:mm").toDate()
-            : null,
+          outwardTime: input.outwardTime,
+          inwardTime: input.inwardTime,
         },
         where: {
           id: input.id,

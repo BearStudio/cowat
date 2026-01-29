@@ -1,5 +1,5 @@
 import { Icon } from "@/components/Icon";
-import { FULL_TEXT_DATE, ONLY_TIME } from "@/constants/dates";
+import { FULL_TEXT_DATE } from "@/constants/dates";
 import { api } from "@/utils/api";
 import { getPassengers } from "@/utils/commutes";
 import { NOT_YET_PASSENGER_IF_INSIDE } from "@/utils/passengers";
@@ -211,20 +211,18 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
                       {dayjs(props.date).format(FULL_TEXT_DATE)}
                     </Text>
                     <Text fontWeight="bold" fontSize="sm">
-                      <Icon icon={LogIn} />{" "}
-                      {dayjs(props.outwardTime).format(ONLY_TIME)}
+                      <Icon icon={LogIn} /> {props.outwardTime}
                     </Text>
                     <Text fontWeight="bold" fontSize="sm">
-                      <Icon icon={Undo2} />{" "}
-                      {dayjs(props.inwardTime).format(ONLY_TIME)}
+                      <Icon icon={Undo2} /> {props.inwardTime}
                     </Text>
                   </Flex>
                 ) : (
                   <>
                     <Text fontWeight="bold" fontSize="sm">
-                      {` ${dayjs(props.date).format(FULL_TEXT_DATE)} ${dayjs(
+                      {` ${dayjs(props.date).format(FULL_TEXT_DATE)} ${
                         props.outwardTime
-                      ).format(ONLY_TIME)}`}
+                      }`}
                     </Text>
                   </>
                 )}

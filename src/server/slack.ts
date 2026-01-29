@@ -2,7 +2,7 @@ import SlackNotify from "slack-notify";
 import { env } from "@/env/server.mjs";
 import type { Prisma } from "@prisma/client";
 import dayjs from "dayjs";
-import { FULL_TEXT_DATE, ONLY_TIME } from "@/constants/dates";
+import { FULL_TEXT_DATE } from "@/constants/dates";
 import { App, LogLevel } from "@slack/bolt";
 import { clientEnv } from "@/env/schema.mjs";
 import { commuteTypeLabels } from "@/constants/commuteType";
@@ -89,17 +89,9 @@ const newCommute = async (
           \n Trip type : *${commuteTypeLabels[commute.commuteType]}*${
             commute.outwardTime || commute.inwardTime
               ? ` (${
-                  commute.outwardTime
-                    ? `Inward : *${dayjs(commute.outwardTime).format(
-                        ONLY_TIME
-                      )}*`
-                    : ""
+                  commute.outwardTime ? `Inward : *${commute.outwardTime}*` : ""
                 }${commute.outwardTime && commute.inwardTime ? " and " : ""}${
-                  commute.inwardTime
-                    ? `Outward : *${dayjs(commute.inwardTime).format(
-                        ONLY_TIME
-                      )}*`
-                    : ""
+                  commute.inwardTime ? `Outward : *${commute.inwardTime}*` : ""
                 })`
               : ""
           }
