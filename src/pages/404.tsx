@@ -6,6 +6,7 @@ const Page404 = () => {
   return (
     <Page>
       <PageContent>
+        <p>Hello there, checking Vercel preview deployments</p>
         <ErrorPage errorCode={404} />
       </PageContent>
 
