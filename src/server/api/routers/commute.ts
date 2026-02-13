@@ -19,7 +19,8 @@ export const commuteRouter = createTRPCRouter({
         inwardTime: z.date().nullish(),
         outwardLocation: z.string().nullish(),
         inwardLocation: z.string().nullish(),
-        stops: z.array(
+        stops: z
+          .array(
             z.object({
               location: z.string(),
               time: z.string(),
@@ -34,7 +35,7 @@ export const commuteRouter = createTRPCRouter({
       const commute = await ctx.prisma.commute.create({
         data: {
           seats: input.seats,
-          date: dayjs.utc(dayjs(input.date).format('YYYY-MM-DD')).toDate(),
+          date: input.date,
           outwardTime: input.outwardTime,
           inwardTime: input.inwardTime,
           createdById: ctx.session.user.id,
@@ -424,7 +425,8 @@ export const commuteRouter = createTRPCRouter({
         outwardLocation: z.string().nullish(),
         inwardLocation: z.string().nullish(),
         seats: z.number().min(1),
-        stops: z.array(
+        stops: z
+          .array(
             z.object({
               location: z.string(),
               time: z.string(),
@@ -497,7 +499,7 @@ export const commuteRouter = createTRPCRouter({
         data: {
           seats: input.seats,
           comment: input.comment,
-          date: dayjs.utc(dayjs(input.date).format('YYYY-MM-DD')).toDate(),
+          date: input.date,
           outwardTime: input.outwardTime,
           inwardTime: input.inwardTime,
           stops: {

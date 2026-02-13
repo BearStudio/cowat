@@ -41,7 +41,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 
-# settings
-.idea/
+/.idea
 
 postgres/
