@@ -5,7 +5,7 @@ import { Page, PageBottomBar, PageContent } from "@/components/Page";
 const Page404 = () => {
   return (
     <Page>
-      You've reached an error.
+      <p>You've reached an error.</p>
       <PageContent>
         <ErrorPage errorCode={404} />
       </PageContent>
