@@ -1,10 +1,12 @@
 import { ConfirmModal } from "@/components/ConfirmModal";
+import { Icon } from "@/components/Icon";
 import { FULL_TEXT_DATE, ONLY_TIME } from "@/constants/dates";
 import type { RouterOutputs } from "@/utils/api";
 import { api } from "@/utils/api";
 import { getPassengers } from "@/utils/commutes";
-import { Button, chakra } from "@chakra-ui/react";
+import { Button, chakra, useBreakpointValue } from "@chakra-ui/react";
 import dayjs from "dayjs";
+import { Trash } from "lucide-react";
 
 type ConfirmCancelCommuteModalProps = {
   commute: RouterOutputs["commute"]["commuteById"];
@@ -20,6 +22,8 @@ export const ConfirmCancelCommuteModal = ({
     },
   });
   const passengers = getPassengers(commute.stops, commute.commuteType);
+
+  const isMobile = useBreakpointValue({ base: true, md: false });
 
   return (
     <ConfirmModal
@@ -50,7 +54,8 @@ export const ConfirmCancelCommuteModal = ({
       }
     >
       <Button variant="danger" isLoading={cancelCommute.isLoading}>
-        Cancel commute
+        <Icon icon={Trash} mr={!isMobile ? 2 : 0} />
+        {!isMobile && "Cancel commute"}
       </Button>
     </ConfirmModal>
   );
