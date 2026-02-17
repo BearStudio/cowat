@@ -25,6 +25,7 @@ type EditCommuteTemplateValues = Omit<
 
 const EditCommuteTemplates: NextPage = () => {
   const router = useRouter();
+  const ctx = api.useContext();
 
   const { id } = router.query;
 
@@ -42,11 +43,18 @@ const EditCommuteTemplates: NextPage = () => {
   });
 
   const handleOnValidSubmit = (values: EditCommuteTemplateValues) => {
-    commuteTemplateMutation.mutate({
-      ...values,
-      id: id?.toString() ?? "",
-      commuteType: values.commuteType ? "ROUND" : "ONEWAY",
-    });
+    commuteTemplateMutation.mutate(
+      {
+        ...values,
+        id: id?.toString() ?? "",
+        commuteType: values.commuteType ? "ROUND" : "ONEWAY",
+      },
+      {
+        onSuccess: () => {
+          ctx.template.invalidate();
+        },
+      }
+    );
   };
 
   const stops = template.data
