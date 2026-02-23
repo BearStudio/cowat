@@ -111,7 +111,10 @@ const New: NextPage = () => {
             `${date} ${otherValues.stops[0]?.time}`,
             "DD/MM/YYYY HH:mm"
           ).toDate()
-        : dayjs(date, "DD/MM/YYYY").toDate(),
+        : dayjs(
+            `${date} ${otherValues.outwardTime}`,
+            "DD/MM/YYYY HH:mm"
+          ).toDate(),
     });
   };
 
