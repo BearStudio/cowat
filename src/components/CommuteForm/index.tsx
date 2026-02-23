@@ -121,7 +121,7 @@ export const CommuteForm = ({
       return inward.isAfter(lastStop);
     }
     if (!hasStops) {
-      const outward = values.outwardTime;
+      const outward = dayjs(values.outwardTime, ONLY_TIME);
       return outward.isBefore(inward);
     }
     return false;

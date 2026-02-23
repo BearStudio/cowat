@@ -211,10 +211,14 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
                       {dayjs(props.date).format(FULL_TEXT_DATE)}
                     </Text>
                     <Text fontWeight="bold" fontSize="sm">
-                      <Icon icon={LogIn} /> {props.outwardTime}
+                      <>
+                        <Icon icon={LogIn} /> {props.outwardTime}
+                      </>
                     </Text>
                     <Text fontWeight="bold" fontSize="sm">
-                      <Icon icon={Undo2} /> {props.inwardTime}
+                      <>
+                        <Icon icon={Undo2} /> {props.inwardTime}
+                      </>
                     </Text>
                   </Flex>
                 ) : (
