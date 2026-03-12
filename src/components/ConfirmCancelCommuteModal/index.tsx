@@ -51,8 +51,8 @@ export const ConfirmCancelCommuteModal = ({
         </>
       }
     >
-      <Button variant="danger" isLoading={false}>
-        <Icon icon={Trash} mr={{ base: 0, md: 2 }} />
+      <Button variant="danger" isLoading={false} gap={2}>
+        <Icon icon={Trash} />
         <chakra.span display={{ base: "none", md: "inline" }}>
           Cancel commute
         </chakra.span>
