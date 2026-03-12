@@ -26,7 +26,6 @@ import {
   Text,
   Wrap,
   Spacer,
-  useBreakpointValue,
   Tooltip,
   useDisclosure,
   ButtonGroup,
@@ -34,6 +33,7 @@ import {
   MenuButton,
   MenuList,
   MenuItem,
+  chakra,
 } from "@chakra-ui/react";
 import type { Prisma, RequestStatus, TripType } from "@prisma/client";
 import dayjs from "dayjs";
@@ -70,8 +70,6 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
   const ctx = api.useContext();
 
   const confirmCommuteActionModal = useDisclosure();
-
-  const isMobile = useBreakpointValue({ base: true, md: false });
 
   const bookCommute = api.stop.book.useMutation({
     onSuccess: async () => {
@@ -542,24 +540,17 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
                         as={Link}
                         href={`/commutes/${props.id}`}
                       />
-                      {isMobile && (
-                        <IconButton
-                          aria-label="Open commute's view"
-                          icon={<Icon icon={Navigation} />}
-                          as={Link}
-                          href={`/dashboard/driver/${props.id}`}
-                        />
-                      )}
-                      {!isMobile && (
-                        <Button
-                          variant="outline"
-                          leftIcon={<Icon icon={Navigation} />}
-                          as={Link}
-                          href={`/dashboard/driver/${props.id}`}
-                        >
+                      <Button
+                        variant="outline"
+                        isLoading={false}
+                        href={`/dashboard/driver/${props.id}`}
+                        as={Link}
+                      >
+                        <Icon icon={Navigation} mr={{ base: 0, md: 2 }} />
+                        <chakra.span display={{ base: "none", md: "inline" }}>
                           Open commute&apos;s view
-                        </Button>
-                      )}
+                        </chakra.span>
+                      </Button>
                     </>
                   )}
                   {isCurrentUserCreator && !props.isDeleted && (
