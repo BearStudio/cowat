@@ -545,8 +545,9 @@ export const CommuteOverview = (props: CommuteOverviewProps) => {
                         isLoading={false}
                         href={`/dashboard/driver/${props.id}`}
                         as={Link}
+                        gap={2}
                       >
-                        <Icon icon={Navigation} mr={{ base: 0, md: 2 }} />
+                        <Icon icon={Navigation} />
                         <chakra.span display={{ base: "none", md: "inline" }}>
                           Open commute&apos;s view
                         </chakra.span>
