@@ -89,9 +89,11 @@ const newCommute = async (
           \n Trip type : *${commuteTypeLabels[commute.commuteType]}*${
             commute.outwardTime || commute.inwardTime
               ? ` (${
-                  commute.outwardTime ? `Inward : *${commute.outwardTime}*` : ""
+                  commute.outwardTime
+                    ? `Outward : *${commute.outwardTime}*`
+                    : ""
                 }${commute.outwardTime && commute.inwardTime ? " and " : ""}${
-                  commute.inwardTime ? `Outward : *${commute.inwardTime}*` : ""
+                  commute.inwardTime ? `Inward : *${commute.inwardTime}*` : ""
                 })`
               : ""
           }
