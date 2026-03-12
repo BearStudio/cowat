@@ -4,7 +4,7 @@ import { Icon } from "@/components/Icon";
 import { LayoutAuthenticated } from "@/layout/LayoutAuthenticated";
 import { Button, Divider, Heading, Stack } from "@chakra-ui/react";
 
-import { Car, MapPin, UserCogIcon } from "lucide-react";
+import { BarChart2, Car, MapPin, UserCogIcon } from "lucide-react";
 import { signOut } from "next-auth/react";
 import Head from "next/head";
 import Link from "next/link";
@@ -42,6 +42,14 @@ const AccountPage = () => {
           leftIcon={<Icon icon={UserCogIcon} />}
         >
           Profile
+        </Button>
+        <Button
+          variant="default"
+          as={Link}
+          href="/account/statistics"
+          leftIcon={<Icon icon={BarChart2} />}
+        >
+          Statistics
         </Button>
         <Divider />
         <Button variant="link" onClick={() => signOut()}>

@@ -95,6 +95,73 @@ export const commuteRouter = createTRPCRouter({
 
       return commute;
     }),
+  allCommutesStats: protectedProcedure.query(async ({ ctx }) => {
+    const commutes = await ctx.prisma.commute.findMany({
+      where: {
+        createdById: {
+          equals: ctx.session.user.id,
+        },
+        isDeleted: false,
+      },
+      include: {
+        createdBy: true,
+      },
+    });
+
+    return commutes;
+  }),
+  allBookStats: protectedProcedure.query(async ({ ctx }) => {
+    const commutes = await ctx.prisma.commute.findMany({
+      where: {
+        isDeleted: false,
+        stops: {
+          some: {
+            passengers: {
+              some: {
+                userId: ctx.session.user.id,
+                requestStatus: {
+                  notIn: ["CANCELED", "REFUSED"],
+                },
+              },
+            },
+          },
+        },
+      },
+      include: {
+        stops: {
+          include: {
+            location: true,
+            passengers: {
+              include: {
+                user: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    return commutes;
+  }),
+  allDrivenPeopleStats: protectedProcedure.query(async ({ ctx }) => {
+    const stops = await ctx.prisma.stop.findMany({
+      where: {
+        commute: { createdById: ctx.session.user.id, isDeleted: false },
+      },
+      include: {
+        passengers: true,
+        commute: { select: { createdAt: true } },
+      },
+    });
+
+    return stops.flatMap((stop) =>
+      stop.passengers.map((passenger) => ({
+        ...passenger,
+        commuteDate: stop.commute?.createdAt,
+      }))
+    );
+  }),
+
   allMyCommutes: protectedProcedure.query(async ({ ctx }) => {
     const commutes = await ctx.prisma.commute.findMany({
       where: {
